@@ -5,24 +5,16 @@
  */
 package spacesurvival;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.font.TextAttribute;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Random;
 import javax.swing.JPanel;
 
 /**
@@ -50,7 +42,7 @@ public class GamePanel extends JPanel {
     
     public GamePanel() {
         
-        File fontFolder = new File("resources/fonts/Other");
+        File fontFolder = new File("resources/fonts/CGA");
         
         fonts = fontFolder.listFiles((pathname) -> {
             return pathname.getName().toLowerCase().endsWith(".ttf");
@@ -94,15 +86,34 @@ public class GamePanel extends JPanel {
         ConsoleFont consoleFont = ConsoleFont.fromFile(fontFile);
         //consoleFont = ConsoleFont.getDefaultLucida();
         
-        BufferedImageUtils.drawString(image, 0, 0, TEST_STRING_CHAR, 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawStringFast(image, 1, 1, TEST_STRING_CHAR, 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawString(image, 0, 2, TEST_STRING_TEXT, 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawStringFast(image, 0, 3, TEST_STRING_TEXT, 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawString(image, 0, 3, "_________________________________──────", 0xCC00AAAA, 0x00000000, consoleFont);
-        BufferedImageUtils.drawString(image, 0, 4, TEST_STRING_TEXT.toUpperCase(), 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawStringFast(image, 0, 5, TEST_STRING_TEXT.toUpperCase(), 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawString(image, 0, 5, "_________________________________──────", 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawString(image, 0, 6, fontFile.getName(), 0xFFFFFFFF, 0x00000000, consoleFont);
+        CharacterLayer layer = new CharacterLayer(200, 200);
+        Random random = new Random();
+        for (int i=0; i<10; i++) {
+            layer.drawRectangle(random.nextInt(layer.getWidth()), random.nextInt(layer.getHeight()), (int)(random.nextGaussian()*3 + 6), (int)(random.nextGaussian()*3 + 6));
+            layer.drawDoubleRectangle(random.nextInt(layer.getWidth()), random.nextInt(layer.getHeight()), (int)(random.nextGaussian()*3 + 6), (int)(random.nextGaussian()*3 + 6));
+        }
+        
+        //layer.drawRectangle(0, 0, 5, 5);
+        //layer.drawRectangle(3, 5, 5, 5);
+        //layer.drawRectangle(8, 8, 5, 5, '-');
+        //layer.fillRectangle(8, 8, 5, 5, 'e');
+        //layer.fillRectangle(12, 12, 3, 3, 'a');
+        //layer.fillRectangle(1, 5, 4, 8, 'i');
+        //layer.drawRectangle(3, 3, 12, 12);
+        //layer.drawRectangle(8, 8, 20, 20);
+        
+        BufferedImageUtils.drawConsoleLayer(image, 0, 0, layer, 0xFFFFFFFF, consoleFont);
+        return;
+        
+        BufferedImageUtils.drawConsoleString(image, 0, 0, TEST_STRING_CHAR, 0xFFFFFFFF, 0x00000000, consoleFont);
+        BufferedImageUtils.drawConsoleStringFast(image, 1, 1, TEST_STRING_CHAR, 0xFFFFFFFF, 0x00000000, consoleFont);
+        BufferedImageUtils.drawConsoleString(image, 0, 2, TEST_STRING_TEXT, 0xFFFFFFFF, 0x00000000, consoleFont);
+        BufferedImageUtils.drawConsoleStringFast(image, 0, 3, TEST_STRING_TEXT, 0xFFFFFFFF, 0x00000000, consoleFont);
+        BufferedImageUtils.drawConsoleString(image, 0, 3, "_________________________________──────", 0xCC00AAAA, 0x00000000, consoleFont);
+        BufferedImageUtils.drawConsoleString(image, 0, 4, TEST_STRING_TEXT.toUpperCase(), 0xFFFFFFFF, 0x00000000, consoleFont);
+        BufferedImageUtils.drawConsoleStringFast(image, 0, 5, TEST_STRING_TEXT.toUpperCase(), 0xFFFFFFFF, 0x00000000, consoleFont);
+        BufferedImageUtils.drawConsoleString(image, 0, 5, "_________________________________──────", 0xFFFFFFFF, 0x00000000, consoleFont);
+        BufferedImageUtils.drawConsoleString(image, 0, 6, fontFile.getName(), 0xFFFFFFFF, 0x00000000, consoleFont);
         
     }
     
@@ -137,7 +148,7 @@ public class GamePanel extends JPanel {
         //g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         
         
-        int scale = 8;
+        int scale = 2;
         
         
         g2.setColor(Color.WHITE);

@@ -6,7 +6,6 @@
 package spacesurvival;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.font.TextAttribute;
@@ -18,12 +17,11 @@ import java.util.ArrayList;
  *
  * @author bowen
  */
-public class Console {
+public class ConsoleScreen1 {
     
     private final char[][] chars;
     private final int[][] frontColor;
     private final int[][] backColor;
-    private final ArrayList<CharacterAttribute>[][] attributeList;
     private final int width, height;
     
     private int cursorX = 0;
@@ -33,15 +31,10 @@ public class Console {
     private int cursorBackColor = 0x000000;
 
     
-    public enum CharacterAttribute {
-        NONE, BOLD, ITALIC, UNDERLINE, STRIKETHROUGH
-    }
-    
-    public Console(int width, int height) {
+    public ConsoleScreen1(int width, int height) {
         this.chars = new char[height][width];
         this.frontColor = new int[height][width];
         this.backColor = new int[height][width];
-        this.attributeList = new ArrayList[height][width];
         this.width = width;
         this.height = height;
     }
