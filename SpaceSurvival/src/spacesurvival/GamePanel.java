@@ -86,7 +86,7 @@ public class GamePanel extends JPanel {
         ConsoleFont consoleFont = ConsoleFont.fromFile(fontFile);
         //consoleFont = ConsoleFont.getDefaultLucida();
         
-        CharacterLayer layer = new CharacterLayer(200, 200);
+        CharacterImage layer = new CharacterImage(200, 200);
         Random random = new Random();
         for (int i=0; i<10; i++) {
             layer.drawRectangle(random.nextInt(layer.getWidth()), random.nextInt(layer.getHeight()), (int)(random.nextGaussian()*3 + 6), (int)(random.nextGaussian()*3 + 6));
@@ -102,7 +102,7 @@ public class GamePanel extends JPanel {
         //layer.drawRectangle(3, 3, 12, 12);
         //layer.drawRectangle(8, 8, 20, 20);
         
-        BufferedImageUtils.drawConsoleLayer(image, 0, 0, layer, 0xFFFFFFFF, consoleFont);
+        BufferedImageUtils.drawCharacterLayer(image, 0, 0, layer, 0xFFFFFFFF, consoleFont);
         return;
         
         BufferedImageUtils.drawConsoleString(image, 0, 0, TEST_STRING_CHAR, 0xFFFFFFFF, 0x00000000, consoleFont);

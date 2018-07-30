@@ -80,7 +80,7 @@ public class BufferedImageUtils {
         }
     }
     
-    public static void drawConsoleLayer(BufferedImage image, int x, int y, CharacterLayer chars, int foregroundColor, ConsoleFont consoleFont) {
+    public static void drawCharacterLayer(BufferedImage image, int x, int y, CharacterImage chars, int foregroundColor, ConsoleFont consoleFont) {
         for (int i=0; i<chars.getHeight(); i++) {
             drawConsoleString(image, x, y + i, chars.getLineAsString(i), foregroundColor, 0x00000000, consoleFont);
         }

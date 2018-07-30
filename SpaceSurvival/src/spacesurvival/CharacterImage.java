@@ -9,7 +9,7 @@ package spacesurvival;
  *
  * @author bowen
  */
-public class CharacterLayer {
+public class CharacterImage {
     
     //Make boundary boxes char layer
     //Paint boundary boxes
@@ -19,7 +19,7 @@ public class CharacterLayer {
     private final char[][] chars;
     private final int width, height;
     
-    public CharacterLayer(int width, int height) {
+    public CharacterImage(int width, int height) {
         this.chars = new char[height][width];
         this.width = width;
         this.height = height;
