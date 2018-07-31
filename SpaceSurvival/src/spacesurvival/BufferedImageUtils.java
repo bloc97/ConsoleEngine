@@ -92,4 +92,108 @@ public class BufferedImageUtils {
         g2.setColor(new Color(backgroundColor, true));
         g2.fillRect(x * consoleFont.getWidth(), y * consoleFont.getHeight(), width * consoleFont.getWidth(), height * consoleFont.getHeight());
     }
+    
+    public static void quantize(BufferedImage image, ColorPalette palette, boolean doDither) {
+        
+        if (palette instanceof ColorPalette.Grayscale) {
+            
+            double[][][] error = new double[image.getHeight()][image.getWidth()][2];
+
+            for (int j=0, h=image.getHeight(); j<h; j++) {
+                for (int i=0, w=image.getWidth(); i<w; i++) {
+                    final int lastRawARGB = image.getRGB(i, j);
+
+                    final int lastA    = (int)(((lastRawARGB >>> 24) & 0xFF)                      + (doDither ? error[j][i][0] : 0)); //A
+                    final int lastGray = (int)(ColorPalette.grayscaleRGB24ToGray8(lastRawARGB, 8) + (doDither ? error[j][i][1] : 0)); //Grey
+
+                    final int newRGB = palette.getClosestARGB32(lastA, lastGray, lastGray, lastGray);
+
+                    if (doDither) {
+                        
+                        final int aE = lastA - ((newRGB >>> 24) & 0xFF);
+                        final int greyE = lastGray - ((newRGB >>> 16) & 0xFF);
+                        if (i+1 < w) {
+                            error[j  ][i+1][0] = error[j  ][i+1][0] + aE * (7d/16d);
+                            error[j  ][i+1][1] = error[j  ][i+1][1] + greyE * (7d/16d);
+                        }
+                        if (j+1 < h) {
+                            if (i > 0) {
+                                error[j+1][i-1][0] = error[j+1][i-1][0] + aE * (3d/16d);
+                                error[j+1][i-1][1] = error[j+1][i-1][1] + greyE * (3d/16d);
+                            }
+                            error[j+1][i  ][0] = error[j+1][i  ][0] + aE * (5d/16d);
+                            error[j+1][i  ][1] = error[j+1][i  ][1] + greyE * (5d/16d);
+
+                            if (i+1 < w) {
+                                error[j+1][i+1][0] = error[j+1][i+1][0] + aE * (1d/16d);
+                                error[j+1][i+1][1] = error[j+1][i+1][1] + greyE * (1d/16d);
+                            }
+                        }
+                    }
+
+                    image.setRGB(i, j, newRGB);
+
+                }
+            }
+        
+        } else {
+            
+            double[][][] error = new double[image.getHeight()][image.getWidth()][4];
+
+            for (int j=0, h=image.getHeight(); j<h; j++) {
+                for (int i=0, w=image.getWidth(); i<w; i++) {
+                    final int lastRawARGB = image.getRGB(i, j);
+
+                    final int lastA = (int)(((lastRawARGB >>> 24) & 0xFF) + (doDither ? error[j][i][0] : 0)); //A
+                    final int lastR = (int)(((lastRawARGB >>> 16) & 0xFF) + (doDither ? error[j][i][1] : 0)); //R
+                    final int lastG = (int)(((lastRawARGB >>> 8 ) & 0xFF) + (doDither ? error[j][i][2] : 0)); //G
+                    final int lastB = (int)(((lastRawARGB       ) & 0xFF) + (doDither ? error[j][i][3] : 0)); //B
+
+                    final int newRGB = palette.getClosestARGB32(lastA, lastR, lastG, lastB);
+
+                    if (doDither) {
+                        final int aE = lastA - ((newRGB >>> 24) & 0xFF);
+                        final int rE = lastR - ((newRGB >>> 16) & 0xFF);
+                        final int gE = lastG - ((newRGB >>> 8 ) & 0xFF);
+                        final int bE = lastB - ((newRGB       ) & 0xFF);
+                        System.out.println(aE);
+
+                        if (i+1 < w) {
+                            error[j  ][i+1][0] = error[j  ][i+1][0] + aE * (7d/16d);
+                            error[j  ][i+1][1] = error[j  ][i+1][1] + rE * (7d/16d);
+                            error[j  ][i+1][2] = error[j  ][i+1][2] + gE * (7d/16d);
+                            error[j  ][i+1][3] = error[j  ][i+1][3] + bE * (7d/16d);
+                        }
+                        if (j+1 < h) {
+                            if (i > 0) {
+                                error[j+1][i-1][0] = error[j+1][i-1][0] + aE * (3d/16d);
+                                error[j+1][i-1][1] = error[j+1][i-1][1] + rE * (3d/16d);
+                                error[j+1][i-1][2] = error[j+1][i-1][2] + gE * (3d/16d);
+                                error[j+1][i-1][3] = error[j+1][i-1][3] + bE * (3d/16d);
+                            }
+                            error[j+1][i  ][0] = error[j+1][i  ][0] + aE * (5d/16d);
+                            error[j+1][i  ][1] = error[j+1][i  ][1] + rE * (5d/16d);
+                            error[j+1][i  ][2] = error[j+1][i  ][2] + gE * (5d/16d);
+                            error[j+1][i  ][3] = error[j+1][i  ][3] + bE * (5d/16d);
+
+                            if (i+1 < w) {
+                                error[j+1][i+1][0] = error[j+1][i+1][0] + aE * (1d/16d);
+                                error[j+1][i+1][1] = error[j+1][i+1][1] + rE * (1d/16d);
+                                error[j+1][i+1][2] = error[j+1][i+1][2] + gE * (1d/16d);
+                                error[j+1][i+1][3] = error[j+1][i+1][3] + bE * (1d/16d);
+                            }
+                        }
+
+
+
+                    }
+
+                    image.setRGB(i, j, newRGB);
+
+                }
+            }
+        }
+        
+        
+    }
 }

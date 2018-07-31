@@ -70,10 +70,11 @@ public class ConsoleScreen {
     
     public BufferedImage getImage() {
         for (CharacterPanel characterPanel : getPanels()) {
-            BufferedImage image = new BufferedImage();
+            
             
             
         }
+        return null;
     }
     
 }

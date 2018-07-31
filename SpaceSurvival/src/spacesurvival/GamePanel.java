@@ -14,7 +14,13 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 /**
@@ -36,6 +42,9 @@ public class GamePanel extends JPanel {
     final File[] fonts;
     int fontIndex = 0;
     
+    final ColorPalette[] colorPalettes;
+    int colorPaletteIndex = 0;
+    boolean doDither = false;
     
     public static final String TEST_STRING_CHAR = "█ ▓ ▒▒░░▐▌▌▐ ▀▄ -- __ ── ╔╣ ┌┤";
     public static final String TEST_STRING_TEXT = "A quick brown fox jumps over the lazy test dog";
@@ -48,6 +57,12 @@ public class GamePanel extends JPanel {
             return pathname.getName().toLowerCase().endsWith(".ttf");
         });
         
+        colorPalettes = new ColorPalette[ColorPalette.RGB.values().length + ColorPalette.Grayscale.values().length + 2];
+        System.arraycopy(ColorPalette.RGB.values(), 0, colorPalettes, 0, ColorPalette.RGB.values().length);
+        System.arraycopy(ColorPalette.Grayscale.values(), 0, colorPalettes, ColorPalette.RGB.values().length, ColorPalette.Grayscale.values().length);
+        colorPalettes[colorPalettes.length - 2] = ColorPalette.Palette.IRGB4_NEON;
+        colorPalettes[colorPalettes.length - 1] = ColorPalette.Palette.IRGB4_ENHANCED;
+        
         drawText(fonts[fontIndex]);
         
         setBackground(Color.BLACK);
@@ -55,8 +70,20 @@ public class GamePanel extends JPanel {
         
         this.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyPressed(KeyEvent e) {
+            public void keyReleased(KeyEvent e) {
                 switch (e.getKeyCode()) {
+                    case KeyEvent.VK_UP:
+                        colorPaletteIndex++;
+                        if (colorPaletteIndex >= colorPalettes.length) {
+                            colorPaletteIndex = colorPalettes.length - 1;
+                        }
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        colorPaletteIndex--;
+                        if (colorPaletteIndex < 0) {
+                            colorPaletteIndex = 0;
+                        }
+                        break;
                     case KeyEvent.VK_RIGHT:
                         fontIndex++;
                         if (fontIndex >= fonts.length) {
@@ -68,6 +95,9 @@ public class GamePanel extends JPanel {
                         if (fontIndex < 0) {
                             fontIndex = 0;
                         }
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        doDither = !doDither;
                         break;
                 }
                 System.out.println(fontIndex);
@@ -93,18 +123,45 @@ public class GamePanel extends JPanel {
             layer.drawDoubleRectangle(random.nextInt(layer.getWidth()), random.nextInt(layer.getHeight()), (int)(random.nextGaussian()*3 + 6), (int)(random.nextGaussian()*3 + 6));
         }
         
-        //layer.drawRectangle(0, 0, 5, 5);
-        //layer.drawRectangle(3, 5, 5, 5);
-        //layer.drawRectangle(8, 8, 5, 5, '-');
-        //layer.fillRectangle(8, 8, 5, 5, 'e');
-        //layer.fillRectangle(12, 12, 3, 3, 'a');
-        //layer.fillRectangle(1, 5, 4, 8, 'i');
-        //layer.drawRectangle(3, 3, 12, 12);
-        //layer.drawRectangle(8, 8, 20, 20);
         
-        BufferedImageUtils.drawCharacterLayer(image, 0, 0, layer, 0xFFFFFFFF, consoleFont);
-        return;
+        //BufferedImageUtils.drawCharacterLayer(image, 0, 0, layer, 0xFFFFFFFF, consoleFont);
         
+        try {
+            BufferedImage newImage = ImageIO.read(new File("resources/RGB_24bits_palette_sample_image.jpg"));
+            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
+            image.createGraphics().drawImage(newImage, 0, 0, this);
+            
+            int lastX = newImage.getWidth();
+            
+            newImage = ImageIO.read(new File("resources/RGB_24bits_palette_color_test_chart.png"));
+            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
+            image.createGraphics().drawImage(newImage, lastX, 0, this);
+            
+            int lastY = newImage.getHeight();
+            lastX = 0;
+            
+            newImage = ImageIO.read(new File("resources/Redgreen.png"));
+            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
+            image.createGraphics().drawImage(newImage, lastX, lastY, this);
+            
+            lastX = lastX + newImage.getWidth();
+            
+            newImage = ImageIO.read(new File("resources/Greenblue.png"));
+            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
+            image.createGraphics().drawImage(newImage, lastX, lastY, this);
+            
+            lastX = lastX + newImage.getWidth();
+            
+            newImage = ImageIO.read(new File("resources/Redblue.png"));
+            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
+            image.createGraphics().drawImage(newImage, lastX, lastY, this);
+            
+        } catch (IOException ex) {
+            
+        }
+        
+        
+        /*
         BufferedImageUtils.drawConsoleString(image, 0, 0, TEST_STRING_CHAR, 0xFFFFFFFF, 0x00000000, consoleFont);
         BufferedImageUtils.drawConsoleStringFast(image, 1, 1, TEST_STRING_CHAR, 0xFFFFFFFF, 0x00000000, consoleFont);
         BufferedImageUtils.drawConsoleString(image, 0, 2, TEST_STRING_TEXT, 0xFFFFFFFF, 0x00000000, consoleFont);
@@ -113,7 +170,7 @@ public class GamePanel extends JPanel {
         BufferedImageUtils.drawConsoleString(image, 0, 4, TEST_STRING_TEXT.toUpperCase(), 0xFFFFFFFF, 0x00000000, consoleFont);
         BufferedImageUtils.drawConsoleStringFast(image, 0, 5, TEST_STRING_TEXT.toUpperCase(), 0xFFFFFFFF, 0x00000000, consoleFont);
         BufferedImageUtils.drawConsoleString(image, 0, 5, "_________________________________──────", 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawConsoleString(image, 0, 6, fontFile.getName(), 0xFFFFFFFF, 0x00000000, consoleFont);
+        BufferedImageUtils.drawConsoleString(image, 0, 6, fontFile.getName(), 0xFFFFFFFF, 0x00000000, consoleFont);*/
         
     }
     
@@ -148,82 +205,12 @@ public class GamePanel extends JPanel {
         //g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         
         
-        int scale = 2;
+        int scale = 4;
         
         
         g2.setColor(Color.WHITE);
         g2.drawImage(image, 0, 0, image.getWidth() * scale, image.getHeight() * scale, this);
         
-        
-        /*
-        System.out.println(screenPixelWidth + " " + screenPixelHeight);
-        
-        
-        final int scaleOverride = 0;
-        
-        final int pixScale = roundRatio(((double)screenPixelWidth/FONT_PIXEL_WIDTH)/RECOMMENDED_CONSOLE_WIDTH  + scaleOverride);
-        //* ((double)FONT_PIXEL_WIDTH / FONT_PIXEL_HEIGHT)
-        final int totalScale = 16 * pixScale;
-        
-        final int consoleWidth = (int)(screenPixelWidth / (pixScale * FONT_PIXEL_WIDTH));
-        final int consoleHeight = (int)(screenPixelHeight / (pixScale * FONT_PIXEL_HEIGHT));
-        final int consolePixelWidth = consoleWidth * FONT_PIXEL_WIDTH * pixScale;
-        final int consolePixelHeight = consoleHeight * FONT_PIXEL_HEIGHT * pixScale;
-        
-        final double paddingX = (screenPixelWidth - consolePixelWidth)/2d;
-        final double paddingY = (screenPixelHeight - consolePixelHeight)/2d;
-        
-        
-        //final AffineTransform transform = AffineTransform.getTranslateInstance(0, 0);
-        final AffineTransform transform = AffineTransform.getTranslateInstance(paddingX, paddingY);
-        transform.scale(totalScale, totalScale);
-        transform.translate(0d, 0.69);
-        g2.setTransform(transform);
-        
-        g2.setStroke(new BasicStroke(0.1f));
-        
-        Console console = new Console(consoleWidth, consoleHeight);
-        
-        console.setCursor(0, 0);
-        console.setCursorBackColor(Color.BLUE.darker().getRGB());
-        console.fillColorRectangleAtCursor(consoleWidth, consoleHeight);
-        console.drawRectangleAtCursor(consoleWidth, consoleHeight);
-        
-        console.setCursor(consoleWidth/2, 0);
-        console.drawRectangleAtCursor(consoleWidth - consoleWidth/2, consoleHeight);
-        
-        console.setCursor(consoleWidth/2, consoleHeight/2);
-        console.drawRectangleAtCursor(consoleWidth - consoleWidth/2, consoleHeight - consoleHeight/2);
-        
-        
-        console.setCursor(consoleWidth/2-20+1, consoleHeight/2-5+1);
-        console.setCursorFrontColor(Color.GRAY.getRGB());
-        console.setCursorBackColor(Color.BLACK.darker().darker().getRGB());
-        console.fillColorRectangleAtCursor(41, 10);
-        
-        console.setCursor(consoleWidth/2-20, consoleHeight/2-5);
-        console.clearCharRectangleAtCursor(40, 10);
-        console.drawRectangleAtCursor(40, 10);
-        
-        console.setCursorBackColor(Color.GREEN.darker().getRGB());
-        console.setCursorFrontColor(Color.WHITE.getRGB());
-        console.fillColorRectangleAtCursor(40, 10);
-        
-        
-        
-        
-        console.setCursor(2, 1);
-        console.setCursorFrontColor(Color.WHITE.getRGB());
-        console.setCursorBackColor(Color.BLUE.darker().getRGB());
-        console.writeStringCursor("Hello world!", Console.CharacterAttribute.UNDERLINE);
-        console.cursorNextLine();
-        console.cursorNext();
-        console.writeStringCursor("Hello world!");
-        console.cursorNext();
-        console.writeStringCursor("Hello world!");
-        //console.setChar(2, 1, '║');
-        console.paint(g2, FONT_WIDTH_RATIO, FONT_HEIGHT_RATIO);
-        */
         
     }
     
