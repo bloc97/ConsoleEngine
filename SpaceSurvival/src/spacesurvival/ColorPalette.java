@@ -5,12 +5,22 @@
  */
 package spacesurvival;
 
+import java.util.Arrays;
+import math.colors.ColorSpace;
+import math.colors.ColorSpaceGamma;
+import math.colors.ColorSpaceSRGB;
+import math.colors.ColorSpaceXYZ;
+import math.colors.ColorUtils;
+
 /**
  *
  * @author bowen
  */
 public interface ColorPalette {
     
+    public static final ColorSpaceGamma GAMMA = new ColorSpaceGamma();
+    public static final ColorSpaceSRGB SRGB = new ColorSpaceSRGB();
+    public static final ColorSpace XYZ = new ColorSpaceXYZ();
     
     public static enum Grayscale implements ColorPalette {
         MONO(1), GRAY2(2), GRAY3(3), GRAY4(4), GRAY5(5), GRAY6(6), GRAY7(7), GRAY8(8),
@@ -66,6 +76,58 @@ public interface ColorPalette {
         }
     }
     
+    public static class IRGB implements ColorPalette {
+
+        private boolean isNeon = true;
+        
+        @Override
+        public int getClosestARGB32(int argb) {
+            final double[] rgb = ColorUtils.int24ToDouble(argb);
+            
+            int d = 0;
+            final int a0 = ColorUtils.clampInt((int)Math.round((3 * rgb[0] - d) / 2), 0, 1);
+            final int b0 = ColorUtils.clampInt((int)Math.round((3 * rgb[1] - d) / 2), 0, 1);
+            final int c0 = ColorUtils.clampInt((int)Math.round((3 * rgb[2] - d) / 2), 0, 1);
+            
+            d = 1;
+            final int a1 = ColorUtils.clampInt((int)Math.round((3 * rgb[0] - d) / 2), 0, 1);
+            final int b1 = ColorUtils.clampInt((int)Math.round((3 * rgb[1] - d) / 2), 0, 1);
+            final int c1 = ColorUtils.clampInt((int)Math.round((3 * rgb[2] - d) / 2), 0, 1);
+            
+            final int color0 = getARGBFromNum(a0 << 2 | b0 << 1 | c0);
+            final int color1 = getARGBFromNum(1 << 3 | a1 << 2 | b1 << 1 | c1);
+            
+            final double[] rgb0 = ColorUtils.int24ToDouble(color0);
+            final double[] rgb1 = ColorUtils.int24ToDouble(color1);
+            
+            final double dr0 = rgb[0] - rgb0[0];
+            final double dg0 = rgb[1] - rgb0[1];
+            final double db0 = rgb[2] - rgb0[2];
+            
+            final double dr1 = rgb[0] - rgb1[0];
+            final double dg1 = rgb[1] - rgb1[1];
+            final double db1 = rgb[2] - rgb1[2];
+            
+            double dist0 = dr0 * dr0 + dg0 * dg0 + db0 * db0;
+            double dist1 = dr1 * dr1 + dg1 * dg1 + db1 * db1;
+            
+            return dist0 < dist1 ? color0 : color1;
+            
+        }
+        
+        public int getARGBFromNum(int num) {
+            if (!isNeon && num == 6) {
+                return 0xFFAA5500;
+            }
+            return Palette.IRGB4_NEON.getColors()[num];
+            final double red = 2d/3d*(num & 4)/4d + 1d/3d*(num & 8)/8d;
+            final double green = 2d/3d*(num & 2)/4d + 1d/3d*(num & 8)/8d;
+            final double blue = 2d/3d*(num & 1)/4d + 1d/3d*(num & 8)/8d;
+            
+            return ColorUtils.doubleToInt24(red, green, blue);
+        }
+        
+    }
     public static class Palette implements ColorPalette {
         public static final Palette IRGB4_ENHANCED = new Palette(0x000000, 0x0000AA, 0x00AA00, 0x00AAAA, 0xAA0000, 0xAA00AA, 0xAA5500, 0xAAAAAA, 0x555555, 0x5555FF, 0x55FF55, 0x55FFFF, 0xFF5555, 0xFF55FF, 0xFFFF55, 0xFFFFFF);
         public static final Palette IRGB4_NEON = new Palette(0x000000, 0x000080, 0x008000, 0x008080, 0x800000, 0x800080, 0x808000, 0xAAAAAA, 0x555555, 0x0000FF, 0x00FF00, 0x00FFFF, 0xFF0000, 0xFF00FF, 0xFFFF00, 0xFFFFFF);
@@ -74,6 +136,10 @@ public interface ColorPalette {
 
         public Palette(int... colors) {
             this.colors = colors;
+        }
+
+        public int[] getColors() {
+            return colors;
         }
         
         @Override
@@ -110,19 +176,24 @@ public interface ColorPalette {
     }
     
     public static int getClosestARGBColorFromIndex(int argb, int[] colors, boolean hasAlpha) {
-        final int ca = (argb >>> 24) & 0xFF;
-        final int cr = (argb >>> 16) & 0xFF;
-        final int cg = (argb >>> 8 ) & 0xFF;
-        final int cb = (argb       ) & 0xFF;
+        
+        //final double[] linearRGB = ColorUtils.int24ToDouble(argb);
+        final double[] linearRGB = SRGB.quickInt24ToLinear(argb);
+        
+        final double ca = ColorUtils.int32ToAlpha(argb);
 
         double bestDist = Double.POSITIVE_INFINITY;
         int bestColor = colors[0];
 
         for (int color : colors) {
-            final double da = (((color >>> 24) & 0xFF) - ca);
-            final double dr = (((color >>> 16) & 0xFF) - cr);
-            final double dg = (((color >>> 8 ) & 0xFF) - cg);
-            final double db = (((color       ) & 0xFF) - cb);
+            
+            //final double[] linearRGBCurrent = ColorUtils.int24ToDouble(color);
+            final double[] linearRGBCurrent = SRGB.quickInt24ToLinear(color);
+            
+            final double da = ColorUtils.int32ToAlpha(color) - ca;
+            final double dr = linearRGBCurrent[0] - linearRGB[0];
+            final double dg = linearRGBCurrent[1] - linearRGB[1];
+            final double db = linearRGBCurrent[2] - linearRGB[2];
             
             final double distSqr = hasAlpha ? (da*da + dr*dr + dg*dg + db*db) : (dr*dr + dg*dg + db*db);
             if (distSqr < bestDist) {
@@ -208,7 +279,7 @@ public interface ColorPalette {
                 return 0xFF;
                 
             default:
-                return 1;
+                return 0;
         }
     }
     

@@ -57,11 +57,18 @@ public class GamePanel extends JPanel {
             return pathname.getName().toLowerCase().endsWith(".ttf");
         });
         
+        colorPalettes = new ColorPalette[5];
+        colorPalettes[0] = ColorPalette.RGB.RGB6;
+        colorPalettes[1] = ColorPalette.RGB.RGB24;
+        colorPalettes[2] = ColorPalette.RGB.RGB8_332;
+        colorPalettes[3] = new ColorPalette.IRGB();
+        colorPalettes[4] = ColorPalette.Palette.IRGB4_ENHANCED;
+        /*
         colorPalettes = new ColorPalette[ColorPalette.RGB.values().length + ColorPalette.Grayscale.values().length + 2];
         System.arraycopy(ColorPalette.RGB.values(), 0, colorPalettes, 0, ColorPalette.RGB.values().length);
         System.arraycopy(ColorPalette.Grayscale.values(), 0, colorPalettes, ColorPalette.RGB.values().length, ColorPalette.Grayscale.values().length);
         colorPalettes[colorPalettes.length - 2] = ColorPalette.Palette.IRGB4_NEON;
-        colorPalettes[colorPalettes.length - 1] = ColorPalette.Palette.IRGB4_ENHANCED;
+        colorPalettes[colorPalettes.length - 1] = ColorPalette.Palette.IRGB4_ENHANCED;*/
         
         drawText(fonts[fontIndex]);
         

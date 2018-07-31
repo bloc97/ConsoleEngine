@@ -156,7 +156,6 @@ public class BufferedImageUtils {
                         final int rE = lastR - ((newRGB >>> 16) & 0xFF);
                         final int gE = lastG - ((newRGB >>> 8 ) & 0xFF);
                         final int bE = lastB - ((newRGB       ) & 0xFF);
-                        System.out.println(aE);
 
                         if (i+1 < w) {
                             error[j  ][i+1][0] = error[j  ][i+1][0] + aE * (7d/16d);
