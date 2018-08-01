@@ -57,12 +57,17 @@ public class GamePanel extends JPanel {
             return pathname.getName().toLowerCase().endsWith(".ttf");
         });
         
-        colorPalettes = new ColorPalette[5];
-        colorPalettes[0] = ColorPalette.RGB.RGB6;
-        colorPalettes[1] = ColorPalette.RGB.RGB24;
-        colorPalettes[2] = ColorPalette.RGB.RGB8_332;
-        colorPalettes[3] = new ColorPalette.IRGB();
-        colorPalettes[4] = ColorPalette.Palette.IRGB4_ENHANCED;
+        colorPalettes = new ColorPalette[10];
+        colorPalettes[0] = ColorPalette.RGB.RGB3;
+        colorPalettes[1] = ColorPalette.RGB.RGB6;
+        colorPalettes[2] = ColorPalette.RGB.RGB9;
+        colorPalettes[3] = ColorPalette.RGB.RGB12;
+        colorPalettes[4] = ColorPalette.RGB.RGB15;
+        colorPalettes[5] = ColorPalette.RGB.RGB18;
+        colorPalettes[6] = ColorPalette.Color.RGB5_221;
+        colorPalettes[7] = ColorPalette.Color.RGB12_442;
+        colorPalettes[8] = ColorPalette.Color.RGB16_664;
+        colorPalettes[9] = ColorPalette.Color.RGB4_121;
         /*
         colorPalettes = new ColorPalette[ColorPalette.RGB.values().length + ColorPalette.Grayscale.values().length + 2];
         System.arraycopy(ColorPalette.RGB.values(), 0, colorPalettes, 0, ColorPalette.RGB.values().length);
@@ -77,7 +82,7 @@ public class GamePanel extends JPanel {
         
         this.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyReleased(KeyEvent e) {
+            public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_UP:
                         colorPaletteIndex++;
@@ -107,7 +112,6 @@ public class GamePanel extends JPanel {
                         doDither = !doDither;
                         break;
                 }
-                System.out.println(fontIndex);
                 drawText(fonts[fontIndex]);
                 repaint();
             }
@@ -144,7 +148,14 @@ public class GamePanel extends JPanel {
             BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
             image.createGraphics().drawImage(newImage, lastX, 0, this);
             
-            int lastY = newImage.getHeight();
+            lastX = lastX + newImage.getWidth();
+            
+            newImage = ImageIO.read(new File("resources/RGB_15bits_palette.png"));
+            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
+            image.createGraphics().drawImage(newImage, lastX, 0, newImage.getWidth() * 2, newImage.getHeight() * 2, this);
+            
+            
+            int lastY = newImage.getHeight() * 2;
             lastX = 0;
             
             newImage = ImageIO.read(new File("resources/Redgreen.png"));
@@ -162,6 +173,26 @@ public class GamePanel extends JPanel {
             newImage = ImageIO.read(new File("resources/Redblue.png"));
             BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
             image.createGraphics().drawImage(newImage, lastX, lastY, this);
+            /*
+            lastY = lastY + newImage.getHeight();
+            lastX = 0;
+            
+            newImage = ImageIO.read(new File("resources/YellowCyan.png"));
+            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
+            image.createGraphics().drawImage(newImage, lastX, lastY, this);
+            
+            lastX = lastX + newImage.getWidth();
+            
+            newImage = ImageIO.read(new File("resources/MagentaYellow.png"));
+            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
+            image.createGraphics().drawImage(newImage, lastX, lastY, this);
+            
+            lastX = lastX + newImage.getWidth();
+            
+            newImage = ImageIO.read(new File("resources/MagentaCyan.png"));
+            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
+            image.createGraphics().drawImage(newImage, lastX, lastY, this);
+            */
             
         } catch (IOException ex) {
             
@@ -217,7 +248,6 @@ public class GamePanel extends JPanel {
         
         g2.setColor(Color.WHITE);
         g2.drawImage(image, 0, 0, image.getWidth() * scale, image.getHeight() * scale, this);
-        
         
     }
     

@@ -10,6 +10,8 @@ import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import math.StrictMathExt;
+import math.colors.ColorUtils;
 
 /**
  *
@@ -94,6 +96,19 @@ public class BufferedImageUtils {
     }
     
     public static void quantize(BufferedImage image, ColorPalette palette, boolean doDither) {
+        if (doDither) {
+            quantizeDither(image, palette, doDither);
+            return;
+        }
+        for (int j=0, h=image.getHeight(); j<h; j++) {
+            for (int i=0, w=image.getWidth(); i<w; i++) {
+                image.setRGB(i, j, palette.getClosestARGB32(image.getRGB(i, j)));
+            }
+        }
+    }
+    
+    
+    public static void quantizeDither(BufferedImage image, ColorPalette palette, boolean doDither) {
         
         if (palette instanceof ColorPalette.Grayscale) {
             
@@ -138,59 +153,72 @@ public class BufferedImageUtils {
         
         } else {
             
-            double[][][] error = new double[image.getHeight()][image.getWidth()][4];
-
+            double[][][] pixels = new double[image.getHeight()][image.getWidth()][4];
+            
             for (int j=0, h=image.getHeight(); j<h; j++) {
                 for (int i=0, w=image.getWidth(); i<w; i++) {
                     final int lastRawARGB = image.getRGB(i, j);
-
-                    final int lastA = (int)(((lastRawARGB >>> 24) & 0xFF) + (doDither ? error[j][i][0] : 0)); //A
-                    final int lastR = (int)(((lastRawARGB >>> 16) & 0xFF) + (doDither ? error[j][i][1] : 0)); //R
-                    final int lastG = (int)(((lastRawARGB >>> 8 ) & 0xFF) + (doDither ? error[j][i][2] : 0)); //G
-                    final int lastB = (int)(((lastRawARGB       ) & 0xFF) + (doDither ? error[j][i][3] : 0)); //B
-
-                    final int newRGB = palette.getClosestARGB32(lastA, lastR, lastG, lastB);
-
+                    
+                    final double a = ColorUtils.int32ToAlpha(lastRawARGB);
+                    final double[] rgb = ColorUtils.int24ToDouble(lastRawARGB);
+                    
+                    pixels[j][i][0] = a;
+                    pixels[j][i][1] = rgb[0];
+                    pixels[j][i][2] = rgb[1];
+                    pixels[j][i][3] = rgb[2];
+                }
+            }
+            
+            for (int j=0, h=image.getHeight(); j<h; j++) {
+                for (int i=0, w=image.getWidth(); i<w; i++) {
+                    final int newRawARGB = palette.getClosestARGB32(ColorUtils.doubleAlphaToInt32(pixels[j][i][0], pixels[j][i][1], pixels[j][i][2], pixels[j][i][3]));
+                    
+                    final double newA = ColorUtils.int32ToAlpha(newRawARGB);
+                    final double[] newRGB = ColorUtils.int24ToDouble(newRawARGB);
+                    
                     if (doDither) {
-                        final int aE = lastA - ((newRGB >>> 24) & 0xFF);
-                        final int rE = lastR - ((newRGB >>> 16) & 0xFF);
-                        final int gE = lastG - ((newRGB >>> 8 ) & 0xFF);
-                        final int bE = lastB - ((newRGB       ) & 0xFF);
-
+                        final double aE = pixels[j][i][0] - newA;
+                        final double rE = pixels[j][i][1] - newRGB[0];
+                        final double gE = pixels[j][i][2] - newRGB[1];
+                        final double bE = pixels[j][i][3] - newRGB[2];
+                        
                         if (i+1 < w) {
-                            error[j  ][i+1][0] = error[j  ][i+1][0] + aE * (7d/16d);
-                            error[j  ][i+1][1] = error[j  ][i+1][1] + rE * (7d/16d);
-                            error[j  ][i+1][2] = error[j  ][i+1][2] + gE * (7d/16d);
-                            error[j  ][i+1][3] = error[j  ][i+1][3] + bE * (7d/16d);
+                            pixels[j  ][i+1][0] = pixels[j  ][i+1][0] + aE * (7d/16d);
+                            pixels[j  ][i+1][1] = pixels[j  ][i+1][1] + rE * (7d/16d);
+                            pixels[j  ][i+1][2] = pixels[j  ][i+1][2] + gE * (7d/16d);
+                            pixels[j  ][i+1][3] = pixels[j  ][i+1][3] + bE * (7d/16d);
                         }
                         if (j+1 < h) {
                             if (i > 0) {
-                                error[j+1][i-1][0] = error[j+1][i-1][0] + aE * (3d/16d);
-                                error[j+1][i-1][1] = error[j+1][i-1][1] + rE * (3d/16d);
-                                error[j+1][i-1][2] = error[j+1][i-1][2] + gE * (3d/16d);
-                                error[j+1][i-1][3] = error[j+1][i-1][3] + bE * (3d/16d);
+                                pixels[j+1][i-1][0] = pixels[j+1][i-1][0] + aE * (3d/16d);
+                                pixels[j+1][i-1][1] = pixels[j+1][i-1][1] + rE * (3d/16d);
+                                pixels[j+1][i-1][2] = pixels[j+1][i-1][2] + gE * (3d/16d);
+                                pixels[j+1][i-1][3] = pixels[j+1][i-1][3] + bE * (3d/16d);
                             }
-                            error[j+1][i  ][0] = error[j+1][i  ][0] + aE * (5d/16d);
-                            error[j+1][i  ][1] = error[j+1][i  ][1] + rE * (5d/16d);
-                            error[j+1][i  ][2] = error[j+1][i  ][2] + gE * (5d/16d);
-                            error[j+1][i  ][3] = error[j+1][i  ][3] + bE * (5d/16d);
+                            pixels[j+1][i  ][0] = pixels[j+1][i  ][0] + aE * (5d/16d);
+                            pixels[j+1][i  ][1] = pixels[j+1][i  ][1] + rE * (5d/16d);
+                            pixels[j+1][i  ][2] = pixels[j+1][i  ][2] + gE * (5d/16d);
+                            pixels[j+1][i  ][3] = pixels[j+1][i  ][3] + bE * (5d/16d);
 
                             if (i+1 < w) {
-                                error[j+1][i+1][0] = error[j+1][i+1][0] + aE * (1d/16d);
-                                error[j+1][i+1][1] = error[j+1][i+1][1] + rE * (1d/16d);
-                                error[j+1][i+1][2] = error[j+1][i+1][2] + gE * (1d/16d);
-                                error[j+1][i+1][3] = error[j+1][i+1][3] + bE * (1d/16d);
+                                pixels[j+1][i+1][0] = pixels[j+1][i+1][0] + aE * (1d/16d);
+                                pixels[j+1][i+1][1] = pixels[j+1][i+1][1] + rE * (1d/16d);
+                                pixels[j+1][i+1][2] = pixels[j+1][i+1][2] + gE * (1d/16d);
+                                pixels[j+1][i+1][3] = pixels[j+1][i+1][3] + bE * (1d/16d);
                             }
                         }
-
-
-
                     }
-
-                    image.setRGB(i, j, newRGB);
-
+                    /*
+                    pixels[j][i][0] = newA;
+                    pixels[j][i][1] = newRGB[0];
+                    pixels[j][i][2] = newRGB[1];
+                    pixels[j][i][3] = newRGB[2];
+                    */
+                    
+                    image.setRGB(i, j, newRawARGB);
                 }
             }
+            
         }
         
         

@@ -49,10 +49,6 @@ public interface ColorPalette {
     public static enum RGB implements ColorPalette {
         RGB3(1), RGB6(2), RGB9(3), RGB12(4), RGB15(5), RGB18(6), RGB21(7), RGB24(8),
         ARGB4(1,true), ARGB8(2,true), ARGB12(3,true), ARGB16(4,true), ARGB20(5,true), ARGB24(6,true), ARGB28(7,true), ARGB32(8,true), 
-
-        RGB8_332(0,3,3,2), RGB16_565(0,5,6,5), 
-        ARGB16_2554(2,5,5,4),
-        
         ;
         private final int aBits, rBits, gBits, bBits;
 
@@ -75,62 +71,51 @@ public interface ColorPalette {
             return compressARGB32(argb, aBits, rBits, gBits, bBits);
         }
     }
-    
-    public static class IRGB implements ColorPalette {
-
-        private boolean isNeon = true;
+    public static class Color implements ColorPalette {
         
+        public final static Color 
+                RG4_22 = new Color(0,2,2,0),
+                RG8_44 = new Color(0,4,4,0),
+                RG16_88 = new Color(0,8,8,0),
+                RGB4_121 = new Color(0,1,2,1),
+                RGB5_221 = new Color(0,2,2,1),
+                RGB8_242 = new Color(0,2,4,2),
+                RGB8_332 = new Color(0,3,3,2),
+                RGB12_442 = new Color(0,4,4,2),
+                RGB16_772 = new Color(0,7,7,2),
+                RGB16_565 = new Color(0,5,6,5), 
+                RGB16_664 = new Color(0,6,6,4),
+                ARGB16_2662 = new Color(2,6,6,2),
+                ARGB16_2554 = new Color(2,5,5,4);
+        
+        private final int aBits, rBits, gBits, bBits;
+
+        public Color(int colorBits) {
+            this(colorBits, false);
+        }
+        public Color(int colorBits, boolean hasAlpha) {
+            this(hasAlpha ? colorBits : 0, colorBits, colorBits, colorBits);
+        }
+        
+        public Color(int aBits, int rBits, int gBits, int bBits) {
+            this.aBits = aBits;
+            this.rBits = rBits;
+            this.gBits = gBits;
+            this.bBits = bBits;
+        }
+
         @Override
         public int getClosestARGB32(int argb) {
-            final double[] rgb = ColorUtils.int24ToDouble(argb);
-            
-            int d = 0;
-            final int a0 = ColorUtils.clampInt((int)Math.round((3 * rgb[0] - d) / 2), 0, 1);
-            final int b0 = ColorUtils.clampInt((int)Math.round((3 * rgb[1] - d) / 2), 0, 1);
-            final int c0 = ColorUtils.clampInt((int)Math.round((3 * rgb[2] - d) / 2), 0, 1);
-            
-            d = 1;
-            final int a1 = ColorUtils.clampInt((int)Math.round((3 * rgb[0] - d) / 2), 0, 1);
-            final int b1 = ColorUtils.clampInt((int)Math.round((3 * rgb[1] - d) / 2), 0, 1);
-            final int c1 = ColorUtils.clampInt((int)Math.round((3 * rgb[2] - d) / 2), 0, 1);
-            
-            final int color0 = getARGBFromNum(a0 << 2 | b0 << 1 | c0);
-            final int color1 = getARGBFromNum(1 << 3 | a1 << 2 | b1 << 1 | c1);
-            
-            final double[] rgb0 = ColorUtils.int24ToDouble(color0);
-            final double[] rgb1 = ColorUtils.int24ToDouble(color1);
-            
-            final double dr0 = rgb[0] - rgb0[0];
-            final double dg0 = rgb[1] - rgb0[1];
-            final double db0 = rgb[2] - rgb0[2];
-            
-            final double dr1 = rgb[0] - rgb1[0];
-            final double dg1 = rgb[1] - rgb1[1];
-            final double db1 = rgb[2] - rgb1[2];
-            
-            double dist0 = dr0 * dr0 + dg0 * dg0 + db0 * db0;
-            double dist1 = dr1 * dr1 + dg1 * dg1 + db1 * db1;
-            
-            return dist0 < dist1 ? color0 : color1;
-            
+            return compressARGB32(argb, aBits, rBits, gBits, bBits);
         }
-        
-        public int getARGBFromNum(int num) {
-            if (!isNeon && num == 6) {
-                return 0xFFAA5500;
-            }
-            return Palette.IRGB4_NEON.getColors()[num];
-            final double red = 2d/3d*(num & 4)/4d + 1d/3d*(num & 8)/8d;
-            final double green = 2d/3d*(num & 2)/4d + 1d/3d*(num & 8)/8d;
-            final double blue = 2d/3d*(num & 1)/4d + 1d/3d*(num & 8)/8d;
-            
-            return ColorUtils.doubleToInt24(red, green, blue);
-        }
-        
     }
+    
     public static class Palette implements ColorPalette {
         public static final Palette IRGB4_ENHANCED = new Palette(0x000000, 0x0000AA, 0x00AA00, 0x00AAAA, 0xAA0000, 0xAA00AA, 0xAA5500, 0xAAAAAA, 0x555555, 0x5555FF, 0x55FF55, 0x55FFFF, 0xFF5555, 0xFF55FF, 0xFFFF55, 0xFFFFFF);
         public static final Palette IRGB4_NEON = new Palette(0x000000, 0x000080, 0x008000, 0x008080, 0x800000, 0x800080, 0x808000, 0xAAAAAA, 0x555555, 0x0000FF, 0x00FF00, 0x00FFFF, 0xFF0000, 0xFF00FF, 0xFFFF00, 0xFFFFFF);
+        public static final Palette TEST = new Palette(0x000000, 0x579214, 0xAFD0E4, 0xFFFFFF);
+        public static final Palette RGB = new Palette(0x000000, 0x0000FF, 0x00FF00, 0x00FFFF, 0xFF0000, 0xFF00FF, 0xFFFF00, 0xFFFFFF);
+        public static final Palette THREECOLOR = new Palette(0x000000, 0x000088, 0x008800, 0x880000, 0x0000AA, 0x00AA00, 0xAA0000, 0x0000FF, 0x00FF00, 0xFF0000, 0xFFFFFF);
         
         private final int[] colors;
 
@@ -196,7 +181,7 @@ public interface ColorPalette {
             final double db = linearRGBCurrent[2] - linearRGB[2];
             
             final double distSqr = hasAlpha ? (da*da + dr*dr + dg*dg + db*db) : (dr*dr + dg*dg + db*db);
-            if (distSqr < bestDist) {
+            if (distSqr <= bestDist) {
                 bestDist = distSqr;
                 bestColor = color;
             }

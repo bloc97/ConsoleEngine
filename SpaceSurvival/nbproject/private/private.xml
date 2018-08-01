@@ -3,21 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/color/ColorSpaceXYZ.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/CharacterPanel.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/color/ColorSpaceSRGB.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/BoundingBoxUtils.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/color/ColorSpaceLAB.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/CharacterImage.java</file>
             <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/ConsoleScreen.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/color/ColorSpace.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/color/ColorSpaceGamma.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/SpaceSurvival.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/ColorUtils.java</file>
             <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/GamePanel.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/ConsoleFont.java</file>
             <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/BufferedImageUtils.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/ConsoleGraphics2D.java</file>
             <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/ColorPalette.java</file>
         </group>
     </open-files>
