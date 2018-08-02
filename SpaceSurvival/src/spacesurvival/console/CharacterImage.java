@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival;
+package spacesurvival.console;
+
+import spacesurvival.BoundingBoxUtils;
 
 /**
  *
@@ -16,11 +18,15 @@ public class CharacterImage {
     //Paint each inner component, check if drawString goes out of bounds, and don't paint out of bound characters
     //Each component has their own coordinates
     
-    private final char[][] chars;
+    private final char[] chars;
+    private final int[] foregroundColor;
+    private final int[] backgroundColor;
     private final int width, height;
     
     public CharacterImage(int width, int height) {
-        this.chars = new char[height][width];
+        this.chars = new char[height * width];
+        this.foregroundColor = new int[height * width];
+        this.backgroundColor = new int[height * width];
         this.width = width;
         this.height = height;
     }
@@ -37,12 +43,42 @@ public class CharacterImage {
         if (!isWithinBounds(x, y)) {
             return 0;
         }
-        return chars[y][x];
+        return chars[y * width + x];
     }
     
     public boolean setChar(int x, int y, char c) {
         if (isWithinBounds(x, y)) {
-            chars[y][x] = c;
+            chars[y * width + x] = c;
+            return true;
+        }
+        return false;
+    }
+    
+    public int getForegroundColor(int x, int y) {
+        if (!isWithinBounds(x, y)) {
+            return 0;
+        }
+        return foregroundColor[y * width + x];
+    }
+    
+    public boolean setForegroundColor(int x, int y, int c) {
+        if (isWithinBounds(x, y)) {
+            foregroundColor[y * width + x] = c;
+            return true;
+        }
+        return false;
+    }
+    
+    public int getBackgroundColor(int x, int y) {
+        if (!isWithinBounds(x, y)) {
+            return 0;
+        }
+        return backgroundColor[y * width + x];
+    }
+    
+    public boolean setBackgroundColor(int x, int y, int c) {
+        if (isWithinBounds(x, y)) {
+            backgroundColor[y * width + x] = c;
             return true;
         }
         return false;
@@ -52,17 +88,26 @@ public class CharacterImage {
         return (x >= 0 && x < width && y >= 0 && y < height);
     }
     
-    public String getLineAsString(int i) {
-        if (!isWithinBounds(0, i)) {
-            return "";
-        }
-        return new String(chars[i]);
-    }
-    
     public void fillRectangle(int x, int y, int width, int height, char c) {
         for (int j=0; j<height; j++) {
             for (int i=0; i<width; i++) {
                 setChar(x + i, y + j, c);
+            }
+        }
+    }
+    
+    public void fillForegroundColorRectangle(int x, int y, int width, int height, int c) {
+        for (int j=0; j<height; j++) {
+            for (int i=0; i<width; i++) {
+                setForegroundColor(x + i, y + j, c);
+            }
+        }
+    }
+    
+    public void fillBackgroundColorRectangle(int x, int y, int width, int height, int c) {
+        for (int j=0; j<height; j++) {
+            for (int i=0; i<width; i++) {
+                setBackgroundColor(x + i, y + j, c);
             }
         }
     }
@@ -76,6 +121,30 @@ public class CharacterImage {
         for (int i=0; i<height; i++) {
             setChar(x, y + i, c);
             setChar(x + width - 1, y + i, c);
+        }
+    }
+    
+    public void drawForegroundColorRectangle(int x, int y, int width, int height, int c) {
+        
+        for (int i=0; i<width; i++) {
+            setForegroundColor(x + i, y, c);
+            setForegroundColor(x + i, y + height - 1, c);
+        }
+        for (int i=0; i<height; i++) {
+            setForegroundColor(x, y + i, c);
+            setForegroundColor(x + width - 1, y + i, c);
+        }
+    }
+    
+    public void drawBackgroundColorRectangle(int x, int y, int width, int height, int c) {
+        
+        for (int i=0; i<width; i++) {
+            setBackgroundColor(x + i, y, c);
+            setBackgroundColor(x + i, y + height - 1, c);
+        }
+        for (int i=0; i<height; i++) {
+            setBackgroundColor(x, y + i, c);
+            setBackgroundColor(x + width - 1, y + i, c);
         }
     }
     

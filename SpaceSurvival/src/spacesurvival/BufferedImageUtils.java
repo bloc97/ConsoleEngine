@@ -5,6 +5,7 @@
  */
 package spacesurvival;
 
+import spacesurvival.console.ConsoleFont;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.FontMetrics;
@@ -44,7 +45,7 @@ public class BufferedImageUtils {
         } else {
             g2.drawString(str, x * consoleFont.getWidth(), ((y + 1) * consoleFont.getHeight()) - consoleFont.getTopPadding());
         }
-    }*/
+    }
     
     public static void drawConsoleString(BufferedImage image, int x, int y, String str, int foregroundColor, ConsoleFont consoleFont) {
         drawConsoleString(image, x, y, str, foregroundColor, 0x00000000, consoleFont);
@@ -80,13 +81,34 @@ public class BufferedImageUtils {
             }
             //g2.drawString("" + str.charAt(i), (x + i) * consoleFont.getWidth() + ((consoleFont.getWidth() - fontMetric.charWidth(str.charAt(i))) / 2), ((y + 1) * consoleFont.getHeight()) - consoleFont.getTopPadding());
         }
+    }*/
+    public static void drawConsoleChar(BufferedImage image, int x, int y, char c, int foregroundColor, int backgroundColor, ConsoleFont consoleFont) {
+        final Graphics2D g2 = image.createGraphics();
+        
+        g2.setColor(new Color(backgroundColor, true));
+        g2.fillRect(x * consoleFont.getWidth(), y * consoleFont.getHeight(), consoleFont.getWidth(), consoleFont.getHeight());
+        
+        g2.setFont(consoleFont.getFont());
+        g2.setColor(new Color(foregroundColor, true));
+        
+        //final FontMetrics fontMetric = g2.getFontMetrics();
+        
+        g2.drawString("" + c, x * consoleFont.getWidth(), ((y + 1) * consoleFont.getHeight()) - consoleFont.getTopPadding());
+
+        if (c == '_' && !consoleFont.isUnderscoreContinuous()) {
+            if (consoleFont.isUnderscoreBreakOnLeft()) {
+                g2.fillRect((x) * consoleFont.getWidth(), (y * consoleFont.getHeight()) + consoleFont.getUnderscoreYPos(), 1, 1);
+            } else {
+                g2.fillRect((x + 1) * consoleFont.getWidth() - 1, (y * consoleFont.getHeight()) + consoleFont.getUnderscoreYPos(), 1, 1);
+            }
+        }
     }
-    
+    /*
     public static void drawCharacterLayer(BufferedImage image, int x, int y, CharacterImage chars, int foregroundColor, ConsoleFont consoleFont) {
         for (int i=0; i<chars.getHeight(); i++) {
             drawConsoleString(image, x, y + i, chars.getLineAsString(i), foregroundColor, 0x00000000, consoleFont);
         }
-    }
+    }*/
     
     public static void fillConsoleColor(BufferedImage image, int x, int y, int width, int height, int backgroundColor, AlphaComposite alphaComposite, ConsoleFont consoleFont) {
         final Graphics2D g2 = image.createGraphics();

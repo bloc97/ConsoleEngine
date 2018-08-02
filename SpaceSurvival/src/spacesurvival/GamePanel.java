@@ -5,6 +5,8 @@
  */
 package spacesurvival;
 
+import spacesurvival.console.ConsoleFont;
+import spacesurvival.console.CharacterImage;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
