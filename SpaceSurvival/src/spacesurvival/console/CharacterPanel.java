@@ -9,39 +9,45 @@ package spacesurvival.console;
  *
  * @author bowen
  */
-public class CharacterPanel {
+public abstract class CharacterPanel implements ConsolePanel {
     
     private int x, y;
     private CharacterImage characterImage;
     private boolean overrideMode;
 
-    public CharacterPanel(int x, int y, int width, int height, boolean overrideMode) {
+    public CharacterPanel(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.characterImage = new CharacterImage(width, height);
-        this.overrideMode = overrideMode;
+        this.overrideMode = false;
     }
     
+    @Override
     public int getX() {
         return x;
     }
 
+    @Override
     public int getY() {
         return y;
     }
 
+    @Override
     public int getWidth() {
         return characterImage.getWidth();
     }
 
+    @Override
     public int getHeight() {
         return characterImage.getHeight();
     }
     
+    @Override
     public void setX(int x) {
         this.x = x;
     }
 
+    @Override
     public void setY(int y) {
         this.y = y;
     }

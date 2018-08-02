@@ -20,7 +20,19 @@ public class BoundingBoxUtils {
     
     public static boolean hasSingleLineLeft(char c) {
         switch (c) {
-            case '┤': case '╢': case '╖': case '╜': case '┐': case '┴': case '┬': case '─': case '┼': case '╨': case '╥': case '╫': case '┘':
+            case '┤':
+            case '╢':
+            case '╖':
+            case '╜':
+            case '┐':
+            case '┴':
+            case '┬':
+            case '─':
+            case '┼':
+            case '╨':
+            case '╥':
+            case '╫':
+            case '┘':
                 return true;
             default :
                 return false;
@@ -28,7 +40,19 @@ public class BoundingBoxUtils {
     }
     public static boolean hasSingleLineRight(char c) {
         switch (c) {
-            case '└': case '┴': case '┬': case '├': case '─': case '┼': case '╟': case '╨': case '╥': case '╙': case '╓': case '╫': case '┌':
+            case '└':
+            case '┴':
+            case '┬':
+            case '├':
+            case '─':
+            case '┼':
+            case '╟':
+            case '╨':
+            case '╥':
+            case '╙':
+            case '╓':
+            case '╫':
+            case '┌':
                 return true;
             default :
                 return false;
@@ -36,7 +60,19 @@ public class BoundingBoxUtils {
     }
     public static boolean hasSingleLineUp(char c) {
         switch (c) {
-            case '│': case '┤': case '╡': case '╛': case '└': case '┴': case '├': case '┼': case '╞': case '╧': case '╘': case '╪': case '┘':
+            case '│':
+            case '┤':
+            case '╡':
+            case '╛':
+            case '└':
+            case '┴':
+            case '├':
+            case '┼':
+            case '╞':
+            case '╧':
+            case '╘':
+            case '╪':
+            case '┘':
                 return true;
             default :
                 return false;
@@ -44,7 +80,19 @@ public class BoundingBoxUtils {
     }
     public static boolean hasSingleLineDown(char c) {
         switch (c) {
-            case '│': case '┤': case '╡': case '╕': case '┐': case '┬': case '├': case '┼': case '╞': case '╤': case '╒': case '╪': case '┌':
+            case '│':
+            case '┤':
+            case '╡':
+            case '╕':
+            case '┐':
+            case '┬':
+            case '├':
+            case '┼':
+            case '╞':
+            case '╤':
+            case '╒':
+            case '╪':
+            case '┌':
                 return true;
             default :
                 return false;

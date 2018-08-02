@@ -5,6 +5,7 @@
  */
 package spacesurvival;
 
+import math.colors.ColorPalette;
 import spacesurvival.console.ConsoleFont;
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -82,8 +83,7 @@ public class BufferedImageUtils {
             //g2.drawString("" + str.charAt(i), (x + i) * consoleFont.getWidth() + ((consoleFont.getWidth() - fontMetric.charWidth(str.charAt(i))) / 2), ((y + 1) * consoleFont.getHeight()) - consoleFont.getTopPadding());
         }
     }*/
-    public static void drawConsoleChar(BufferedImage image, int x, int y, char c, int foregroundColor, int backgroundColor, ConsoleFont consoleFont) {
-        final Graphics2D g2 = image.createGraphics();
+    public static void drawConsoleChar(Graphics2D g2, int x, int y, char c, int foregroundColor, int backgroundColor, ConsoleFont consoleFont) {
         
         g2.setColor(new Color(backgroundColor, true));
         g2.fillRect(x * consoleFont.getWidth(), y * consoleFont.getHeight(), consoleFont.getWidth(), consoleFont.getHeight());

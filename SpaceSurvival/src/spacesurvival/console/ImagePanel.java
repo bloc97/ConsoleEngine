@@ -11,39 +11,43 @@ import java.awt.image.BufferedImage;
  *
  * @author bowen
  */
-public class ImagePanel {
+public abstract class ImagePanel implements ConsolePanel {
     
     private int x, y;
     private BufferedImage image;
-    private boolean overrideMode;
 
-    public ImagePanel(int x, int y, int width, int height, boolean overrideMode) {
+    public ImagePanel(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        this.overrideMode = overrideMode;
     }
     
+    @Override
     public int getX() {
         return x;
     }
 
+    @Override
     public int getY() {
         return y;
     }
 
+    @Override
     public int getWidth() {
         return image.getWidth();
     }
 
+    @Override
     public int getHeight() {
         return image.getHeight();
     }
     
+    @Override
     public void setX(int x) {
         this.x = x;
     }
 
+    @Override
     public void setY(int y) {
         this.y = y;
     }
@@ -55,12 +59,4 @@ public class ImagePanel {
     public void setImage(BufferedImage image) {
         this.image = image;
     }
-    public boolean isOverrideMode() {
-        return overrideMode;
-    }
-
-    public void setOverrideMode(boolean overrideMode) {
-        this.overrideMode = overrideMode;
-    }
-
 }

@@ -24,6 +24,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import spacesurvival.console.CharacterPanel;
+import spacesurvival.console.ConsoleScreen;
 
 /**
  *
@@ -32,52 +34,36 @@ import javax.swing.JPanel;
 public class GamePanel extends JPanel {
     
     
-    public static int FONT_PIXEL_WIDTH = 8;
-    public static int FONT_PIXEL_HEIGHT = 14;
-    
-    public static int FONT_TOP_PADDING = (int)(0.25d * FONT_PIXEL_HEIGHT);
-    
     public static int RECOMMENDED_CONSOLE_WIDTH = 100;
     
-    BufferedImage image = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_ARGB);
+    private final ConsoleScreen screen;
+    private final CharacterPanel panel;
     
     final File[] fonts;
     int fontIndex = 0;
     
-    final ColorPalette[] colorPalettes;
-    int colorPaletteIndex = 0;
-    boolean doDither = false;
     
     public static final String TEST_STRING_CHAR = "█ ▓ ▒▒░░▐▌▌▐ ▀▄ -- __ ── ╔╣ ┌┤";
     public static final String TEST_STRING_TEXT = "A quick brown fox jumps over the lazy test dog";
     
+    private final Random random = new Random(42);
+    
     public GamePanel() {
         
-        File fontFolder = new File("resources/fonts/CGA");
+        File fontFolder = new File("resources/fonts/VGA");
         
         fonts = fontFolder.listFiles((pathname) -> {
             return pathname.getName().toLowerCase().endsWith(".ttf");
         });
         
-        colorPalettes = new ColorPalette[10];
-        colorPalettes[0] = ColorPalette.RGB.RGB3;
-        colorPalettes[1] = ColorPalette.RGB.RGB6;
-        colorPalettes[2] = ColorPalette.RGB.RGB9;
-        colorPalettes[3] = ColorPalette.RGB.RGB12;
-        colorPalettes[4] = ColorPalette.RGB.RGB15;
-        colorPalettes[5] = ColorPalette.RGB.RGB18;
-        colorPalettes[6] = ColorPalette.Color.RGB5_221;
-        colorPalettes[7] = ColorPalette.Color.RGB12_442;
-        colorPalettes[8] = ColorPalette.Color.RGB16_664;
-        colorPalettes[9] = ColorPalette.Color.RGB4_121;
-        /*
-        colorPalettes = new ColorPalette[ColorPalette.RGB.values().length + ColorPalette.Grayscale.values().length + 2];
-        System.arraycopy(ColorPalette.RGB.values(), 0, colorPalettes, 0, ColorPalette.RGB.values().length);
-        System.arraycopy(ColorPalette.Grayscale.values(), 0, colorPalettes, ColorPalette.RGB.values().length, ColorPalette.Grayscale.values().length);
-        colorPalettes[colorPalettes.length - 2] = ColorPalette.Palette.IRGB4_NEON;
-        colorPalettes[colorPalettes.length - 1] = ColorPalette.Palette.IRGB4_ENHANCED;*/
-        
-        drawText(fonts[fontIndex]);
+        panel = new CharacterPanel(0, 0, 80, 50) {
+            @Override
+            public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
+                this.setCharacterImage(new CharacterImage(newWidth, newHeight));
+            }
+        };
+        screen = new ConsoleScreen(80, 50, ConsoleFont.fromFile(fonts[fontIndex]));
+        screen.addCharacterPanel(0, panel);
         
         setBackground(Color.BLACK);
         //setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -86,18 +72,6 @@ public class GamePanel extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_UP:
-                        colorPaletteIndex++;
-                        if (colorPaletteIndex >= colorPalettes.length) {
-                            colorPaletteIndex = colorPalettes.length - 1;
-                        }
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        colorPaletteIndex--;
-                        if (colorPaletteIndex < 0) {
-                            colorPaletteIndex = 0;
-                        }
-                        break;
                     case KeyEvent.VK_RIGHT:
                         fontIndex++;
                         if (fontIndex >= fonts.length) {
@@ -110,111 +84,16 @@ public class GamePanel extends JPanel {
                             fontIndex = 0;
                         }
                         break;
-                    case KeyEvent.VK_SPACE:
-                        doDither = !doDither;
+                    default:
                         break;
                 }
-                drawText(fonts[fontIndex]);
+                screen.setConsoleFont(ConsoleFont.fromFile(fonts[fontIndex]));
                 repaint();
             }
         });
         
     }
 
-    
-    public void drawText(File fontFile) {
-        
-        BufferedImageUtils.clearBufferedImage(image);
-        
-        ConsoleFont consoleFont = ConsoleFont.fromFile(fontFile);
-        //consoleFont = ConsoleFont.getDefaultLucida();
-        
-        CharacterImage layer = new CharacterImage(200, 200);
-        Random random = new Random();
-        for (int i=0; i<10; i++) {
-            layer.drawRectangle(random.nextInt(layer.getWidth()), random.nextInt(layer.getHeight()), (int)(random.nextGaussian()*3 + 6), (int)(random.nextGaussian()*3 + 6));
-            layer.drawDoubleRectangle(random.nextInt(layer.getWidth()), random.nextInt(layer.getHeight()), (int)(random.nextGaussian()*3 + 6), (int)(random.nextGaussian()*3 + 6));
-        }
-        
-        
-        //BufferedImageUtils.drawCharacterLayer(image, 0, 0, layer, 0xFFFFFFFF, consoleFont);
-        
-        try {
-            BufferedImage newImage = ImageIO.read(new File("resources/RGB_24bits_palette_sample_image.jpg"));
-            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
-            image.createGraphics().drawImage(newImage, 0, 0, this);
-            
-            int lastX = newImage.getWidth();
-            
-            newImage = ImageIO.read(new File("resources/RGB_24bits_palette_color_test_chart.png"));
-            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
-            image.createGraphics().drawImage(newImage, lastX, 0, this);
-            
-            lastX = lastX + newImage.getWidth();
-            
-            newImage = ImageIO.read(new File("resources/RGB_15bits_palette.png"));
-            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
-            image.createGraphics().drawImage(newImage, lastX, 0, newImage.getWidth() * 2, newImage.getHeight() * 2, this);
-            
-            
-            int lastY = newImage.getHeight() * 2;
-            lastX = 0;
-            
-            newImage = ImageIO.read(new File("resources/Redgreen.png"));
-            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
-            image.createGraphics().drawImage(newImage, lastX, lastY, this);
-            
-            lastX = lastX + newImage.getWidth();
-            
-            newImage = ImageIO.read(new File("resources/Greenblue.png"));
-            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
-            image.createGraphics().drawImage(newImage, lastX, lastY, this);
-            
-            lastX = lastX + newImage.getWidth();
-            
-            newImage = ImageIO.read(new File("resources/Redblue.png"));
-            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
-            image.createGraphics().drawImage(newImage, lastX, lastY, this);
-            /*
-            lastY = lastY + newImage.getHeight();
-            lastX = 0;
-            
-            newImage = ImageIO.read(new File("resources/YellowCyan.png"));
-            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
-            image.createGraphics().drawImage(newImage, lastX, lastY, this);
-            
-            lastX = lastX + newImage.getWidth();
-            
-            newImage = ImageIO.read(new File("resources/MagentaYellow.png"));
-            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
-            image.createGraphics().drawImage(newImage, lastX, lastY, this);
-            
-            lastX = lastX + newImage.getWidth();
-            
-            newImage = ImageIO.read(new File("resources/MagentaCyan.png"));
-            BufferedImageUtils.quantize(newImage, colorPalettes[colorPaletteIndex], doDither);
-            image.createGraphics().drawImage(newImage, lastX, lastY, this);
-            */
-            
-        } catch (IOException ex) {
-            
-        }
-        
-        
-        /*
-        BufferedImageUtils.drawConsoleString(image, 0, 0, TEST_STRING_CHAR, 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawConsoleStringFast(image, 1, 1, TEST_STRING_CHAR, 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawConsoleString(image, 0, 2, TEST_STRING_TEXT, 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawConsoleStringFast(image, 0, 3, TEST_STRING_TEXT, 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawConsoleString(image, 0, 3, "_________________________________──────", 0xCC00AAAA, 0x00000000, consoleFont);
-        BufferedImageUtils.drawConsoleString(image, 0, 4, TEST_STRING_TEXT.toUpperCase(), 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawConsoleStringFast(image, 0, 5, TEST_STRING_TEXT.toUpperCase(), 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawConsoleString(image, 0, 5, "_________________________________──────", 0xFFFFFFFF, 0x00000000, consoleFont);
-        BufferedImageUtils.drawConsoleString(image, 0, 6, fontFile.getName(), 0xFFFFFFFF, 0x00000000, consoleFont);*/
-        
-    }
-    
-    //System.out.println(Arrays.toString(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()));
     
     
     @Override
@@ -244,12 +123,40 @@ public class GamePanel extends JPanel {
         //Sets the RenderingHints
         //g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         
+        int scale = 6;
         
-        int scale = 4;
+        final int consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / scale;
+        final int consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight()/ scale;
         
+        final int xPad = (screenPixelWidth - (consoleWidth * scale * screen.getConsoleFont().getWidth())) / 2;
+        final int yPad = (screenPixelHeight - (consoleHeight * scale * screen.getConsoleFont().getHeight())) / 2;
+        
+        if (screen.getWidth() != consoleWidth || screen.getHeight() != consoleHeight) {
+            screen.setWidth(consoleWidth);
+            screen.setHeight(consoleHeight);
+        }
+        
+        for (int j=0; j<panel.getHeight(); j++) {
+            for (int i=0; i<panel.getWidth(); i++) {
+                if (random.nextInt(100) < 50) {
+                    panel.getCharacterImage().setChar(i, j, ConsoleFont.cp437ToUnicode(random.nextInt(0xFF)));
+                    //panel.getCharacterImage().setForegroundColor(i, j, random.nextInt() | 0xFF000000);
+                } else {
+                    panel.getCharacterImage().setChar(i, j, ' ');
+                }
+            }
+        }
+        panel.getCharacterImage().drawRectangle(0, 1, panel.getWidth(), panel.getHeight()-2);
+        panel.getCharacterImage().fillForegroundColorRectangle(0, 0, panel.getWidth(), panel.getHeight(), 0xFF2F3D3F);
+        panel.getCharacterImage().fillBackgroundColorRectangle(0, 0, panel.getWidth(), panel.getHeight(), 0xFFF5EFD2);
+        panel.getCharacterImage().fillBackgroundColorRectangle(0, 0, panel.getWidth(), 1, new Color(0xFFF5EFD2).darker().darker().getRGB());
+        panel.getCharacterImage().fillBackgroundColorRectangle(0, panel.getHeight()-1, panel.getWidth(), 1, new Color(0xFFF5EFD2).darker().darker().getRGB());
+
         
         g2.setColor(Color.WHITE);
-        g2.drawImage(image, 0, 0, image.getWidth() * scale, image.getHeight() * scale, this);
+    
+        BufferedImage image = screen.getImage();
+        g2.drawImage(image, xPad, yPad, image.getWidth() * scale, image.getHeight() * scale, this);
         
     }
     
