@@ -17,9 +17,12 @@ public abstract class ScrollBar extends CharacterPanel {
     private Color mainColor;
     private int scroll, maxScroll;
     
-    public ScrollBar(int x, int y, int width, int height, Color mainColor) {
+    private final Scrollable scrollablePanel;
+    
+    public ScrollBar(int x, int y, int width, int height, Color mainColor, Scrollable scrollablePanel) {
         super(x, y, width, height);
         this.mainColor = mainColor;
+        this.scrollablePanel = scrollablePanel;
     }
     
     void genImage() {
@@ -32,8 +35,8 @@ public abstract class ScrollBar extends CharacterPanel {
         }
         int barPos = (int)(((double)scroll/maxScroll) * (getHeight() - barHeight));
         
-        System.out.println(barHeight);
-        System.out.println(barPos);
+        //System.out.println(barHeight);
+        //System.out.println(barPos);
         getCharacterImage().drawRectangle(0, barPos, 1, barHeight, '█');
         
         getCharacterImage().fillForegroundColorRectangle(0, 0, getWidth(), getHeight(), mainColor.brighter().brighter().getRGB());
@@ -43,6 +46,36 @@ public abstract class ScrollBar extends CharacterPanel {
     void setStatus(int scroll, int maxScroll) {
         this.scroll = scroll;
         this.maxScroll = maxScroll;
+    }
+
+    public Scrollable getScrollablePanel() {
+        return scrollablePanel;
+    }
+    
+    @Override
+    public void onMouseWheelMoved(int i) {
+        double scrollPerSquare = (double)(maxScroll + getHeight()) / getHeight();
+        getScrollablePanel().setScroll(getScrollablePanel().getScroll() + (int)(i * scrollPerSquare));
+    }
+    
+    private int lastX, lastY;
+    private int lastScroll;
+    
+    @Override
+    public void onMousePressed(int x, int y, boolean isLeftClick) {
+        lastX = x;
+        lastY = y;
+        lastScroll = getScrollablePanel().getScroll();
+    }
+
+    @Override
+    public void onMouseDragged(int x, int y, boolean isLeftClick) {
+        double scrollPerSquare = (double)(maxScroll + getHeight()) / getHeight();
+        
+        int deltaX = x - lastX;
+        int deltaY = y - lastY;
+        
+        getScrollablePanel().setScroll(lastScroll + (int)(deltaY * scrollPerSquare));
     }
     
 }

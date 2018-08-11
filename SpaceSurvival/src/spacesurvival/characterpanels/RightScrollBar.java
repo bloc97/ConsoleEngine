@@ -13,10 +13,9 @@ import spacesurvival.console.CharacterImage;
  * @author bowen
  */
 public class RightScrollBar extends ScrollBar {
-    
 
-    public RightScrollBar(int consoleWidth, int consoleHeight, Color mainColor) {
-        super(consoleWidth - 1, Background.TOP_PADDING + 1, 1, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2, mainColor);
+    public RightScrollBar(int consoleWidth, int consoleHeight, Color mainColor, Scrollable scrollablePanel) {
+        super(consoleWidth - 1, Background.TOP_PADDING + 1, 1, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2, mainColor, scrollablePanel);
         genImage();
     }
 

@@ -12,10 +12,12 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -26,11 +28,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
 import spacesurvival.characterpanels.BottomBar;
+import spacesurvival.characterpanels.BuildMenu;
 import spacesurvival.characterpanels.ColonyBuildings;
 import spacesurvival.characterpanels.MiddleScrollBar;
 import spacesurvival.characterpanels.RightScrollBar;
 import spacesurvival.characterpanels.TopBar;
+import spacesurvival.characterpanels.TopPopupTest;
 import spacesurvival.console.CharacterPanel;
+import spacesurvival.console.ConsolePanel;
 import spacesurvival.console.ConsoleScreen;
 
 /**
@@ -43,7 +48,6 @@ public class GamePanel extends JPanel {
     public static int RECOMMENDED_CONSOLE_WIDTH = 100;
     
     private final ConsoleScreen screen;
-    private final CharacterPanel panel;
     
     final File[] fonts;
     int fontIndex = 0;
@@ -55,8 +59,11 @@ public class GamePanel extends JPanel {
     private final Random random = new Random(42);
     
     private final BottomBar bottomBar = new BottomBar(30, 30);
-        Color mainColor = new Color(120, 146, 190);
+    private final Color mainColor = new Color(120, 146, 190);
     private final ColonyBuildings colonyBuildings = new ColonyBuildings(30, 30, mainColor);
+    private final BuildMenu buildMenu = new BuildMenu(30, 30, mainColor);
+    
+    ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     
     public GamePanel() {
         
@@ -66,23 +73,21 @@ public class GamePanel extends JPanel {
             return pathname.getName().toLowerCase().endsWith(".ttf");
         });
         
-        panel = new CharacterPanel(1, 2, 10, 10) {
-            @Override
-            public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
-                this.setCharacterImage(new CharacterImage(newWidth-2, newHeight-4));
-            }
-        };
         screen = new ConsoleScreen(80, 50, ConsoleFont.fromFile(fonts[fontIndex]));
         
         screen.addCharacterPanel(-5, new Background(30, 30, mainColor));
-        screen.addCharacterPanel(1, new MiddleScrollBar(30, 30, mainColor));
         //screen.addCharacterPanel(2, new RightScrollBar(30, 30, mainColor));
         screen.addCharacterPanel(3, new TopBar(30, 30));
         screen.addCharacterPanel(4, bottomBar);
         screen.addCharacterPanel(5, colonyBuildings);
         screen.addCharacterPanel(6, colonyBuildings.getScrollBar());
+        
+        screen.addCharacterPanel(10, buildMenu);
+        screen.addCharacterPanel(11, buildMenu.getScrollBar());
         //screen.addCharacterPanel(4, new BottomBarOverlay(10, 10));
         //screen.addCharacterPanel(1, panel);
+        
+        //screen.addCharacterPanel(15, new TopPopupTest(30, 30));
         
         setBackground(Color.BLACK);
         //setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -111,34 +116,143 @@ public class GamePanel extends JPanel {
             }
         });
         
-        this.addMouseWheelListener(new MouseAdapter() {
+        MouseAdapter mouseAdapter = new MouseAdapter() {
             @Override
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                colonyBuildings.setScroll(colonyBuildings.getScroll() + e.getWheelRotation() * e.getScrollAmount());
-                System.out.println(colonyBuildings.getScroll() + " " + colonyBuildings.getMaxScroll() + " " +  e.getWheelRotation() * e.getScrollAmount());
+            public void mouseMoved(MouseEvent e) {
+                Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+                
+                ConsolePanel newFocusedPanel = screen.getFocusedPanel(mouseConsolePoint.x, mouseConsolePoint.y);
+                
+                if (newFocusedPanel != focusedPanel) {
+                    if (focusedPanel != null) {
+                        focusedPanel.onMouseExited(mouseConsolePoint.x, mouseConsolePoint.y);
+                    }
+                    if (newFocusedPanel != null) {
+                        newFocusedPanel.onMouseEntered(mouseConsolePoint.x, mouseConsolePoint.y);
+                    }
+                }
+                
+                focusedPanel = newFocusedPanel;
+                
+                if (focusedPanel != null) {
+                    focusedPanel.onMouseMoved(mouseConsolePoint.x - focusedPanel.getX(), mouseConsolePoint.y - focusedPanel.getY());
+                }
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+                
+                if (focusedPanel != null) {
+                    focusedPanel.onMouseDragged(mouseConsolePoint.x - focusedPanel.getX(), mouseConsolePoint.y - focusedPanel.getY(), e.getButton() == 1);
+                }
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+                focusedPanel = screen.getFocusedPanel(mouseConsolePoint.x, mouseConsolePoint.y);
+                
+                if (focusedPanel != null) {
+                    focusedPanel.onMouseClicked(mouseConsolePoint.x - focusedPanel.getX(), mouseConsolePoint.y - focusedPanel.getY(), e.getButton() == 1);
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+                focusedPanel = screen.getFocusedPanel(mouseConsolePoint.x, mouseConsolePoint.y);
+                
+                if (focusedPanel != null) {
+                    focusedPanel.onMousePressed(mouseConsolePoint.x - focusedPanel.getX(), mouseConsolePoint.y - focusedPanel.getY(), e.getButton() == 1);
+                }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+                
+                if (focusedPanel != null) {
+                    focusedPanel.onMouseReleased(mouseConsolePoint.x - focusedPanel.getX(), mouseConsolePoint.y - focusedPanel.getY(), e.getButton() == 1);
+                }
             }
             
-        });
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                
+                if (focusedPanel != null) {
+                    focusedPanel.onMouseWheelMoved(e.getWheelRotation() * e.getScrollAmount());
+                }
+                
+                //System.out.println(colonyBuildings.getScroll() + " " + colonyBuildings.getMaxScroll() + " " +  e.getWheelRotation() * e.getScrollAmount());
+            }
+            
+        };
+        
+        this.addMouseListener(mouseAdapter);
+        this.addMouseMotionListener(mouseAdapter);
+        this.addMouseWheelListener(mouseAdapter);
         
         ex.scheduleWithFixedDelay(() -> {
             repaint();
-        }, 0, 30, TimeUnit.MILLISECONDS);
+        }, 0, 10, TimeUnit.MILLISECONDS);
         
         ex.scheduleWithFixedDelay(() -> {
             repaint();
             ((BottomBar)screen.getCharacterPanel(4)).tickPos();
-        }, 0, 500, TimeUnit.MILLISECONDS);
+        }, 0, 200, TimeUnit.MILLISECONDS);
         
     }
-
     
+    private Point getMouseConsolePosition(int mouseX, int mouseY) {
+        
+        final int screenPixelWidth = (int)(getWidth() * scaleX);
+        final int screenPixelHeight = (int)(getHeight() * scaleY);
+
+        int customScale = SCALE;
+
+        int consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / customScale;
+        int consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight() / customScale;
+
+        while (consoleWidth < preferredConsoleWidth || consoleHeight < preferredConsoleHeight) {
+            customScale--;
+            if (customScale <= 0) {
+                customScale = 1;
+                break;
+            }
+            consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / customScale;
+            consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight()/ customScale;
+        }
+
+
+        final int xPad = (screenPixelWidth - (consoleWidth * customScale * screen.getConsoleFont().getWidth())) / 2;
+        final int yPad = (screenPixelHeight - (consoleHeight * customScale * screen.getConsoleFont().getHeight())) / 2;
+
+        if (screen.getWidth() != consoleWidth || screen.getHeight() != consoleHeight) {
+            screen.setWidth(consoleWidth);
+            screen.setHeight(consoleHeight);
+        }
+
+        int mouseConsoleX = ((int)(mouseX * scaleX) - xPad) / (screen.getConsoleFont().getWidth() * customScale);
+        int mouseConsoleY = ((int)(mouseY * scaleY) - yPad) / (screen.getConsoleFont().getHeight() * customScale);
+        
+        return new Point(mouseConsoleX, mouseConsoleY);
+    }
     
     @Override
     public Dimension getPreferredSize() {
-        return new Dimension(1800,1000);
+        return new Dimension(1280,720);
     }
-
-    ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
+    
+    private final int SCALE = 100;
+    
+    private final int preferredConsoleWidth = 40;
+    private final int preferredConsoleHeight = 30;
+    
+    private ConsolePanel focusedPanel;
+    
+    private double scaleX = 1d;
+    private double scaleY = 1d;
     
     @Override
     public void paintComponent(Graphics g) {
@@ -147,8 +261,8 @@ public class GamePanel extends JPanel {
         
         //Detects window scaling
         final AffineTransform t = g2.getTransform();
-        final double scaleX = t.getScaleX();
-        final double scaleY = t.getScaleY();
+        scaleX = t.getScaleX();
+        scaleY = t.getScaleY();
         
         final int screenPixelWidth = (int)(getWidth() * scaleX);
         final int screenPixelHeight = (int)(getHeight() * scaleY);
@@ -156,52 +270,45 @@ public class GamePanel extends JPanel {
         t.scale(1d/scaleX, 1d/scaleY);
         g2.setTransform(t);
         
-        
+        int customScale = SCALE;
         
         //Sets the RenderingHints
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         
-        int scale = 100;
         
-        int consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / scale;
-        int consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight() / scale;
+        int consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / customScale;
+        int consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight() / customScale;
         
         //while (consoleWidth < 60 || consoleHeight < 50) {
-        while (consoleWidth < 40 || consoleHeight < 30) {
-            scale--;
-            if (scale <= 0) {
-                scale = 1;
+        while (consoleWidth < preferredConsoleWidth || consoleHeight < preferredConsoleHeight) {
+            customScale--;
+            if (customScale <= 0) {
+                customScale = 1;
                 break;
             }
-            consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / scale;
-            consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight()/ scale;
+            consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / customScale;
+            consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight()/ customScale;
         }
         
         
-        final int xPad = (screenPixelWidth - (consoleWidth * scale * screen.getConsoleFont().getWidth())) / 2;
-        final int yPad = (screenPixelHeight - (consoleHeight * scale * screen.getConsoleFont().getHeight())) / 2;
+        final int xPad = (screenPixelWidth - (consoleWidth * customScale * screen.getConsoleFont().getWidth())) / 2;
+        final int yPad = (screenPixelHeight - (consoleHeight * customScale * screen.getConsoleFont().getHeight())) / 2;
         
         if (screen.getWidth() != consoleWidth || screen.getHeight() != consoleHeight) {
             screen.setWidth(consoleWidth);
             screen.setHeight(consoleHeight);
         }
         
-        BufferedImage image = screen.getImage();
-        g2.drawImage(image, xPad, yPad, image.getWidth() * scale, image.getHeight() * scale, this);
-        /*
-        for (int j=0; j<panel.getHeight(); j++) {
-            for (int i=0; i<panel.getWidth(); i++) {
-                panel.getCharacterImage().setForegroundColor(i, j, random.nextInt() | 0xFF000000);
-                if (random.nextInt(100) < 50) {
-                    panel.getCharacterImage().setChar(i, j, ConsoleFont.cp437ToUnicode(random.nextInt(0xFF)));
-                } else {
-                    panel.getCharacterImage().setChar(i, j, ' ');
-                }
-            }
-        }
-        panel.getCharacterImage().drawStringWrap(TEST_STRING_TEXT, 0, 0);
+        //int mouseConsoleX = ((int)(lastMouseX * scaleX) - xPad) / (screen.getConsoleFont().getWidth() * customScale);
+        //int mouseConsoleY = ((int)(lastMouseY * scaleY) - yPad) / (screen.getConsoleFont().getHeight() * customScale);
         
-        g2.setColor(Color.WHITE);*/
+        //focusedPanel = screen.getFocusedPanel(mouseConsoleX, mouseConsoleY);
+        
+        //System.out.println(mouseConsoleX + " " + mouseConsoleY);
+        
+        BufferedImage image = screen.getImage();
+        g2.drawImage(image, xPad, yPad, image.getWidth() * customScale, image.getHeight() * customScale, this);
+        
     }
     
     public int roundRatio(double ratio) {
