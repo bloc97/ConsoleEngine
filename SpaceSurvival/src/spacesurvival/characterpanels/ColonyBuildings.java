@@ -16,10 +16,22 @@ import spacesurvival.console.CharacterPanel;
  */
 public class ColonyBuildings extends CharacterPanel {
 
+    public static final int CARD_WIDTH = 11;
+    public static final int CARD_HEIGHT = 7;
+    
     private Color mainColor;
+    
+    private int scroll = 0;
+    
+    private int buildingCardNum = 17;
+    
+    private final ScrollBar scrollBar;
+    
     public ColonyBuildings(int consoleWidth, int consoleHeight, Color mainColor) {
         super(Background.XLINE + 1, Background.TOP_PADDING + 1, consoleWidth - Background.XLINE - 2, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2);
         this.mainColor = mainColor;
+        this.scrollBar = new RightScrollBar(consoleWidth, consoleHeight, mainColor);
+        this.scrollBar.setStatus(scroll, getMaxScroll());
     }
     
     @Override
@@ -30,24 +42,62 @@ public class ColonyBuildings extends CharacterPanel {
     
     
     private void genImage() {
+        getCharacterImage().clear();
+        checkScroll();
         getCharacterImage().fillForegroundColor(mainColor.brighter().brighter().getRGB());
         
-        int w = 9;
-        int h = 5;
         
-        int currentX = 0;
-        int currentY = 0;
+        int xPad = getWidth()%CARD_WIDTH / 2;
+        
+        int currentX = xPad;
+        int currentY = -scroll;
         Random r = new Random();
-        for (int i=0; i<100; i++) {
-            getCharacterImage().drawRectangle(currentX, currentY, w, h);
-            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, w, h, r.nextInt(0xFFFFFF) | 0xFF000000);
-            currentX += w;
-            if (currentX + w > getWidth()) {
-                currentX = 0;
-                currentY += h;
+        for (int i=0; i<buildingCardNum; i++) {
+            getCharacterImage().drawRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT);
+            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, 0xFFFFFFFF);//r.nextInt(0xFFFFFF) | 0xFF000000);
+            currentX += CARD_WIDTH;
+            if (currentX + CARD_WIDTH > getWidth()) {
+                currentX = xPad;
+                currentY += CARD_HEIGHT;
             }
         }
+        scrollBar.setStatus(scroll, getMaxScroll());
+        scrollBar.genImage();
+    }
+    
+    public int getScroll() {
+        return scroll;
+    }
+    
+    public int getMaxScroll() {
+        int squaresPerWidth = getWidth() / CARD_WIDTH;
+        System.out.println("SQR " + squaresPerWidth);
+        int totalHeight = (int)Math.ceil((double)buildingCardNum / squaresPerWidth) * CARD_HEIGHT;
+        if (totalHeight < getHeight()) {
+            return 0;
+        }
         
+        return totalHeight - getHeight();
+    }
+    
+    public void setScroll(int i) {
+        scroll = i;
+        checkScroll();
+        genImage();
+        scrollBar.setStatus(scroll, getMaxScroll());
+    }
+    
+    private void checkScroll() {
+        final int maxScroll = getMaxScroll();
+        if (scroll > maxScroll) {
+            scroll = maxScroll;
+        } else if (scroll < 0) {
+            scroll = 0;
+        }
+    }
+    
+    public ScrollBar getScrollBar() {
+        return scrollBar;
     }
     
     

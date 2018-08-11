@@ -15,6 +15,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -52,6 +54,10 @@ public class GamePanel extends JPanel {
     
     private final Random random = new Random(42);
     
+    private final BottomBar bottomBar = new BottomBar(30, 30);
+        Color mainColor = new Color(120, 146, 190);
+    private final ColonyBuildings colonyBuildings = new ColonyBuildings(30, 30, mainColor);
+    
     public GamePanel() {
         
         File fontFolder = new File("resources/fonts/CGA");
@@ -67,14 +73,14 @@ public class GamePanel extends JPanel {
             }
         };
         screen = new ConsoleScreen(80, 50, ConsoleFont.fromFile(fonts[fontIndex]));
-        Color mainColor = new Color(120, 146, 190);
         
         screen.addCharacterPanel(-5, new Background(30, 30, mainColor));
         screen.addCharacterPanel(1, new MiddleScrollBar(30, 30, mainColor));
-        screen.addCharacterPanel(2, new RightScrollBar(30, 30, mainColor));
+        //screen.addCharacterPanel(2, new RightScrollBar(30, 30, mainColor));
         screen.addCharacterPanel(3, new TopBar(30, 30));
-        screen.addCharacterPanel(4, new BottomBar(30, 30));
-        screen.addCharacterPanel(-1, new ColonyBuildings(30, 30, mainColor));
+        screen.addCharacterPanel(4, bottomBar);
+        screen.addCharacterPanel(5, colonyBuildings);
+        screen.addCharacterPanel(6, colonyBuildings.getScrollBar());
         //screen.addCharacterPanel(4, new BottomBarOverlay(10, 10));
         //screen.addCharacterPanel(1, panel);
         
@@ -104,6 +110,19 @@ public class GamePanel extends JPanel {
                 repaint();
             }
         });
+        
+        this.addMouseWheelListener(new MouseAdapter() {
+            @Override
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                colonyBuildings.setScroll(colonyBuildings.getScroll() + e.getWheelRotation() * e.getScrollAmount());
+                System.out.println(colonyBuildings.getScroll() + " " + colonyBuildings.getMaxScroll() + " " +  e.getWheelRotation() * e.getScrollAmount());
+            }
+            
+        });
+        
+        ex.scheduleWithFixedDelay(() -> {
+            repaint();
+        }, 0, 30, TimeUnit.MILLISECONDS);
         
         ex.scheduleWithFixedDelay(() -> {
             repaint();
