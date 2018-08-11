@@ -23,7 +23,7 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     
     private int scroll = 0;
     
-    private int buildingCardNum = 7;
+    private int buildingCardNum = 15;
     
     private final ScrollBar scrollBar;
     

@@ -45,8 +45,6 @@ import spacesurvival.console.ConsoleScreen;
 public class GamePanel extends JPanel {
     
     
-    public static int RECOMMENDED_CONSOLE_WIDTH = 100;
-    
     private final ConsoleScreen screen;
     
     final File[] fonts;
@@ -58,8 +56,8 @@ public class GamePanel extends JPanel {
     
     private final Random random = new Random(42);
     
-    private final BottomBar bottomBar = new BottomBar(30, 30);
     private final Color mainColor = new Color(120, 146, 190);
+    private final BottomBar bottomBar = new BottomBar(30, 30, mainColor);
     private final ColonyBuildings colonyBuildings = new ColonyBuildings(30, 30, mainColor);
     private final BuildMenu buildMenu = new BuildMenu(30, 30, mainColor);
     
@@ -78,12 +76,13 @@ public class GamePanel extends JPanel {
         screen.addCharacterPanel(-5, new Background(30, 30, mainColor));
         //screen.addCharacterPanel(2, new RightScrollBar(30, 30, mainColor));
         screen.addCharacterPanel(3, new TopBar(30, 30));
-        screen.addCharacterPanel(4, bottomBar);
         screen.addCharacterPanel(5, colonyBuildings);
         screen.addCharacterPanel(6, colonyBuildings.getScrollBar());
         
         screen.addCharacterPanel(10, buildMenu);
         screen.addCharacterPanel(11, buildMenu.getScrollBar());
+        
+        screen.addCharacterPanel(100, bottomBar);
         //screen.addCharacterPanel(4, new BottomBarOverlay(10, 10));
         //screen.addCharacterPanel(1, panel);
         
@@ -199,7 +198,7 @@ public class GamePanel extends JPanel {
         
         ex.scheduleWithFixedDelay(() -> {
             repaint();
-            ((BottomBar)screen.getCharacterPanel(4)).tickPos();
+            bottomBar.tickPos();
         }, 0, 200, TimeUnit.MILLISECONDS);
         
     }
