@@ -23,7 +23,7 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
     
     private int scroll = 0;
     
-    private int buildingCardNum = 3;
+    private int buildingCardNum = 7;
     
     private final ScrollBar scrollBar;
     

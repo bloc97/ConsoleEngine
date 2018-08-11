@@ -154,7 +154,7 @@ public class CharacterImage {
         }
     }
     
-    public void drawStringWrap(String str, int x, int y) {
+    public int drawStringWrap(String str, int x, int y) {
         for (int i=0; i<str.length(); i++) {
             setChar(x, y, str.charAt(i));
             x++;
@@ -163,9 +163,51 @@ public class CharacterImage {
                 y++;
             }
         }
+        return y;
     }
     
-    public void drawStringWrap(String str, int x, int y, int foregroundColor) {
+    public int drawStringSpaceWrap(String str, int x, int y) {
+        return drawStringSpaceWrapPad(str, x, y, 0, 0);
+    }
+    public int drawStringSpaceWrapPad(String str, int x, int y, int leftPad, int rightPad) {
+        for (String s : str.split(" ")) {
+            if (s.length() > getWidth() - rightPad - leftPad) {
+                for (int i=0; i<s.length(); i++) {
+                    setChar(x, y, s.charAt(i));
+                    x++;
+                    if (x >= width - rightPad) {
+                        x = leftPad;
+                        y++;
+                    }
+                }
+                break;
+            }
+            if (s.length() + x > width - rightPad) {
+                x = leftPad;
+                y++;
+            }
+            for (int i=0; i<s.length(); i++) {
+                setChar(x, y, s.charAt(i));
+                x++;
+            }
+            setChar(x, y, ' ');
+            x++;
+        }
+        return y;
+    }
+    public int drawStringWrapPad(String str, int x, int y, int leftPad, int rightPad) {
+        for (int i=0; i<str.length(); i++) {
+            setChar(x, y, str.charAt(i));
+            x++;
+            if (x >= width - rightPad) {
+                x = leftPad;
+                y++;
+            }
+        }
+        return y;
+    }
+    
+    public int drawStringWrap(String str, int x, int y, int foregroundColor) {
         for (int i=0; i<str.length(); i++) {
             setChar(x, y, str.charAt(i));
             setForegroundColor(x + i, y, foregroundColor);
@@ -175,9 +217,10 @@ public class CharacterImage {
                 y++;
             }
         }
+        return y;
     }
     
-    public void drawStringWrap(String str, int x, int y, int foregroundColor, int backgroundColor) {
+    public int drawStringWrap(String str, int x, int y, int foregroundColor, int backgroundColor) {
         for (int i=0; i<str.length(); i++) {
             setChar(x, y, str.charAt(i));
             setForegroundColor(x + i, y, foregroundColor);
@@ -188,6 +231,7 @@ public class CharacterImage {
                 y++;
             }
         }
+        return y;
     }
     
     public void drawRectangle(int x, int y, int width, int height, char c) {
