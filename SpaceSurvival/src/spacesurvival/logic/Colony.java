@@ -13,12 +13,12 @@ import java.util.ArrayList;
  */
 public class Colony {
 
-    private int dayLanded = 1;
+    private int dayLanded = 1; // start at day one;
     private int happiness = 80; //starting
     private int dayTillPopGrow = 10; //starting
-    private int planetMaxTile;
-    private int colonyMaxTile;
-    private int colonyUsingTile;
+    private int planetMaxTile = 100; //default 
+    private int colonyMaxTile = 5;//starting default
+    private int colonyUsingTile = 0; //starting default
     private int colonyLostTile; // lost tile are included in using tile
     private int dayTillSaved = 0;
     private boolean helpComing = false;
@@ -34,7 +34,7 @@ public class Colony {
         if (happiness + amountAdded >= 0) {
             happiness += amountAdded;
         }
-    }  //happiness is caped at 0
+    }  //happiness is caped at 0, use this whenever you want to change Happiness
     
     public void addColonyMaxTile(int amountAdded) {
         if (colonyMaxTile+amountAdded <= planetMaxTile ) {
@@ -43,7 +43,7 @@ public class Colony {
         else {
             colonyMaxTile = planetMaxTile;
         }
-    } //with respect to maximum amount
+    } //with respect to maximum amount of Max planet tile
     
     public void whipNews() {
         news = "";
@@ -83,7 +83,13 @@ public class Colony {
              listBuilding.add(building);
              addHappiness(building.getOnBuildHappiness());
              addColonyMaxTile(building.getOnBuildColonyTile());
-             //not done
+             dayTillPopGrow+=building.getOnBuildDayTillPopGrow();
+             
+             if (helpComing) {
+                dayTillSaved = building.getOnBuildDayTillSaved();
+            }
+             
+             colonyUsingTile+=building.getRequiredSpace();
              return true;
         }
         else {
