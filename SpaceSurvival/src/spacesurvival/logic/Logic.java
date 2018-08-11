@@ -18,6 +18,7 @@ public class Logic {
     public void nextDay() {
         
         colony.avanceDay();
+        colony.avanceHelp();
         colony.generateNews(); // string = 
         
     }

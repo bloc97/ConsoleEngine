@@ -20,6 +20,8 @@ public class Colony {
     private int colonyMaxTile;
     private int colonyUsingTile;
     private int colonyLostTile; // lost tile are included in using tile
+    private int dayTillSaved;
+    private boolean helpComing = false;
     private String news;
     private ArrayList<Building> listBuilding = new ArrayList();
     
@@ -79,6 +81,11 @@ public class Colony {
         dayLanded++;
     }
 
+    public void avanceHelp() {
+        if (helpComing) {
+            dayTillSaved--;
+        }
+    }
     
     public int getDayLanded() {
         return dayLanded;
