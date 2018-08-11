@@ -11,7 +11,7 @@ package spacesurvival.logic;
  */
 public class Building {
 
-    public static Building[] MasterBuildingList  = new Building[10];
+    public static Building[] masterBuildingList  = new Building[10]; //the master list
     
     
     private String name;
@@ -79,11 +79,11 @@ public class Building {
     }
 
     public static Building[] getMasterBuildingList() {
-        return MasterBuildingList;
+        return masterBuildingList;
     }
 
-    public static void setMasterBuildingList(Building[] MasterBuildingList) {
-        Building.MasterBuildingList = MasterBuildingList;
+    public static void setMasterBuildingList(Building[] masterBuildingList) {
+        Building.masterBuildingList = masterBuildingList;
     }
 
     public boolean isTriggerHelpComing() {
