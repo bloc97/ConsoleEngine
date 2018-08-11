@@ -268,4 +268,13 @@ public class ConsoleScreen {
         return image;
     }
     
+    public ConsolePanel getFocusedPanel(int x, int y) {
+        for (ConsolePanel p : characterPanelMap.descendingMap().values()) {
+            if (x >= p.getX() && x < (p.getX() + p.getWidth()) && y >= p.getY() && y < (p.getY() + p.getHeight())) {
+                return p;
+            }
+        }
+        return null;
+    }
+    
 }

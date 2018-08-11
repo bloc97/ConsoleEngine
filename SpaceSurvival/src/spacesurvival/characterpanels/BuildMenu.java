@@ -14,8 +14,8 @@ import spacesurvival.console.CharacterPanel;
  *
  * @author bowen
  */
-public class ColonyBuildings extends CharacterPanel implements Scrollable {
-
+public class BuildMenu extends CharacterPanel implements Scrollable {
+    
     public static final int CARD_WIDTH = 11;
     public static final int CARD_HEIGHT = 7;
     
@@ -23,20 +23,20 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     
     private int scroll = 0;
     
-    private int buildingCardNum = 7;
+    private int buildingCardNum = 3;
     
     private final ScrollBar scrollBar;
     
-    public ColonyBuildings(int consoleWidth, int consoleHeight, Color mainColor) {
-        super(Background.XLINE + 1, Background.TOP_PADDING + 1, consoleWidth - Background.XLINE - 2, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2);
+    public BuildMenu(int consoleWidth, int consoleHeight, Color mainColor) {
+        super(1, Background.TOP_PADDING + 1, Background.XLINE - 1, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2);
         this.mainColor = mainColor;
-        this.scrollBar = new RightScrollBar(consoleWidth, consoleHeight, mainColor, this);
+        this.scrollBar = new MiddleScrollBar(consoleWidth, consoleHeight, mainColor, this);
         this.scrollBar.setStatus(scroll, getMaxScroll());
     }
     
     @Override
     public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
-        setCharacterImage(new CharacterImage(newWidth - Background.XLINE - 2, newHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2));
+        setCharacterImage(new CharacterImage(Background.XLINE - 1, newHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2));
         genImage();
     }
     
@@ -45,6 +45,7 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         getCharacterImage().clear();
         checkScroll();
         getCharacterImage().fillForegroundColor(mainColor.brighter().brighter().getRGB());
+        
         
         int xPad = getWidth()%CARD_WIDTH / 2;
         
@@ -100,11 +101,12 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     public ScrollBar getScrollBar() {
         return scrollBar;
     }
-    
+
     @Override
     public void onMouseWheelMoved(int i) {
         setScroll(getScroll() + i);
     }
+
     private int lastX, lastY;
     
     @Override
@@ -122,5 +124,8 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         
         setScroll(getScroll() - deltaY);
     }
+    
+    
+    
     
 }

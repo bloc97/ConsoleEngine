@@ -15,7 +15,7 @@ import spacesurvival.console.CharacterPanel;
  */
 public class BottomBar extends CharacterPanel {
 
-    private String scrollingText = "Clear weather, low chance of precipitations. Temperature is cool, bring a jacket to work.        Reports of space piracy on the system 4AB-RJ, all civilian ships should stay vigilant.                                ";
+    private String scrollingText = "Clear weather, low chance of precipitations. Temperature is cool, bring a jacket to work.        Reports of space piracy on the system 4AB-RJ, all civilian ships should stay vigilant. We advise you to report any suspicious activities to the local authorities.                               ";
     private int pos = 0;
     
     private int tempPos = 0;
@@ -46,8 +46,8 @@ public class BottomBar extends CharacterPanel {
     
     public void tickPos() {
         pos--;
-        if (scrollingText.length() + pos < -1) {
-            pos = getWidth() + 1;
+        if (scrollingText.length() + pos <= 0) {
+            pos = 0;
         }
         genImage();
     }

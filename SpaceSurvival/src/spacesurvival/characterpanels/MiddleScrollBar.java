@@ -14,9 +14,9 @@ import spacesurvival.console.CharacterImage;
  */
 public class MiddleScrollBar extends ScrollBar {
     
-
-    public MiddleScrollBar(int consoleWidth, int consoleHeight, Color mainColor) {
-        super(Background.XLINE - 1, Background.TOP_PADDING + 1, 1, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2, mainColor);
+    
+    public MiddleScrollBar(int consoleWidth, int consoleHeight, Color mainColor, Scrollable scrollablePanel) {
+        super(Background.XLINE - 1, Background.TOP_PADDING + 1, 1, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2, mainColor, scrollablePanel);
         genImage();
     }
 
