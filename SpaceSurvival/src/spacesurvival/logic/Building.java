@@ -11,10 +11,15 @@ package spacesurvival.logic;
  */
 public class Building {
 
+    public static Building[] MasterBuildingList  = new Building[10];
+    
+    
     private String name;
     private String discription;
     
     private boolean triggerHelpComing = false;
+    
+    private int requiredSpace;
     
     private int onBuildHappiness;
     private int onBuildDayTillPopGrow;
@@ -71,6 +76,30 @@ public class Building {
 
     public void setOnBuildColonyTile(int onBuildColonyTile) {
         this.onBuildColonyTile = onBuildColonyTile;
+    }
+
+    public static Building[] getMasterBuildingList() {
+        return MasterBuildingList;
+    }
+
+    public static void setMasterBuildingList(Building[] MasterBuildingList) {
+        Building.MasterBuildingList = MasterBuildingList;
+    }
+
+    public boolean isTriggerHelpComing() {
+        return triggerHelpComing;
+    }
+
+    public void setTriggerHelpComing(boolean triggerHelpComing) {
+        this.triggerHelpComing = triggerHelpComing;
+    }
+
+    public int getRequiredSpace() {
+        return requiredSpace;
+    }
+
+    public void setRequiredSpace(int requiredSpace) {
+        this.requiredSpace = requiredSpace;
     }
     
     

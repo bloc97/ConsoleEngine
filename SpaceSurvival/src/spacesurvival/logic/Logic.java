@@ -20,6 +20,8 @@ public class Logic {
         colony.avanceDay();
         colony.avanceHelp();
         colony.generateNews(); // string = 
+        colony.isHelpArrived();
+        colony.resolveHapiness();
         
     }
 }
