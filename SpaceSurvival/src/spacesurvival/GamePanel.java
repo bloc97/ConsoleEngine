@@ -50,20 +50,21 @@ public class GamePanel extends JPanel {
     
     public GamePanel() {
         
-        File fontFolder = new File("resources/fonts/VGA");
+        File fontFolder = new File("resources/fonts/CGA");
         
         fonts = fontFolder.listFiles((pathname) -> {
             return pathname.getName().toLowerCase().endsWith(".ttf");
         });
         
-        panel = new CharacterPanel(0, 0, 80, 50) {
+        panel = new CharacterPanel(1, 2, 10, 10) {
             @Override
             public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
-                this.setCharacterImage(new CharacterImage(newWidth, newHeight));
+                this.setCharacterImage(new CharacterImage(newWidth-2, newHeight-4));
             }
         };
         screen = new ConsoleScreen(80, 50, ConsoleFont.fromFile(fonts[fontIndex]));
-        screen.addCharacterPanel(0, panel);
+        screen.addCharacterPanel(0, new BackgroundPanel(0, 0, 10, 10));
+        //screen.addCharacterPanel(1, panel);
         
         setBackground(Color.BLACK);
         //setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -123,10 +124,21 @@ public class GamePanel extends JPanel {
         //Sets the RenderingHints
         //g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
         
-        int scale = 6;
+        int scale = 100;
         
-        final int consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / scale;
-        final int consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight()/ scale;
+        int consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / scale;
+        int consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight() / scale;
+        
+        while (consoleWidth < 60 || consoleHeight < 50) {
+            scale--;
+            if (scale <= 0) {
+                scale = 1;
+                break;
+            }
+            consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / scale;
+            consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight()/ scale;
+        }
+        
         
         final int xPad = (screenPixelWidth - (consoleWidth * scale * screen.getConsoleFont().getWidth())) / 2;
         final int yPad = (screenPixelHeight - (consoleHeight * scale * screen.getConsoleFont().getHeight())) / 2;
@@ -138,20 +150,15 @@ public class GamePanel extends JPanel {
         
         for (int j=0; j<panel.getHeight(); j++) {
             for (int i=0; i<panel.getWidth(); i++) {
+                panel.getCharacterImage().setForegroundColor(i, j, random.nextInt() | 0xFF000000);
                 if (random.nextInt(100) < 50) {
                     panel.getCharacterImage().setChar(i, j, ConsoleFont.cp437ToUnicode(random.nextInt(0xFF)));
-                    //panel.getCharacterImage().setForegroundColor(i, j, random.nextInt() | 0xFF000000);
                 } else {
                     panel.getCharacterImage().setChar(i, j, ' ');
                 }
             }
         }
-        panel.getCharacterImage().drawRectangle(0, 1, panel.getWidth(), panel.getHeight()-2);
-        panel.getCharacterImage().fillForegroundColorRectangle(0, 0, panel.getWidth(), panel.getHeight(), 0xFF2F3D3F);
-        panel.getCharacterImage().fillBackgroundColorRectangle(0, 0, panel.getWidth(), panel.getHeight(), 0xFFF5EFD2);
-        panel.getCharacterImage().fillBackgroundColorRectangle(0, 0, panel.getWidth(), 1, new Color(0xFFF5EFD2).darker().darker().getRGB());
-        panel.getCharacterImage().fillBackgroundColorRectangle(0, panel.getHeight()-1, panel.getWidth(), 1, new Color(0xFFF5EFD2).darker().darker().getRGB());
-
+        panel.getCharacterImage().drawStringWrap(TEST_STRING_TEXT, 0, 0);
         
         g2.setColor(Color.WHITE);
     

@@ -5,8 +5,6 @@
  */
 package spacesurvival.console;
 
-import spacesurvival.BoundingBoxUtils;
-
 /**
  *
  * @author bowen
@@ -112,8 +110,24 @@ public class CharacterImage {
         }
     }
     
+    public void drawString(String str, int x, int y) {
+        for (int i=0; i<str.length(); i++) {
+            setChar(x + i, y, str.charAt(i));
+        }
+    }
+    
+    public void drawStringWrap(String str, int x, int y) {
+        for (int i=0; i<str.length(); i++) {
+            setChar(x, y, str.charAt(i));
+            x++;
+            if (x >= width) {
+                x = 0;
+                y++;
+            }
+        }
+    }
+    
     public void drawRectangle(int x, int y, int width, int height, char c) {
-        
         for (int i=0; i<width; i++) {
             setChar(x + i, y, c);
             setChar(x + i, y + height - 1, c);
@@ -125,7 +139,6 @@ public class CharacterImage {
     }
     
     public void drawForegroundColorRectangle(int x, int y, int width, int height, int c) {
-        
         for (int i=0; i<width; i++) {
             setForegroundColor(x + i, y, c);
             setForegroundColor(x + i, y + height - 1, c);
@@ -137,7 +150,6 @@ public class CharacterImage {
     }
     
     public void drawBackgroundColorRectangle(int x, int y, int width, int height, int c) {
-        
         for (int i=0; i<width; i++) {
             setBackgroundColor(x + i, y, c);
             setBackgroundColor(x + i, y + height - 1, c);

@@ -5,6 +5,7 @@
  */
 package spacesurvival;
 
+import java.awt.Cursor;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -39,5 +40,7 @@ public class SpaceSurvival {
         
         panel.setFocusable(true);
         panel.requestFocus();
+        
+        
     }
 }
