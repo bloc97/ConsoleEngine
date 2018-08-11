@@ -77,6 +77,13 @@ public class Colony {
         return news;
     }
     
+    public void build(Building building) {
+        addHappiness(building.getOnBuildHappiness());
+        addColonyMaxTile(building.getOnBuildColonyTile());
+        ///not done
+        
+    }
+    
     public void avanceDay() {
         dayLanded++;
     }

@@ -14,6 +14,8 @@ public class Building {
     private String name;
     private String discription;
     
+    private boolean triggerHelpComing = false;
+    
     private int onBuildHappiness;
     private int onBuildDayTillPopGrow;
     private int onBuildDayTillSaved;

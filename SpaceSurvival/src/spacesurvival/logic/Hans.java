@@ -16,6 +16,24 @@ public class Hans {
     
     public Hans() {
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isEatenChikenNugget() {
+        return eatenChikenNugget;
+    }
+
+    public void setEatenChikenNugget(boolean eatenChikenNugget) {
+        this.eatenChikenNugget = eatenChikenNugget;
+    }
+    
+    
     
     
     
