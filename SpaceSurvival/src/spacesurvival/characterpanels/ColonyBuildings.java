@@ -5,6 +5,8 @@
  */
 package spacesurvival.characterpanels;
 
+import java.awt.Color;
+import java.util.Random;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
 
@@ -14,9 +16,10 @@ import spacesurvival.console.CharacterPanel;
  */
 public class ColonyBuildings extends CharacterPanel {
 
-    public ColonyBuildings(int consoleWidth, int consoleHeight) {
+    private Color mainColor;
+    public ColonyBuildings(int consoleWidth, int consoleHeight, Color mainColor) {
         super(Background.XLINE + 1, Background.TOP_PADDING + 1, consoleWidth - Background.XLINE - 2, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2);
-        setOverrideMode(true);
+        this.mainColor = mainColor;
     }
     
     @Override
@@ -27,9 +30,24 @@ public class ColonyBuildings extends CharacterPanel {
     
     
     private void genImage() {
-        getCharacterImage().drawRectangle(0, 0, getWidth(), getHeight());
-        getCharacterImage().fillForegroundColorRectangle(0, 0, getWidth(), getHeight(), 0xFFFFFFFF);
-        getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), getHeight(), 0xFFFF0000);
+        getCharacterImage().fillForegroundColor(mainColor.brighter().brighter().getRGB());
+        
+        int w = 9;
+        int h = 5;
+        
+        int currentX = 0;
+        int currentY = 0;
+        Random r = new Random();
+        for (int i=0; i<100; i++) {
+            getCharacterImage().drawRectangle(currentX, currentY, w, h);
+            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, w, h, r.nextInt(0xFFFFFF) | 0xFF000000);
+            currentX += w;
+            if (currentX + w > getWidth()) {
+                currentX = 0;
+                currentY += h;
+            }
+        }
+        
     }
     
     

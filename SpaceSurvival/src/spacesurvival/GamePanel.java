@@ -18,27 +18,16 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import spacesurvival.characterpanels.BottomBar;
-import spacesurvival.characterpanels.BottomBarOverlay;
 import spacesurvival.characterpanels.ColonyBuildings;
 import spacesurvival.characterpanels.MiddleScrollBar;
 import spacesurvival.characterpanels.RightScrollBar;
 import spacesurvival.characterpanels.TopBar;
-import spacesurvival.characterpanels.TopPopupTest;
 import spacesurvival.console.CharacterPanel;
 import spacesurvival.console.ConsoleScreen;
 
@@ -85,7 +74,7 @@ public class GamePanel extends JPanel {
         screen.addCharacterPanel(2, new RightScrollBar(30, 30, mainColor));
         screen.addCharacterPanel(3, new TopBar(30, 30));
         screen.addCharacterPanel(4, new BottomBar(30, 30));
-        screen.addCharacterPanel(-1, new ColonyBuildings(30, 30));
+        screen.addCharacterPanel(-1, new ColonyBuildings(30, 30, mainColor));
         //screen.addCharacterPanel(4, new BottomBarOverlay(10, 10));
         //screen.addCharacterPanel(1, panel);
         

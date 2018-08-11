@@ -44,6 +44,21 @@ public class CharacterImage {
             backgroundColor[i] = 0;
         }
     }
+    public void fillChar(char c) {
+        for (int i=0; i<chars.length; i++) {
+            chars[i] = c;
+        }
+    }
+    public void fillForegroundColor(int c) {
+        for (int i=0; i<foregroundColor.length; i++) {
+            foregroundColor[i] = c;
+        }
+    }
+    public void fillBackgroundColor(int c) {
+        for (int i=0; i<backgroundColor.length; i++) {
+            backgroundColor[i] = c;
+        }
+    }
     
     public char getChar(int x, int y) {
         if (!isWithinBounds(x, y)) {
