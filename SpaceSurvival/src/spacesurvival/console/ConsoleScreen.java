@@ -196,7 +196,7 @@ public class ConsoleScreen {
                     if (panel.getCharacterImage().getChar(relX, relY) == 0) {
                         for (int i=0; i<characterList.size(); i++) {
                             foregroundColorList.set(i, panel.getCharacterImage().getForegroundColor(relX, relY));
-                            backgroundColorList.set(i, panel.getCharacterImage().getBackgroundColor(x, relY));
+                            backgroundColorList.set(i, panel.getCharacterImage().getBackgroundColor(relX, relY));
                         }
                         continue;
                     }

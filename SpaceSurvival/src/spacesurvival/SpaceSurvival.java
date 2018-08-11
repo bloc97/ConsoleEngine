@@ -23,13 +23,13 @@ public class SpaceSurvival {
         SwingUtilities.invokeLater(() -> {
             createAndShowGUI();
         });
-        System.out.println((int)'─');
-        System.out.println((int)'░');
+        //System.out.println((int)'─');
+        //System.out.println((int)'░');
     }
     
     private static void createAndShowGUI() {
-        System.out.println("Created GUI on EDT? "+
-        SwingUtilities.isEventDispatchThread());
+        //System.out.println("Created GUI on EDT? "+
+        //SwingUtilities.isEventDispatchThread());
         JFrame frame = new JFrame("Swing Paint Demo");
         JPanel panel = new GamePanel();
         
@@ -40,7 +40,7 @@ public class SpaceSurvival {
         
         panel.setFocusable(true);
         panel.requestFocus();
-        
+        panel.requestFocusInWindow();
         
     }
 }

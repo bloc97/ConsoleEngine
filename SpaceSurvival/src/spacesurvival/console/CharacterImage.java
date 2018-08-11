@@ -37,6 +37,14 @@ public class CharacterImage {
         return width;
     }
     
+    public void clear() {
+        for (int i=0; i<chars.length; i++) {
+            chars[i] = 0;
+            foregroundColor[i] = 0;
+            backgroundColor[i] = 0;
+        }
+    }
+    
     public char getChar(int x, int y) {
         if (!isWithinBounds(x, y)) {
             return 0;
@@ -116,9 +124,49 @@ public class CharacterImage {
         }
     }
     
+    public void drawString(String str, int x, int y, int foregroundColor) {
+        for (int i=0; i<str.length(); i++) {
+            setChar(x + i, y, str.charAt(i));
+            setForegroundColor(x + i, y, foregroundColor);
+        }
+    }
+    
+    public void drawString(String str, int x, int y, int foregroundColor, int backgroundColor) {
+        for (int i=0; i<str.length(); i++) {
+            setChar(x + i, y, str.charAt(i));
+            setForegroundColor(x + i, y, foregroundColor);
+            setBackgroundColor(x + i, y, backgroundColor);
+        }
+    }
+    
     public void drawStringWrap(String str, int x, int y) {
         for (int i=0; i<str.length(); i++) {
             setChar(x, y, str.charAt(i));
+            x++;
+            if (x >= width) {
+                x = 0;
+                y++;
+            }
+        }
+    }
+    
+    public void drawStringWrap(String str, int x, int y, int foregroundColor) {
+        for (int i=0; i<str.length(); i++) {
+            setChar(x, y, str.charAt(i));
+            setForegroundColor(x + i, y, foregroundColor);
+            x++;
+            if (x >= width) {
+                x = 0;
+                y++;
+            }
+        }
+    }
+    
+    public void drawStringWrap(String str, int x, int y, int foregroundColor, int backgroundColor) {
+        for (int i=0; i<str.length(); i++) {
+            setChar(x, y, str.charAt(i));
+            setForegroundColor(x + i, y, foregroundColor);
+            setBackgroundColor(x + i, y, backgroundColor);
             x++;
             if (x >= width) {
                 x = 0;
