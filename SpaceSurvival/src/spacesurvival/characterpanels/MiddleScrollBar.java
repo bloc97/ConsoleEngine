@@ -7,19 +7,16 @@ package spacesurvival.characterpanels;
 
 import java.awt.Color;
 import spacesurvival.console.CharacterImage;
-import spacesurvival.console.CharacterPanel;
 
 /**
  *
  * @author bowen
  */
-public class MiddleScrollBar extends CharacterPanel {
+public class MiddleScrollBar extends ScrollBar {
     
-    private Color mainColor;
 
     public MiddleScrollBar(int consoleWidth, int consoleHeight, Color mainColor) {
-        super(Background.XLINE - 1, Background.TOP_PADDING + 1, 1, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2);
-        this.mainColor = mainColor;
+        super(Background.XLINE - 1, Background.TOP_PADDING + 1, 1, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2, mainColor);
         genImage();
     }
 
@@ -29,12 +26,6 @@ public class MiddleScrollBar extends CharacterPanel {
         genImage();
     }
     
-    private void genImage() {
-        getCharacterImage().drawRectangle(0, 0, 1, getHeight(), '░');
-        getCharacterImage().drawRectangle(0, 0, 1, 1, '█');
-        getCharacterImage().fillForegroundColorRectangle(0, 0, getWidth(), getHeight(), mainColor.brighter().brighter().getRGB());
-        getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), getHeight(), mainColor.darker().getRGB());
-    }
     
 }
 

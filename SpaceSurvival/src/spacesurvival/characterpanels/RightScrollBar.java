@@ -7,19 +7,16 @@ package spacesurvival.characterpanels;
 
 import java.awt.Color;
 import spacesurvival.console.CharacterImage;
-import spacesurvival.console.CharacterPanel;
 
 /**
  *
  * @author bowen
  */
-public class RightScrollBar extends CharacterPanel {
+public class RightScrollBar extends ScrollBar {
     
-    private Color mainColor;
 
     public RightScrollBar(int consoleWidth, int consoleHeight, Color mainColor) {
-        super(consoleWidth - 1, Background.TOP_PADDING + 1, 1, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2);
-        this.mainColor = mainColor;
+        super(consoleWidth - 1, Background.TOP_PADDING + 1, 1, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2, mainColor);
         genImage();
     }
 
@@ -29,13 +26,5 @@ public class RightScrollBar extends CharacterPanel {
         this.setX(newWidth - 1);
         genImage();
     }
-    
-    private void genImage() {
-        getCharacterImage().drawRectangle(0, 0, 1, getHeight(), '░');
-        getCharacterImage().drawRectangle(0, 0, 1, 1, '█');
-        getCharacterImage().fillForegroundColorRectangle(0, 0, getWidth(), getHeight(), mainColor.brighter().brighter().getRGB());
-        getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), getHeight(), mainColor.darker().getRGB());
-    }
-    
 }
 

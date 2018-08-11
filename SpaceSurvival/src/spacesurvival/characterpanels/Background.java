@@ -18,7 +18,7 @@ public class Background extends CharacterPanel {
     public static final int TOP_PADDING = 1;
     public static final int BOTTOM_PADDING = 1;
     
-    public static final int XLINE = 22;
+    public static final int XLINE = 22-9;
     
     private Color mainColor;
 
@@ -41,6 +41,7 @@ public class Background extends CharacterPanel {
         
         getCharacterImage().drawRectangle(0, TOP_PADDING, XLINE, heightPad);
         getCharacterImage().drawRectangle(XLINE, TOP_PADDING, getWidth() - XLINE, heightPad);
+        getCharacterImage().drawString("Build", XLINE / 3, TOP_PADDING);
         //getCharacterImage().drawRectangle(xLine, yLine, getWidth()-xLine, getHeight()-yLine-1);
         //getCharacterImage().drawRectangle(getWidth() - 1, topPadding + 1, 1, heightPad - 2, '░');
         getCharacterImage().fillForegroundColorRectangle(0, 0, getWidth(), getHeight(), colorPalette.brighter().brighter().getRGB());
