@@ -56,7 +56,7 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         }
     }
     
-    private void genImage() {
+    public void genImage() {
         getCharacterImage().clear();
         checkScroll();
         getCharacterImage().fillForegroundColor(mainColor.brighter().brighter().getRGB());
@@ -72,13 +72,14 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         for (int i=0; i<=allBuildings.size(); i++) {
             getCharacterImage().drawRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT);
             
-            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? 0xFFFFFFFF : 0xFFCCCCCC);//r.nextInt(0xFFFFFF) | 0xFF000000);
             
             if (i == allBuildings.size()) {
                 getCharacterImage().drawString("■End Day", currentX + CARD_WIDTH/2 - 4, currentY + CARD_HEIGHT/2, 0xFFFFAA00);
+                getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? 0xFFFFFFFF : 0xFFCCCCCC);//r.nextInt(0xFFFFFF) | 0xFF000000);
             } else {
                 Building b = allBuildings.get(i);
                 getCharacterImage().drawStringSpaceWrapPad(b.getName(), currentX + 1, currentY + 1, currentX + 1, getWidth() - (currentX + CARD_WIDTH));
+                getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? b.getRGB() : b.getColor().darker().getRGB());//r.nextInt(0xFFFFFF) | 0xFF000000);
             }
             
             currentX += CARD_WIDTH;
@@ -207,9 +208,10 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         if (!hasDraggedScroll) {
             if (selectedIndex == buildingsNum) {
                 GamePanel.dayEndOverlay.show();
-            } else {
-                
+            } else if (selectedIndex >= 0 && selectedIndex < buildingsNum) {
+                Colony.INSTANCE.cancelBuilding(Colony.INSTANCE.getAllBuildings().get(selectedIndex));
             }
+            genImage();
         }
         
         hasDraggedScroll = false;

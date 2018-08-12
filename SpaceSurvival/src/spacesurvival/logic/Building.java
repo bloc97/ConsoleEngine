@@ -10,6 +10,7 @@ package spacesurvival.logic;
  * @author panbe
  */
 
+import java.awt.Color;
 import java.util.List;
 
 public abstract class Building {
@@ -54,40 +55,22 @@ public abstract class Building {
         cPlant
     };
     
-    
-    
     private final String name;
     private final String description;
+    private final int color;
     
     private final int requiredSpace;
     private int constructionState;
     
     private final FactoryBuilding.Produce[] requiredProduce;
     
-    
-    /*
-    private boolean triggerHelpComing = false;
-    
-    private int onBuildHappiness;
-    private int onBuildDayTillPopGrow;
-    private int onBuildDayTillSaved;
-    private int onBuildColonyTile;*/
-    
-    
-
-    public Building(String name, String description, int requiredSpace, FactoryBuilding.Produce... requiredProduce) {
+    public Building(String name, String description, int color, int requiredSpace, FactoryBuilding.Produce... requiredProduce) {
         this.name = name;
         this.description = description;
+        this.color = color;
         this.requiredSpace = requiredSpace;
         this.requiredProduce = requiredProduce;
-        /*
-        this.onBuildHappiness = 0;
-        this.onBuildDayTillPopGrow = 0;
-        this.onBuildDayTillSaved = 0;
-        this.onBuildColonyTile = 0;*/
     }
-    
-    
 
     public String getName() {
         return name;
@@ -97,6 +80,13 @@ public abstract class Building {
         return description;
     }
 
+    public int getRGB() {
+        return color;
+    }
+
+    public Color getColor() {
+        return new Color(getRGB());
+    }
     public int getRequiredSpace() {
         return requiredSpace;
     }
@@ -135,53 +125,6 @@ public abstract class Building {
     
     public abstract Building getCopy();
     
-    /*
-    
-    public int getOnBuildHappiness() {
-        return onBuildHappiness;
-    }
-
-    public void setOnBuildHappiness(int onBuildHappiness) {
-        this.onBuildHappiness = onBuildHappiness;
-    }
-
-    public int getOnBuildDayTillPopGrow() {
-        return onBuildDayTillPopGrow;
-    }
-
-    public void setOnBuildDayTillPopGrow(int onBuildDayTillPopGrow) {
-        this.onBuildDayTillPopGrow = onBuildDayTillPopGrow;
-    }
-
-    public int getOnBuildDayTillSaved() {
-        return onBuildDayTillSaved;
-    }
-
-    public void setOnBuildDayTillSaved(int onBuildDayTillSaved) {
-        this.onBuildDayTillSaved = onBuildDayTillSaved;
-    }
-
-    public int getOnBuildColonyTile() {
-        return onBuildColonyTile;
-    }
-
-    public void setOnBuildColonyTile(int onBuildColonyTile) {
-        this.onBuildColonyTile = onBuildColonyTile;
-    }
-
-    public static Building[] getMasterBuildingList() {
-        return masterBuildingList;
-    }
-
-    public boolean isTriggerHelpComing() {
-        return triggerHelpComing;
-    }
-
-    public void setTriggerHelpComing(boolean triggerHelpComing) {
-        this.triggerHelpComing = triggerHelpComing;
-    }
-    
-    */
     
     
 }

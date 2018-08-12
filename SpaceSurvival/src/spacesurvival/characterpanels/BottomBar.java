@@ -17,7 +17,6 @@ import spacesurvival.SpaceSurvival;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
 import spacesurvival.logic.Colony;
-import spacesurvival.logic.Logic;
 
 /**
  *
