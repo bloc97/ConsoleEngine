@@ -388,14 +388,14 @@ public enum Colony {
     
     public void generateEvents(ArrayList<Event> eventMasterList) {
         
-        for (Event element: eventMasterList) {
+        for (Event element: eventMasterList) { //check for each event stored in the master list
             
             boolean eventToday = true;
             
-            if (!(day >= element.getEventTriggeringDay())) {
+            if (!(day >= element.getEventTriggeringDay())) { // if today allow the event to happen
                 eventToday = false;
             }
-            if (element.getRequiredHapinessLower() != -1) {
+            if (element.getRequiredHapinessLower() != -1) { //if theres a hapiness check to allow the event to generate
                 if (element.getRequiredHapinessLower() < happiness && happiness < element.getRequiredHapinessUpper()) {
                     
                 }
@@ -403,7 +403,7 @@ public enum Colony {
                     eventToday = false;
                 }
             }
-            if (element.getEventRequiredEvent().equals("")== false) {
+            if (element.getEventRequiredEvent().equals("")== false) { //if there's a previous eventchoice to be generate
                 if (listChoosed.contains(element.getEventRequiredEvent())) { ///NOT WORKING
                     
                 }
@@ -412,7 +412,7 @@ public enum Colony {
                 }
             }
             
-            if (eventToday) {
+            if (eventToday) { // if all go well generate this and add it to the today event list
                 listTodayEvent.add(element);
             }
             

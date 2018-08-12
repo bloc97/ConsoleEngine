@@ -51,11 +51,23 @@ public class Event {
     
     public static void iniMasterEventList() {
             //
-            Event Event1welcome = new Event("Welcome","This is LD42");
+            Event event1welcome = new Event("Welcome","This is LD42");
             EventChoice EV11 = new EventChoice("Ok",11);
-            masterEventList.add(Event1welcome);
+            event1welcome.getListChoice().add(EV11);
+            masterEventList.add(event1welcome);
+            //
+            Event event100CivilUnrest = new Event("Civil Unrest", "Due to unpopular political decision and unsatisfaction amont the citizen, riot are taking place in the street");
+            EventChoice EV1001 = new EventChoice("Send the army",1001);
+            EventChoice EV1002 = new EventChoice("Do nothing",1002);
+            event100CivilUnrest.getListChoice().add(EV1001);
+            event100CivilUnrest.getListChoice().add(EV1002);
+            masterEventList.add(event100CivilUnrest);
            //
-    }
+           
+           
+           
+           
+    }//need to called the fonction somewhere
 
     public static void setMasterEventList(ArrayList<Event> masterEventList) {
         Event.masterEventList = masterEventList;
@@ -91,6 +103,10 @@ public class Event {
 
     public int getRequiredHapinessUpper() {
         return requiredHapinessUpper;
+    }
+
+    public ArrayList<EventChoice> getListChoice() {
+        return listChoice;
     }
     
     
