@@ -57,13 +57,22 @@ public class Event {
             masterEventList.add(event1welcome);
             //
             Event event100CivilUnrest = new Event("Civil Unrest", "Due to unpopular political decision and unsatisfaction amont the citizen, riot are taking place in the street");
+            event100CivilUnrest.setRequiredHapinessLower(15);
+            event100CivilUnrest.setRequiredHapinessUpper(35);
             EventChoice EV1001 = new EventChoice("Send the army",1001);
             EventChoice EV1002 = new EventChoice("Do nothing",1002);
             event100CivilUnrest.getListChoice().add(EV1001);
             event100CivilUnrest.getListChoice().add(EV1002);
             masterEventList.add(event100CivilUnrest);
            //
-           
+           Event event101Revolt = new Event("Revolt", "The citizen have enough of the incompetent leadership and are taking arms to start a revolution!");
+            event101Revolt.setRequiredHapinessLower(0);
+            event101Revolt.setRequiredHapinessUpper(5);
+            EventChoice EV1011 = new EventChoice("Send the army",1011);
+            EventChoice EV1012 = new EventChoice("Do nothing",1012);
+            event101Revolt.getListChoice().add(EV1011);
+            event101Revolt.getListChoice().add(EV1012);
+            masterEventList.add(event101Revolt);
            
            
            
@@ -107,6 +116,18 @@ public class Event {
 
     public ArrayList<EventChoice> getListChoice() {
         return listChoice;
+    }
+
+    public void setEventTriggeringDay(int eventTriggeringDay) {
+        this.eventTriggeringDay = eventTriggeringDay;
+    }
+
+    public void setRequiredHapinessLower(int requiredHapinessLower) {
+        this.requiredHapinessLower = requiredHapinessLower;
+    }
+
+    public void setRequiredHapinessUpper(int requiredHapinessUpper) {
+        this.requiredHapinessUpper = requiredHapinessUpper;
     }
     
     
