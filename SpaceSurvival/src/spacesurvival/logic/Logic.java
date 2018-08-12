@@ -17,11 +17,13 @@ public class Logic {
     
     public void nextDay() {
         
+        colony.applyDailyBuilding();
+        
         colony.avanceDay();
         colony.avanceHelp();
-        colony.generateNews(); // string = 
-        colony.isHelpArrived();
-        colony.resolveHapiness();
+        colony.generateNews(); // return string
+        colony.isHelpArrived(); //return t/f
+        
         
     }
 }

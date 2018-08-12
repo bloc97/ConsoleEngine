@@ -5,10 +5,10 @@
  */
 package spacesurvival;
 
-import java.awt.Cursor;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import spacesurvival.logic.Logic;
 
 /**
  *
@@ -25,22 +25,26 @@ public class SpaceSurvival {
         });
         //System.out.println((int)'─');
         //System.out.println((int)'░');
+
+        //<editor-fold defaultstate="collapsed" desc="Test Section">
+        Logic logic = new Logic();
+//</editor-fold>
     }
-    
+
     private static void createAndShowGUI() {
         //System.out.println("Created GUI on EDT? "+
         //SwingUtilities.isEventDispatchThread());
         JFrame frame = new JFrame("Swing Paint Demo");
         JPanel panel = new GamePanel();
-        
+
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel);
         frame.pack();
         frame.setVisible(true);
-        
+
         panel.setFocusable(true);
         panel.requestFocus();
         panel.requestFocusInWindow();
-        
+
     }
 }

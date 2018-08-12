@@ -17,8 +17,20 @@ public class Event {
 
     private String name;
     private String discription;
+    private int eventTriggeringDay = -1; // if this event happens on specific day, use this, else = -1;
+    private String eventRequiredEvent = "";//if this event required a previous event already happened to be taken place, use this, else = "";
+    
+    private int requiredHapiness = -1;
+    
+    private ArrayList<EventChoice> listChoice;
+
     
     public Event() {
+    
+    }
+    public Event(String name, String disc) {
+        this.name = name;
+        this.discription = disc;
     }
 
     public static ArrayList<Event> getMasterEventList() {

@@ -9,9 +9,21 @@ package spacesurvival.logic;
  *
  * @author panbe
  */
+
+
+
 public class Building {
 
-    public static Building[] masterBuildingList  = new Building[10]; //the master list
+    static Building highDensityHousing = new Building("High Density Housing","Disc",5);
+    static Building factoryTierI= new Building("Basic Factory","Disc",1);
+    static Building beacon= new Building("Beacon","Disc",2);
+    static Building ERC= new Building("Emergancy Response Center","Disc",4);
+    static Building riotControlCenter = new Building("Riot Control Center","Disc",2);
+    
+    public static Building[] masterBuildingList  ={highDensityHousing,factoryTierI,beacon,ERC,riotControlCenter};
+    
+    
+    
     
     
     private String name;
@@ -27,8 +39,22 @@ public class Building {
     private int onBuildColonyTile;
     
     
+    
+    
     public Building() {
     }
+
+    public Building(String name, String discription, int requiredSpace) {
+        this.name = name;
+        this.discription = discription;
+        this.requiredSpace = requiredSpace;
+        this.onBuildHappiness = 0;
+        this.onBuildDayTillPopGrow = 0;
+        this.onBuildDayTillSaved = 0;
+        this.onBuildColonyTile = 0;
+    }
+    
+    
 
     public String getName() {
         return name;
@@ -85,6 +111,8 @@ public class Building {
     public static void setMasterBuildingList(Building[] masterBuildingList) {
         Building.masterBuildingList = masterBuildingList;
     }
+
+
 
     public boolean isTriggerHelpComing() {
         return triggerHelpComing;
