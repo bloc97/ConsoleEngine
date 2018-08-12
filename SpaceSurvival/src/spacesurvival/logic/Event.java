@@ -14,9 +14,6 @@ import java.util.ArrayList;
 public class Event {
     
 
-    
-    
-    
     public static ArrayList<Event> masterEventList = new ArrayList();
 
     private String name;
@@ -27,7 +24,7 @@ public class Event {
     private int requiredHapinessLower = -1;
     private int requiredHapinessUpper = -1;
     
-    private ArrayList<EventChoice> listChoice;
+    private ArrayList<EventChoice> listChoice = new ArrayList<>();
 
     
     public Event() {

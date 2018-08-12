@@ -12,7 +12,7 @@ import spacesurvival.GamePanel;
 import spacesurvival.SpaceSurvival;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
-import spacesurvival.logic.Logic;
+import spacesurvival.logic.Colony;
 
 /**
  *
@@ -316,7 +316,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
     
     
     private void nextDay() {
-        Logic.INSTANCE.nextDay();
+        Colony.INSTANCE.nextDay();
         GamePanel.topBar.genImage();
         GamePanel.bottomBar.onGlobalKeyReleased(new KeyEvent(new Component() {
         }, 0, 0, 0, KeyEvent.VK_Q, 'q'));

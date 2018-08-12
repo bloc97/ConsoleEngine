@@ -8,6 +8,7 @@ package spacesurvival;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import spacesurvival.logic.Event;
 
 /**
  *
@@ -29,6 +30,8 @@ public class SpaceSurvival {
         //<editor-fold defaultstate="collapsed" desc="Test Section">
         //Logic logic = new Logic();
 //</editor-fold>
+
+        Event.iniMasterEventList();
     }
 
     private static void createAndShowGUI() {

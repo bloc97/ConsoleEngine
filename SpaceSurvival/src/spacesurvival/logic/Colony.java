@@ -494,5 +494,23 @@ public enum Colony {
     public int getDay() {
         return day;
     }
+    
+    
+    public void nextDay() {
+        
+        getIncrementingBuildings().forEach((t) -> {
+            t.incrementConstructionState();
+        });
+        
+        
+        Colony.INSTANCE.avanceHelp();
+        Colony.INSTANCE.generateNews(); // return string
+        Colony.INSTANCE.generateEvents(Event.getMasterEventList());
+        Colony.INSTANCE.isHelpArrived(); //return t/f
+        
+        
+        day++;
+        
+    }
 
 }

@@ -8,6 +8,7 @@ package spacesurvival.characterpanels;
 import java.awt.Color;
 import java.util.List;
 import java.util.Random;
+import spacesurvival.GamePanel;
 import static spacesurvival.characterpanels.ColonyBuildings.CARD_HEIGHT;
 import static spacesurvival.characterpanels.ColonyBuildings.CARD_WIDTH;
 import spacesurvival.console.CharacterImage;
@@ -68,14 +69,11 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
         List<Building> availableBuildings = Colony.INSTANCE.getAvailableBuildings();
         
         for (int i=0; i<availableBuildings.size(); i++) {
-            getCharacterImage().drawRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT);
-            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? 0xFFFFFFFF : 0xFFCCCCCC);//r.nextInt(0xFFFFFF) | 0xFF000000);
-            
             Building b = availableBuildings.get(i);
-            System.out.println(getWidth());
+            getCharacterImage().drawRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT);
+            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? b.getRGB(): b.getColor().darker().getRGB());//r.nextInt(0xFFFFFF) | 0xFF000000);
+            
             getCharacterImage().drawStringSpaceWrapPad(b.getName(), currentX + 1, currentY + 1, currentX + 1, currentX + 1);
-            
-            
             
             currentX += CARD_WIDTH;
             if (currentX + CARD_WIDTH > getWidth()) {
@@ -180,12 +178,18 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
     @Override
     public void onMouseReleased(int x, int y, boolean isLeftClick) {
         if (!hasDraggedScroll) {
+            int size = Colony.INSTANCE.getAvailableBuildings().size();
+            if (selectedIndex >= 0 && selectedIndex < size) {
+                Colony.INSTANCE.addBuilding(Colony.INSTANCE.getAvailableBuildings().get(selectedIndex));
+            }
             
-            System.out.println(selectedIndex);
+            GamePanel.colonyBuildings.genImage();
             
         }
         
         hasDraggedScroll = false;
+        
+        
     }
     
     

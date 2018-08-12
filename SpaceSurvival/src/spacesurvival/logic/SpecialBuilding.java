@@ -12,7 +12,7 @@ package spacesurvival.logic;
 public class SpecialBuilding extends Building {
     
     public SpecialBuilding(String name, String description, int requiredSpace, FactoryBuilding.Produce... requiredProduce) {
-        super(name, description, requiredSpace, requiredProduce);
+        super(name, description, 0xFFFF00FF, requiredSpace, requiredProduce);
     }
 
     @Override

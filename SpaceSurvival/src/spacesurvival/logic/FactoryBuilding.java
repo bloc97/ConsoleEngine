@@ -34,7 +34,7 @@ public class FactoryBuilding extends Building {
         this(name, description, 3, produce, produceQuantity, requiredProduce);
     }
     public FactoryBuilding(String name, String description, int requiredSpace, Produce produce, int produceQuantity, Produce... requiredProduce) {
-        super(name, description, requiredSpace, requiredProduce);
+        super(name, description, 0xFFFFAA00, requiredSpace, requiredProduce);
         this.produce = produce;
         this.produceQuantity = produceQuantity;
     }
