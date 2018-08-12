@@ -70,7 +70,7 @@ public class GamePanel extends JPanel {
     public static final TopBar topBar = new TopBar(30, 30);
     
     public static final BottomInfoBar infoBar = new BottomInfoBar(30, 30, mainColor);
-    
+    public static final EventPopupOverlay eventPopup = new EventPopupOverlay(30, 30, mainColor);
     
     ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     ScheduledExecutorService ex2 = Executors.newSingleThreadScheduledExecutor();
@@ -115,7 +115,7 @@ public class GamePanel extends JPanel {
         
         
         screen.addCharacterPanel(100, dayEndOverlay);
-        screen.addCharacterPanel(101, new EventPopupOverlay(30, 30, mainColor));
+        screen.addCharacterPanel(101, eventPopup);
         //screen.addCharacterPanel(4, new BottomBarOverlay(10, 10));
         //screen.addCharacterPanel(1, panel);
         

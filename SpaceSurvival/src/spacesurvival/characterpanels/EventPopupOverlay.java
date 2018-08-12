@@ -10,6 +10,9 @@ import java.awt.event.KeyEvent;
 import static spacesurvival.characterpanels.ColonyBuildings.CARD_WIDTH;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
+import spacesurvival.logic.Colony;
+import spacesurvival.logic.Event;
+import spacesurvival.logic.EventChoice;
 
 /**
  *
@@ -19,6 +22,7 @@ public class EventPopupOverlay extends CharacterPanel {
     
     private Color mainColor;
     
+    private Event event;
     private String eventTitle = "Event Title";
     private String eventDescription = "Description, this is a long description for an event popup.";
     private int eventColor = 0xFF880900;
@@ -137,7 +141,9 @@ public class EventPopupOverlay extends CharacterPanel {
     public void onMousePressed(int x, int y, boolean isLeftClick) {
         if (boxSelected != -1) {
             
-            
+            if (event != null) {
+                event.resolveEvent(boxSelected, Colony.INSTANCE);
+            }
             hide();
         }
         boxSelected = -1;
@@ -147,7 +153,15 @@ public class EventPopupOverlay extends CharacterPanel {
         setX(-100000);
     }
     
-    public void show() {
+    public void show(Event event) {
+        eventTitle = event.getName();
+        eventDescription = event.getDiscription();
+        
+        choices = new String[event.getListChoice().size()];
+        for (int i=0; i<choices.length; i++) {
+            choices[i] = event.getListChoice().get(i).getName();
+        }
+        
         setX(0);
     }
     

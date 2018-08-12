@@ -80,6 +80,7 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
                 Building b = allBuildings.get(i);
                 getCharacterImage().drawStringSpaceWrapPad(b.getName(), currentX + 1, currentY + 1, currentX + 1, getWidth() - (currentX + CARD_WIDTH));
                 getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? b.getRGB() : b.getColor().darker().getRGB());//r.nextInt(0xFFFFFF) | 0xFF000000);
+                
             }
             
             currentX += CARD_WIDTH;

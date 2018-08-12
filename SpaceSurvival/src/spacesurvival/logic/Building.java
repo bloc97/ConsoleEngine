@@ -16,6 +16,8 @@ import java.util.List;
 public abstract class Building {
 
 
+    final static Building encampment = new HousingBuilding("Encampment", "Disc", 1);
+    
     final static Building shelter = new HousingBuilding("Shelter", "Disc", 2, FactoryBuilding.Produce.MATERIALS);
     final static Building livingQuarters = new HousingBuilding("Living Quarters", "Disc", 2, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.PARTS);
     final static Building highDensityHousing = new HousingBuilding("High Density Housing", "Disc", 2, FactoryBuilding.Produce.COMPOSITE_MATERIALS, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.PARTS, FactoryBuilding.Produce.ELECTRONICS);

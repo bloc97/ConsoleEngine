@@ -8,11 +8,13 @@ package spacesurvival.characterpanels;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import spacesurvival.GamePanel;
 import spacesurvival.SpaceSurvival;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
 import spacesurvival.logic.Colony;
+import spacesurvival.logic.Event;
 
 /**
  *
@@ -320,6 +322,15 @@ public class DayEndPopupOverlay extends CharacterPanel {
         GamePanel.topBar.genImage();
         GamePanel.bottomBar.onGlobalKeyReleased(new KeyEvent(new Component() {
         }, 0, 0, 0, KeyEvent.VK_Q, 'q'));
+        
+        List<Event> eventList = Colony.INSTANCE.getListTodayEvent();
+        
+        for (Event event : eventList) {
+            GamePanel.eventPopup.show(event);
+            break;
+        }
+        
+        
     }
     
     public void hide() {
