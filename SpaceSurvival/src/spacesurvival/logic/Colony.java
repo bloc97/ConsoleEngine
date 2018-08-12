@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import spacesurvival.GamePanel;
 
 /**
  *
@@ -25,10 +26,10 @@ public enum Colony {
     private int dayTillSaved = 0;
     private int crime = 0; //starting //not using yet
     private boolean helpComing = false;
-    private String news = "";
+    private String news = "Clear weather, low chance of precipitations. Temperature is cool, bring a jacket to work.        Reports of space piracy on the system 4AB-RJ, all civilian ships should stay vigilant. We advise you to report any suspicious activities to the local authorities.                               ";
     private ArrayList<EventChoice> listChoosed = new ArrayList(); //when ever you made a choice it's store here
     private ArrayList<Event> listTodayEvent = new ArrayList();
-
+    
     private int day = 1; // start at day one;
     
     private final int planetMaxSpace = 150; //default 
@@ -306,8 +307,11 @@ public enum Colony {
                 availableProduceList.addAll(f.getEffectiveProduceList());
             }
         }
-        
+        availableBuildings.clear();
         for (Building b : Building.ALL_BUILDINGS) {
+            if (b == null) {
+                continue;
+            }
             Set<FactoryBuilding.Produce> produceSet = new HashSet<>();
             for (FactoryBuilding.Produce p : b.getRequiredProduce()) {
                 produceSet.add(p);
@@ -318,14 +322,22 @@ public enum Colony {
                 }
             }
         }
-        
     }
 
+    public List<Building> getAllBuildings() {
+        ArrayList<Building> list = new ArrayList<>(buildings);
+        list.addAll(pendingBuildings);
+        return list;
+    }
     public List<Building> getBuildings() {
         return Collections.unmodifiableList(buildings);
     }
     public List<Building> getPendingBuildings() {
         return Collections.unmodifiableList(pendingBuildings);
+    }
+
+    public List<Building> getAvailableBuildings() {
+        return Collections.unmodifiableList(availableBuildings);
     }
     
     
@@ -385,19 +397,18 @@ public enum Colony {
 
         return news;
     } //is called by logic every new day, generate the new based off the colony stats, this is called by logic every day
-    
     public void generateEvents(ArrayList<Event> eventMasterList) {
-        
+
         for (Event element: eventMasterList) { //check for each event stored in the master list
-            
+
             boolean eventToday = true;
-            
+
             if (!(day >= element.getEventTriggeringDay())) { // if today allow the event to happen
                 eventToday = false;
             }
             if (element.getRequiredHapinessLower() != -1) { //if theres a hapiness check to allow the event to generate
                 if (element.getRequiredHapinessLower() < happiness && happiness < element.getRequiredHapinessUpper()) {
-                    
+
                 }
                 else {
                     eventToday = false;
@@ -405,21 +416,21 @@ public enum Colony {
             }
             if (element.getEventRequiredEvent().equals("")== false) { //if there's a previous eventchoice to be generate
                 if (listChoosed.contains(element.getEventRequiredEvent())) { ///NOT WORKING
-                    
+
                 }
                 else {
                     eventToday = false;
                 }
             }
-            
+
             if (eventToday) { // if all go well generate this and add it to the today event list
                 listTodayEvent.add(element);
             }
-            
         }
-        
-    }// called every day in logic, generate event to be resolve for the day according to condition.
 
+    }// called every day in logic, generate event to be resolve for the day according to condition.
+    
+    
     public void resolveHapiness() {
         if (happiness < 5) {
             //
@@ -464,11 +475,6 @@ public enum Colony {
         return listChoosed;
     }
 
-    
-    
-    public int getDayLanded() {
-        return day;
-    }
 
     public int getHappiness() {
         return happiness;
@@ -481,7 +487,6 @@ public enum Colony {
     public String getNews() {
         return news;
     }
-
     public ArrayList<Event> getListTodayEvent() {
         return listTodayEvent;
     }
@@ -489,7 +494,5 @@ public enum Colony {
     public int getDay() {
         return day;
     }
-    
-    
 
 }

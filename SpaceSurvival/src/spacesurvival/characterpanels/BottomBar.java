@@ -194,7 +194,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
             return "";
         }
         String scrollingText = string;
-        pos = getWidth() + 1;
+        //pos = getWidth() + 1;
         
         String cleanedText = "";
         int i = 0;

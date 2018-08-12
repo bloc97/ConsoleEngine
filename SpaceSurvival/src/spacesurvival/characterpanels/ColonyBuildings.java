@@ -7,7 +7,9 @@ package spacesurvival.characterpanels;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.Random;
+import spacesurvival.GamePanel;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
 import spacesurvival.logic.Building;
@@ -29,14 +31,12 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     
     private final ScrollBar scrollBar;
     
-    private final DayEndPopupOverlay dayEndOverlay;
     
-    public ColonyBuildings(int consoleWidth, int consoleHeight, Color mainColor, DayEndPopupOverlay dayEndOverlay) {
+    public ColonyBuildings(int consoleWidth, int consoleHeight, Color mainColor) {
         super(Background.XLINE + 1, Background.TOP_PADDING + 1, consoleWidth - Background.XLINE - 2, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2);
         this.mainColor = mainColor;
         this.scrollBar = new RightScrollBar(consoleWidth, consoleHeight, mainColor, this);
         this.scrollBar.setStatus(scroll, getMaxScroll());
-        this.dayEndOverlay = dayEndOverlay;
     }
     
     @Override
@@ -66,18 +66,18 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         int currentX = xPad;
         int currentY = -scroll;
         
-        int buildingsNum = Colony.INSTANCE.getBuildings().size();
+        List<Building> allBuildings = Colony.INSTANCE.getAllBuildings();
         
         
-        for (int i=0; i<=buildingsNum; i++) {
+        for (int i=0; i<=allBuildings.size(); i++) {
             getCharacterImage().drawRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT);
             
             getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? 0xFFFFFFFF : 0xFFCCCCCC);//r.nextInt(0xFFFFFF) | 0xFF000000);
             
-            if (i == buildingsNum) {
+            if (i == allBuildings.size()) {
                 getCharacterImage().drawString("■End Day", currentX + CARD_WIDTH/2 - 4, currentY + CARD_HEIGHT/2, 0xFFFFAA00);
             } else {
-                Building b = Colony.INSTANCE.getBuildings().get(i);
+                Building b = allBuildings.get(i);
                 getCharacterImage().drawStringSpaceWrapPad(b.getName(), currentX + 1, currentY + 1, currentX + 1, getWidth() - (currentX + CARD_WIDTH));
             }
             
@@ -99,7 +99,7 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     @Override
     public int getMaxScroll() {
         int squaresPerWidth = getWidth() / CARD_WIDTH;
-        int buildingsNum = Colony.INSTANCE.getBuildings().size();
+        int buildingsNum = Colony.INSTANCE.getAllBuildings().size();
         int totalHeight = (int)Math.ceil((double)(buildingsNum + 1) / squaresPerWidth) * CARD_HEIGHT;
         if (totalHeight < getHeight()) {
             return 0;
@@ -174,8 +174,22 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
             int iconY = y / CARD_HEIGHT;
 
             selectedIndex = iconY * squaresPerRow + iconX;
+            
+            List<Building> allBuildings = Colony.INSTANCE.getAllBuildings();
+            
+            if (selectedIndex >= 0 && selectedIndex < allBuildings.size()) {
+                GamePanel.infoBar.setText(allBuildings.get(selectedIndex).getDescription());
+                GamePanel.infoBar.show();
+            } else if (selectedIndex == allBuildings.size()) {
+                GamePanel.infoBar.setText("Ends the current day.");
+                GamePanel.infoBar.show();
+            } else {
+                GamePanel.infoBar.hide();
+            }
+            
         } else {
             selectedIndex = -1;
+            GamePanel.infoBar.hide();
         }
         genImage();
     }
@@ -183,15 +197,16 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     @Override
     public void onMouseExited(int x, int y) {
         selectedIndex = -1;
+        GamePanel.infoBar.hide();
         genImage();
     }
     
     @Override
     public void onMouseReleased(int x, int y, boolean isLeftClick) {
-        int buildingsNum = Colony.INSTANCE.getBuildings().size();
+        int buildingsNum = Colony.INSTANCE.getAllBuildings().size();
         if (!hasDraggedScroll) {
             if (selectedIndex == buildingsNum) {
-                dayEndOverlay.show();
+                GamePanel.dayEndOverlay.show();
             } else {
                 
             }

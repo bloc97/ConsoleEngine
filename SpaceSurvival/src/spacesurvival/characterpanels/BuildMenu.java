@@ -6,11 +6,14 @@
 package spacesurvival.characterpanels;
 
 import java.awt.Color;
+import java.util.List;
 import java.util.Random;
 import static spacesurvival.characterpanels.ColonyBuildings.CARD_HEIGHT;
 import static spacesurvival.characterpanels.ColonyBuildings.CARD_WIDTH;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
+import spacesurvival.logic.Building;
+import spacesurvival.logic.Colony;
 
 /**
  *
@@ -25,12 +28,11 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
     
     private int scroll = 0;
     
-    private int buildingCardNum = 7;
     
     private final ScrollBar scrollBar;
     
     public BuildMenu(int consoleWidth, int consoleHeight, Color mainColor) {
-        super(1, Background.TOP_PADDING + 1, Background.XLINE - 1, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2);
+        super(1, Background.TOP_PADDING + 1, Background.XLINE - 2, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2);
         this.mainColor = mainColor;
         this.scrollBar = new MiddleScrollBar(consoleWidth, consoleHeight, mainColor, this);
         this.scrollBar.setStatus(scroll, getMaxScroll());
@@ -38,7 +40,7 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
     
     @Override
     public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
-        setCharacterImage(new CharacterImage(Background.XLINE - 1, newHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2));
+        setCharacterImage(new CharacterImage(Background.XLINE - 2, newHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2));
         genImage();
     }
     public static void setFontHeight(int height) {
@@ -52,7 +54,7 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
     }
     
     
-    private void genImage() {
+    public void genImage() {
         getCharacterImage().clear();
         checkScroll();
         getCharacterImage().fillForegroundColor(mainColor.brighter().brighter().getRGB());
@@ -62,10 +64,19 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
         
         int currentX = xPad;
         int currentY = -scroll;
-        Random r = new Random();
-        for (int i=0; i<buildingCardNum; i++) {
+        
+        List<Building> availableBuildings = Colony.INSTANCE.getAvailableBuildings();
+        
+        for (int i=0; i<availableBuildings.size(); i++) {
             getCharacterImage().drawRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT);
             getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? 0xFFFFFFFF : 0xFFCCCCCC);//r.nextInt(0xFFFFFF) | 0xFF000000);
+            
+            Building b = availableBuildings.get(i);
+            System.out.println(getWidth());
+            getCharacterImage().drawStringSpaceWrapPad(b.getName(), currentX + 1, currentY + 1, currentX + 1, currentX + 1);
+            
+            
+            
             currentX += CARD_WIDTH;
             if (currentX + CARD_WIDTH > getWidth()) {
                 currentX = xPad;
@@ -84,7 +95,7 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
     @Override
     public int getMaxScroll() {
         int squaresPerWidth = getWidth() / CARD_WIDTH;
-        int totalHeight = (int)Math.ceil((double)buildingCardNum / squaresPerWidth) * CARD_HEIGHT;
+        int totalHeight = (int)Math.ceil((double)Colony.INSTANCE.getAvailableBuildings().size() / squaresPerWidth) * CARD_HEIGHT;
         if (totalHeight < getHeight()) {
             return 0;
         }

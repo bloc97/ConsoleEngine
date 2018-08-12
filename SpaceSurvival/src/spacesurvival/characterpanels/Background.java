@@ -34,7 +34,7 @@ public class Background extends CharacterPanel {
         } else if (height == 14) {
             XLINE = 30;
         } else {
-            XLINE = 34;
+            XLINE = 38;
         }
     }
     

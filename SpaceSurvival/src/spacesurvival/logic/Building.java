@@ -11,15 +11,48 @@ package spacesurvival.logic;
  */
 
 import java.util.List;
-import static spacesurvival.logic.FactoryBuilding.*;
-import static spacesurvival.logic.HousingBuilding.*;
-import static spacesurvival.logic.SpecialBuilding.*;
 
 public abstract class Building {
 
+
+    final static Building shelter = new HousingBuilding("Shelter", "Disc", 2, FactoryBuilding.Produce.MATERIALS);
+    final static Building livingQuarters = new HousingBuilding("Living Quarters", "Disc", 2, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.PARTS);
+    final static Building highDensityHousing = new HousingBuilding("High Density Housing", "Disc", 2, FactoryBuilding.Produce.COMPOSITE_MATERIALS, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.PARTS, FactoryBuilding.Produce.ELECTRONICS);
     
+    final static FactoryBuilding crashedShip = new FactoryBuilding("Crashed Ship", "One of its kind, now broken and grounded.", 0, FactoryBuilding.Produce.MATERIALS, 1);
     
-    public final static Building[] ALL_BUILDINGS  ={highDensityHousing,beacon,emergencyResponceCenter,riotControlCenter, mFactory,pFactory,eFactory,amFactory,apFactory,aeFactory,bGenerator,cPlant};
+    final static FactoryBuilding mFactory = new FactoryBuilding("Materials Factory","Disc", FactoryBuilding.Produce.MATERIALS, 1, FactoryBuilding.Produce.MATERIALS);
+    final static FactoryBuilding pFactory = new FactoryBuilding("Parts Factory","Disc", FactoryBuilding.Produce.PARTS, 1, FactoryBuilding.Produce.MATERIALS);
+    final static FactoryBuilding eFactory = new FactoryBuilding("Electronics Factory","Disc", FactoryBuilding.Produce.ELECTRONICS, 1, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.PARTS);
+    
+    final static FactoryBuilding amFactory = new FactoryBuilding("Advanced Materials Factory","Disc", FactoryBuilding.Produce.COMPOSITE_MATERIALS, 1, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.PARTS, FactoryBuilding.Produce.ELECTRONICS);
+    final static FactoryBuilding apFactory = new FactoryBuilding("Advanced Parts Factory","Disc", FactoryBuilding.Produce.ADVANCED_PARTS, 1, FactoryBuilding.Produce.COMPOSITE_MATERIALS, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.PARTS, FactoryBuilding.Produce.ELECTRONICS);
+    final static FactoryBuilding aeFactory = new FactoryBuilding("Advanced Electronics Factory","Disc", FactoryBuilding.Produce.COMPUTERS, 1, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.ADVANCED_PARTS, FactoryBuilding.Produce.PARTS,FactoryBuilding.Produce.ELECTRONICS, FactoryBuilding.Produce.ELECTRONICS);
+    
+    final static FactoryBuilding bGenerator = new FactoryBuilding("Biomass Generator","Disc", FactoryBuilding.Produce.BIOMASS, 1, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.PARTS);
+    final static FactoryBuilding cPlant = new FactoryBuilding("Chemical Plant","Disc", FactoryBuilding.Produce.ROCKET_FUEL, 1, FactoryBuilding.Produce.COMPOSITE_MATERIALS, FactoryBuilding.Produce.COMPOSITE_MATERIALS, FactoryBuilding.Produce.COMPOSITE_MATERIALS, FactoryBuilding.Produce.ADVANCED_PARTS, FactoryBuilding.Produce.ADVANCED_PARTS, FactoryBuilding.Produce.COMPUTERS, FactoryBuilding.Produce.COMPUTERS);
+
+    final static Building beacon = new SpecialBuilding("Beacon","Disc",2, FactoryBuilding.Produce.MATERIALS, FactoryBuilding.Produce.MATERIALS);
+    final static Building emergencyResponceCenter = new SpecialBuilding("Emergency Response Center","Disc",4, FactoryBuilding.Produce.COMPOSITE_MATERIALS, FactoryBuilding.Produce.COMPOSITE_MATERIALS, FactoryBuilding.Produce.PARTS);
+    final static Building riotControlCenter = new SpecialBuilding("Riot Control Center","Disc",2, FactoryBuilding.Produce.COMPOSITE_MATERIALS, FactoryBuilding.Produce.COMPOSITE_MATERIALS, FactoryBuilding.Produce.ADVANCED_PARTS, FactoryBuilding.Produce.ADVANCED_PARTS);
+
+    
+    public final static Building[] ALL_BUILDINGS = {
+        shelter,
+        livingQuarters,
+        highDensityHousing,
+        beacon,
+        emergencyResponceCenter,
+        riotControlCenter,
+        mFactory,
+        pFactory,
+        eFactory,
+        amFactory,
+        apFactory,
+        aeFactory,
+        bGenerator,
+        cPlant
+    };
     
     
     
@@ -29,7 +62,7 @@ public abstract class Building {
     private final int requiredSpace;
     private int constructionState;
     
-    private final Produce[] requiredProduce;
+    private final FactoryBuilding.Produce[] requiredProduce;
     
     
     /*
@@ -42,7 +75,7 @@ public abstract class Building {
     
     
 
-    public Building(String name, String description, int requiredSpace, Produce[] requiredProduce) {
+    public Building(String name, String description, int requiredSpace, FactoryBuilding.Produce... requiredProduce) {
         this.name = name;
         this.description = description;
         this.requiredSpace = requiredSpace;
@@ -83,7 +116,10 @@ public abstract class Building {
         return constructionState >= requiredSpace;
     }
 
-    public Produce[] getRequiredProduce() {
+    public FactoryBuilding.Produce[] getRequiredProduce() {
+        if (requiredProduce == null) {
+            return new FactoryBuilding.Produce[0];
+        }
         return requiredProduce;
     }
     

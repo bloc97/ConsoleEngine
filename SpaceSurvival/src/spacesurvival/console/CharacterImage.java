@@ -170,7 +170,9 @@ public class CharacterImage {
         return drawStringSpaceWrapPad(str, x, y, 0, 0);
     }
     public int drawStringSpaceWrapPad(String str, int x, int y, int leftPad, int rightPad) {
-        for (String s : str.split(" ")) {
+        String[] words = str.split(" ");
+        int n = 0;
+        for (String s : words) {
             if (s.length() > getWidth() - rightPad - leftPad) {
                 for (int i=0; i<s.length(); i++) {
                     setChar(x, y, s.charAt(i));
@@ -190,8 +192,11 @@ public class CharacterImage {
                 setChar(x, y, s.charAt(i));
                 x++;
             }
-            setChar(x, y, ' ');
+            if (n < words.length - 1) {
+                setChar(x, y, ' ');
+            }
             x++;
+            n++;
         }
         return y;
     }

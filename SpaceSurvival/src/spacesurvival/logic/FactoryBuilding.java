@@ -14,20 +14,6 @@ import java.util.List;
  */
 public class FactoryBuilding extends Building {
     
-    static FactoryBuilding crashedShip = new FactoryBuilding("Crashed Ship", "Disc", 0, Produce.MATERIALS, 1);
-    
-    
-    static FactoryBuilding mFactory = new FactoryBuilding("Materials Factory","Disc", Produce.MATERIALS, 1, Produce.MATERIALS);
-    static FactoryBuilding pFactory = new FactoryBuilding("Parts Factory","Disc", Produce.PARTS, 1, Produce.MATERIALS);
-    static FactoryBuilding eFactory = new FactoryBuilding("Electronics Factory","Disc", Produce.ELECTRONICS, 1, Produce.MATERIALS, Produce.PARTS);
-    
-    static FactoryBuilding amFactory = new FactoryBuilding("Advanced Materials Factory","Disc", Produce.COMPOSITE_MATERIALS, 1, Produce.MATERIALS, Produce.MATERIALS, Produce.PARTS, Produce.ELECTRONICS);
-    static FactoryBuilding apFactory = new FactoryBuilding("Advanced Parts Factory","Disc", Produce.ADVANCED_PARTS, 1, Produce.COMPOSITE_MATERIALS, Produce.MATERIALS, Produce.PARTS, Produce.ELECTRONICS);
-    static FactoryBuilding aeFactory = new FactoryBuilding("Advanced Electronics Factory","Disc", Produce.COMPUTERS, 1, Produce.MATERIALS, Produce.MATERIALS, Produce.ADVANCED_PARTS, Produce.PARTS,Produce.ELECTRONICS, Produce.ELECTRONICS);
-    
-    static FactoryBuilding bGenerator = new FactoryBuilding("Biomass Generator","Disc", Produce.BIOMASS, 1, Produce.MATERIALS, Produce.MATERIALS, Produce.PARTS);
-    static FactoryBuilding cPlant = new FactoryBuilding("Chemical Plant","Disc", Produce.ROCKET_FUEL, 1, Produce.COMPOSITE_MATERIALS, Produce.COMPOSITE_MATERIALS, Produce.COMPOSITE_MATERIALS, Produce.ADVANCED_PARTS, Produce.ADVANCED_PARTS, Produce.COMPUTERS, Produce.COMPUTERS);
-
 
     public enum Produce {
         MATERIALS, PARTS, ELECTRONICS, COMPOSITE_MATERIALS, ADVANCED_PARTS, COMPUTERS, BIOMASS, ROCKET_FUEL;

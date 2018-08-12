@@ -28,6 +28,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
 import spacesurvival.characterpanels.BottomBar;
+import spacesurvival.characterpanels.BottomInfoBar;
 import spacesurvival.characterpanels.BuildMenu;
 import spacesurvival.characterpanels.ColonyBuildings;
 import spacesurvival.characterpanels.DayEndPopupOverlay;
@@ -39,6 +40,7 @@ import spacesurvival.characterpanels.TopPopupTest;
 import spacesurvival.console.CharacterPanel;
 import spacesurvival.console.ConsolePanel;
 import spacesurvival.console.ConsoleScreen;
+import spacesurvival.logic.Colony;
 import spacesurvival.logic.Logic;
 
 /**
@@ -63,13 +65,16 @@ public class GamePanel extends JPanel {
     public static final Color mainColor = new Color(120, 146, 190);
     public static final BottomBar bottomBar = new BottomBar(30, 30, mainColor);
     public static final DayEndPopupOverlay dayEndOverlay = new DayEndPopupOverlay(30, 30, mainColor);
-    public static final ColonyBuildings colonyBuildings = new ColonyBuildings(30, 30, mainColor, dayEndOverlay);
+    public static final ColonyBuildings colonyBuildings = new ColonyBuildings(30, 30, mainColor);
     public static final BuildMenu buildMenu = new BuildMenu(30, 30, mainColor);
     public static final Background background = new Background(30, 30, mainColor);
     public static final TopBar topBar = new TopBar(30, 30);
     
+    public static final BottomInfoBar infoBar = new BottomInfoBar(30, 30, mainColor);
+    
     
     ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
+    ScheduledExecutorService ex2 = Executors.newSingleThreadScheduledExecutor();
     
     public GamePanel() {
         /*
@@ -106,6 +111,9 @@ public class GamePanel extends JPanel {
         screen.addCharacterPanel(11, buildMenu.getScrollBar());
         
         screen.addCharacterPanel(20, bottomBar);
+        
+        screen.addCharacterPanel(21, infoBar);
+        
         
         screen.addCharacterPanel(100, dayEndOverlay);
         screen.addCharacterPanel(101, new EventPopupOverlay(30, 30, mainColor));
@@ -274,6 +282,8 @@ public class GamePanel extends JPanel {
             bottomBar.tickPos();
         }, 0, 200, TimeUnit.MILLISECONDS);
         
+        Colony.INSTANCE.refreshAvailableBuildings();
+        buildMenu.genImage();
     }
     
     private Point getMouseConsolePosition(int mouseX, int mouseY) {
