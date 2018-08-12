@@ -27,6 +27,7 @@ public enum Colony {
     private boolean helpComing = false;
     private String news = "";
     private ArrayList<EventChoice> listChoosed = new ArrayList(); //when ever you made a choice it's store here
+    private ArrayList<Event> listTodayEvent = new ArrayList();
 
     private int day = 1; // start at day one;
     
@@ -385,7 +386,37 @@ public enum Colony {
         return news;
     } //is called by logic every new day, generate the new based off the colony stats, this is called by logic every day
     
-    public void generateEvents() {
+    public void generateEvents(ArrayList<Event> eventMasterList) {
+        
+        for (Event element: eventMasterList) {
+            
+            boolean eventToday = true;
+            
+            if (!(day >= element.getEventTriggeringDay())) {
+                eventToday = false;
+            }
+            if (element.getRequiredHapinessLower() != -1) {
+                if (element.getRequiredHapinessLower() < happiness && happiness < element.getRequiredHapinessUpper()) {
+                    
+                }
+                else {
+                    eventToday = false;
+                }
+            }
+            if (element.getEventRequiredEvent().equals("")== false) {
+                if (listChoosed.contains(element.getEventRequiredEvent())) { ///NOT WORKING
+                    
+                }
+                else {
+                    eventToday = false;
+                }
+            }
+            
+            if (eventToday) {
+                listTodayEvent.add(element);
+            }
+            
+        }
         
     }// called every day in logic, generate event to be resolve for the day according to condition.
 
@@ -450,5 +481,15 @@ public enum Colony {
     public String getNews() {
         return news;
     }
+
+    public ArrayList<Event> getListTodayEvent() {
+        return listTodayEvent;
+    }
+
+    public int getDay() {
+        return day;
+    }
+    
+    
 
 }

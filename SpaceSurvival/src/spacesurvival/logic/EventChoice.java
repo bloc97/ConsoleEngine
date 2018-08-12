@@ -26,6 +26,11 @@ public class EventChoice {
     public EventChoice() {
     }
     
+    public EventChoice(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+    
     public boolean isChoiceAvailable(Colony colony) {
         if (colony.getBuildings().containsAll(requiredBuildings)&& colony.getListChoosed().containsAll(requiredChoosedEvents)) {
             return true;

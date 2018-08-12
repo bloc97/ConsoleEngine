@@ -13,14 +13,19 @@ import java.util.ArrayList;
  */
 public class Event {
     
+
+    
+    
+    
     public static ArrayList<Event> masterEventList = new ArrayList();
 
     private String name;
     private String discription;
     private int eventTriggeringDay = -1; // if this event happens on specific day, use this, else = -1;
-    private String eventRequiredEvent = "";//if this event required a previous event already happened to be taken place, use this, else = "";
+    private EventChoice eventRequiredEventChoice = null;//if this event required a previous event already happened to be taken place, use this, else = "";
     
-    private int requiredHapiness = -1;
+    private int requiredHapinessLower = -1;
+    private int requiredHapinessUpper = -1;
     
     private ArrayList<EventChoice> listChoice;
 
@@ -43,6 +48,14 @@ public class Event {
     public static ArrayList<Event> getMasterEventList() {
         return masterEventList;
     }
+    
+    public static void iniMasterEventList() {
+            //
+            Event Event1welcome = new Event("Welcome","This is LD42");
+            EventChoice EV11 = new EventChoice("Ok",11);
+            masterEventList.add(Event1welcome);
+           //
+    }
 
     public static void setMasterEventList(ArrayList<Event> masterEventList) {
         Event.masterEventList = masterEventList;
@@ -62,6 +75,22 @@ public class Event {
 
     public void setDiscription(String discription) {
         this.discription = discription;
+    }
+
+    public int getEventTriggeringDay() {
+        return eventTriggeringDay;
+    }
+
+    public EventChoice getEventRequiredEvent() {
+        return eventRequiredEventChoice;
+    }
+
+    public int getRequiredHapinessLower() {
+        return requiredHapinessLower;
+    }
+
+    public int getRequiredHapinessUpper() {
+        return requiredHapinessUpper;
     }
     
     

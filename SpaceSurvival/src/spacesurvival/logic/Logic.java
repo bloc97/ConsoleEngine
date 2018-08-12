@@ -18,7 +18,7 @@ public enum Logic {
         Colony.INSTANCE.avanceDay();
         Colony.INSTANCE.avanceHelp();
         Colony.INSTANCE.generateNews(); // return string
-        Colony.INSTANCE.generateEvents();
+        Colony.INSTANCE.generateEvents(Event.getMasterEventList());
         Colony.INSTANCE.isHelpArrived(); //return t/f
         
         
