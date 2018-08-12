@@ -7,6 +7,7 @@ package spacesurvival.characterpanels;
 
 import java.awt.Color;
 import java.util.Random;
+import static spacesurvival.characterpanels.ColonyBuildings.CARD_WIDTH;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
 
@@ -16,8 +17,8 @@ import spacesurvival.console.CharacterPanel;
  */
 public class BuildMenu extends CharacterPanel implements Scrollable {
     
-    public static final int CARD_WIDTH = 15;
-    public static final int CARD_HEIGHT = 9;
+    public static int CARD_WIDTH = 15;
+    public static int CARD_HEIGHT = 9;
     
     private Color mainColor;
     
@@ -38,6 +39,15 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
     public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
         setCharacterImage(new CharacterImage(Background.XLINE - 1, newHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2));
         genImage();
+    }
+    public static void setFontHeight(int height) {
+        if (height == 8) {
+            CARD_WIDTH = 15;
+        } else if (height == 14) {
+            CARD_WIDTH = 26;
+        } else {
+            CARD_WIDTH = 30;
+        }
     }
     
     

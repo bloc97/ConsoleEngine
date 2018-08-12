@@ -61,20 +61,43 @@ public class GamePanel extends JPanel {
     private final BottomBar bottomBar = new BottomBar(30, 30, mainColor);
     private final ColonyBuildings colonyBuildings = new ColonyBuildings(30, 30, mainColor);
     private final BuildMenu buildMenu = new BuildMenu(30, 30, mainColor);
+    private final Background background = new Background(30, 30, mainColor);
     
     ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     
     public GamePanel() {
-        
-        File fontFolder = new File("resources/fonts/CGA");
+        /*
+        File fontFolder = new File("resources/fonts/VGA");
         
         fonts = fontFolder.listFiles((pathname) -> {
             return pathname.getName().toLowerCase().endsWith(".ttf");
+        });*/
+        
+        File[] fonts0 = new File("resources/fonts/CGA").listFiles((pathname) -> {
+            return pathname.getName().toLowerCase().endsWith(".ttf");
         });
+        File[] fonts1 = new File("resources/fonts/EGA").listFiles((pathname) -> {
+            return pathname.getName().toLowerCase().endsWith(".ttf");
+        });
+        File[] fonts2 = new File("resources/fonts/VGA").listFiles((pathname) -> {
+            return pathname.getName().toLowerCase().endsWith(".ttf");
+        });
+        
+        fonts = new File[fonts0.length + fonts1.length + fonts2.length];
+        
+        for (int i=0; i<fonts0.length; i++) {
+            fonts[i] = fonts0[i];
+        }
+        for (int i=0; i<fonts1.length; i++) {
+            fonts[i + fonts0.length] = fonts1[i];
+        }
+        for (int i=0; i<fonts2.length; i++) {
+            fonts[i + fonts0.length + fonts1.length] = fonts2[i];
+        }
         
         screen = new ConsoleScreen(80, 50, ConsoleFont.fromFile(fonts[fontIndex]));
         
-        screen.addCharacterPanel(-5, new Background(30, 30, mainColor));
+        screen.addCharacterPanel(-5, background);
         //screen.addCharacterPanel(2, new RightScrollBar(30, 30, mainColor));
         screen.addCharacterPanel(3, new TopBar(30, 30));
         screen.addCharacterPanel(5, colonyBuildings);
@@ -114,6 +137,18 @@ public class GamePanel extends JPanel {
                         break;
                 }
                 screen.setConsoleFont(ConsoleFont.fromFile(fonts[fontIndex]));
+                
+                if (screen.getConsoleFont().getHeight() == 8) {
+                    preferredConsoleWidth = 40;
+                } else if (screen.getConsoleFont().getHeight() == 14) {
+                    preferredConsoleWidth = 70;
+                } else {
+                    preferredConsoleWidth = 80;
+                }
+                Background.setFontHeight(screen.getConsoleFont().getHeight());
+                BuildMenu.setFontHeight(screen.getConsoleFont().getHeight());
+                ColonyBuildings.setFontHeight(screen.getConsoleFont().getHeight());
+                
                 if (focusedPanel != null) {
                     focusedPanel.onKeyPressed(e);
                 }
@@ -266,8 +301,8 @@ public class GamePanel extends JPanel {
     
     private final int SCALE = 100;
     
-    private final int preferredConsoleWidth = 40;
-    private final int preferredConsoleHeight = 30;
+    private int preferredConsoleWidth = 40;
+    private int preferredConsoleHeight = 30;
     
     private ConsolePanel focusedPanel;
     

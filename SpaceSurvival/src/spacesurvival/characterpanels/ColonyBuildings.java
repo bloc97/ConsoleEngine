@@ -17,8 +17,8 @@ import spacesurvival.console.CharacterPanel;
  */
 public class ColonyBuildings extends CharacterPanel implements Scrollable {
 
-    public static final int CARD_WIDTH = 12;
-    public static final int CARD_HEIGHT = 9;
+    public static int CARD_WIDTH = 12;
+    public static int CARD_HEIGHT = 9;
     
     private Color mainColor;
     
@@ -38,9 +38,19 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     @Override
     public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
         setCharacterImage(new CharacterImage(newWidth - Background.XLINE - 2, newHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2));
+        setX(Background.XLINE + 1);
         genImage();
     }
     
+    public static void setFontHeight(int height) {
+        if (height == 8) {
+            CARD_WIDTH = 12;
+        } else if (height == 14) {
+            CARD_WIDTH = 21;
+        } else {
+            CARD_WIDTH = 24;
+        }
+    }
     
     private void genImage() {
         getCharacterImage().clear();

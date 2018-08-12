@@ -18,7 +18,7 @@ public class Background extends CharacterPanel {
     public static final int TOP_PADDING = 1;
     public static final int BOTTOM_PADDING = 1;
     
-    public static final int XLINE = 22-3;
+    public static int XLINE = 19;
     
     private Color mainColor;
 
@@ -26,6 +26,16 @@ public class Background extends CharacterPanel {
         super(0, 0, consoleWidth, consoleHeight);
         this.mainColor = mainColor;
         genImage();
+    }
+    
+    public static void setFontHeight(int height) {
+        if (height == 8) {
+            XLINE = 19;
+        } else if (height == 14) {
+            XLINE = 30;
+        } else {
+            XLINE = 34;
+        }
     }
     
     @Override

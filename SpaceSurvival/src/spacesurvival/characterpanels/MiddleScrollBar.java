@@ -23,6 +23,7 @@ public class MiddleScrollBar extends ScrollBar {
     @Override
     public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
         this.setCharacterImage(new CharacterImage(1, newHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2));
+        setX(Background.XLINE - 1);
         genImage();
     }
     
