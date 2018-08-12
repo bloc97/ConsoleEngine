@@ -21,7 +21,7 @@ public class Colony {
     private int colonyUsingTile = 0; //starting default
     private int colonyLostTile; // lost tile are included in using tile
     private int dayTillSaved = 0;
-    private int crime = 0; //starting
+    private int crime = 0; //starting //not using yet
     private boolean helpComing = false;
     private String news;
     private ArrayList<Building> listBuilding = new ArrayList();
@@ -52,6 +52,19 @@ public class Colony {
             colonyMaxTile = planetMaxTile;
         }
     } //with respect to maximum amount of Max planet tile
+    
+    public boolean addColonyUsingTile(int amountAdded) {
+        if (colonyUsingTile + amountAdded <= colonyMaxTile) {
+            colonyUsingTile += amountAdded;
+            return true;
+        } else {
+            return false;
+        }
+    } //if there's space, will do it and return true, else will not do it and return false;
+    
+    public void addDayTillSaved(int amountAdded) {
+        dayTillSaved+=amountAdded;
+    }
 
     public void whipNews() {
         news = "";
@@ -91,17 +104,21 @@ public class Colony {
     public boolean build(Building building) {
 
         if (colonyMaxTile - colonyUsingTile >= building.getRequiredSpace()) {
-            listBuilding.add(building);
+            listBuilding.add(building); //added the building in the colony's list
+            
             addHappiness(building.getOnBuildHappiness());
             addColonyMaxTile(building.getOnBuildColonyTile());
             dayTillPopGrow += building.getOnBuildDayTillPopGrow();
+            if(helpComing == false && building.isTriggerHelpComing() == true) {
+                helpComing = true;
+            }
 
             if (helpComing) {
                 dayTillSaved = building.getOnBuildDayTillSaved();
             }
 
             colonyUsingTile += building.getRequiredSpace();
-            return true;
+            return true; //confirm that the building took the required space and was build
         } else {
             return false;//not enough space return false
         }
@@ -136,6 +153,24 @@ public class Colony {
         }
     }//check is game is win
 
+    public int getDayTillSaved() {
+        return dayTillSaved;
+    }
+
+    public int getCrime() {
+        return crime;
+    }
+
+    public boolean isHelpComing() {
+        return helpComing;
+    }
+
+    public ArrayList<EventChoice> getListChoosed() {
+        return listChoosed;
+    }
+
+    
+    
     public int getDayLanded() {
         return dayLanded;
     }

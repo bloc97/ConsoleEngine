@@ -16,6 +16,7 @@ public class EventChoice {
     private String name;
     private ArrayList<Building> requiredBuildings; // leave this if this doesnt required a building.
     private ArrayList<Event> requiredChoosedEvents;
+    private int id; //11,12,13,         21,22,23
     
     private int modifierDayTillSaved = 0;
     private int modifierHappiness = 0;
@@ -24,6 +25,25 @@ public class EventChoice {
     
     public EventChoice() {
     }
+    
+    public boolean isChoiceAvailable(Colony colony) {
+        if (colony.getListBuilding().containsAll(requiredBuildings)&& colony.getListChoosed().containsAll(requiredChoosedEvents)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }//check if this choice is available to the colony
+    
+    public void applyModifier(Colony colony) {
+        colony.addHappiness(modifierHappiness);
+        colony.addColonyMaxTile(modifierColonyMaxTile);
+        colony.addColonyUsingTile(modifierColonyUsingTile);
+        colony.addDayTillSaved(modifierDayTillSaved);
+        //not done here
+    }
+    
+    
 
     public String getName() {
         return name;

@@ -22,6 +22,7 @@ public class Logic {
         colony.avanceDay();
         colony.avanceHelp();
         colony.generateNews(); // return string
+        colony.generateEvents();
         colony.isHelpArrived(); //return t/f
         
         

@@ -15,12 +15,15 @@ package spacesurvival.logic;
 public class Building {
 
     static Building highDensityHousing = new Building("High Density Housing","Disc",5);
-    static Building factoryTierI= new Building("Basic Factory","Disc",1);
+    static Building factoryI= new Building("Basic Factory","Disc",1);
+    static Building factoryII= new Building("Basic Factory","Disc",1);
+    static Building factoryIII= new Building("Basic Factory","Disc",1);
+    static Building factoryIV= new Building("Basic Factory","Disc",1);
     static Building beacon= new Building("Beacon","Disc",2);
     static Building ERC= new Building("Emergancy Response Center","Disc",4);
     static Building riotControlCenter = new Building("Riot Control Center","Disc",2);
     
-    public static Building[] masterBuildingList  ={highDensityHousing,factoryTierI,beacon,ERC,riotControlCenter};
+    public static Building[] masterBuildingList  ={highDensityHousing,factoryI,beacon,ERC,riotControlCenter};
     
     
     

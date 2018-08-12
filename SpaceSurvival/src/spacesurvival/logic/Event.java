@@ -28,6 +28,13 @@ public class Event {
     public Event() {
     
     }
+    
+    public void resolveEvent(int choice, Colony colony) {
+        if(listChoice.get(choice).isChoiceAvailable(colony)) {
+            listChoice.get(choice).applyModifier(colony);
+        }
+    } //this is the master fonction of choosing a eventchoice and applying the modifiers
+    
     public Event(String name, String disc) {
         this.name = name;
         this.discription = disc;
