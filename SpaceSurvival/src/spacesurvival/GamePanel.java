@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import spacesurvival.characterpanels.BottomBar;
 import spacesurvival.characterpanels.BuildMenu;
 import spacesurvival.characterpanels.ColonyBuildings;
+import spacesurvival.characterpanels.DayEndPopupOverlay;
 import spacesurvival.characterpanels.MiddleScrollBar;
 import spacesurvival.characterpanels.RightScrollBar;
 import spacesurvival.characterpanels.TopBar;
@@ -82,7 +83,9 @@ public class GamePanel extends JPanel {
         screen.addCharacterPanel(10, buildMenu);
         screen.addCharacterPanel(11, buildMenu.getScrollBar());
         
-        screen.addCharacterPanel(100, bottomBar);
+        screen.addCharacterPanel(20, bottomBar);
+        
+        //screen.addCharacterPanel(100, new DayEndPopupOverlay(30, 30, mainColor));
         //screen.addCharacterPanel(4, new BottomBarOverlay(10, 10));
         //screen.addCharacterPanel(1, panel);
         
@@ -111,8 +114,26 @@ public class GamePanel extends JPanel {
                         break;
                 }
                 screen.setConsoleFont(ConsoleFont.fromFile(fonts[fontIndex]));
+                if (focusedPanel != null) {
+                    focusedPanel.onKeyPressed(e);
+                }
                 repaint();
             }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if (focusedPanel != null) {
+                    focusedPanel.onKeyReleased(e);
+                }
+            }
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (focusedPanel != null) {
+                    focusedPanel.onKeyTyped(e);
+                }
+            }
+            
         });
         
         MouseAdapter mouseAdapter = new MouseAdapter() {

@@ -6,6 +6,7 @@
 package spacesurvival.characterpanels;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.Random;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
@@ -16,14 +17,14 @@ import spacesurvival.console.CharacterPanel;
  */
 public class ColonyBuildings extends CharacterPanel implements Scrollable {
 
-    public static final int CARD_WIDTH = 11;
-    public static final int CARD_HEIGHT = 7;
+    public static final int CARD_WIDTH = 12;
+    public static final int CARD_HEIGHT = 9;
     
     private Color mainColor;
     
     private int scroll = 0;
     
-    private int buildingCardNum = 15;
+    private int buildingCardNum = 14;
     
     private final ScrollBar scrollBar;
     
@@ -101,10 +102,6 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         return scrollBar;
     }
     
-    @Override
-    public void onMouseWheelMoved(int i) {
-        setScroll(getScroll() + i);
-    }
     private int lastX, lastY;
     
     @Override
@@ -122,5 +119,22 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         
         setScroll(getScroll() - deltaY);
     }
+
+    @Override
+    public void onKeyPressed(KeyEvent e) {
+        Scrollable.super.onKeyPressed(e);
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_A:
+                buildingCardNum--;
+                break;
+            case KeyEvent.VK_D:
+                buildingCardNum++;
+                break;
+        }
+        genImage();
+    }
+    
+    
+    
     
 }

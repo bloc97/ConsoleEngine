@@ -14,10 +14,8 @@ import spacesurvival.console.CharacterPanel;
  * @author bowen
  */
 public class TopBar extends CharacterPanel {
-
     
-    
-    private int days = 7;
+    private int day = 1;
     private String status = "Clear";
     
     private int maxSpace = 50;
@@ -40,7 +38,7 @@ public class TopBar extends CharacterPanel {
     
     private void genImage() {
         
-        final String daysString = "Day " + days;
+        final String daysString = "Day " + day;
         final String seasonString = "(" + status + ")";
         
         final String timeString = daysString + " " + seasonString;
@@ -51,21 +49,28 @@ public class TopBar extends CharacterPanel {
         
         
         final String maxSpaceString = "" + maxSpace;
-        final String buildingsSrting = "" + maxSpace;
+        final String buildingString = "" + maxSpace;
         final String debrisString = "(" + debris + ")";
+        final String spaceString = "Space: ";
         
         final String usedSpaceString = "" + usedSpace;
         final String ratioString = usedSpaceString + "/" + maxSpaceString + " ";
         
         final int ratioStringPos = getWidth() - ratioString.length();
         final int debrisStringPos = ratioStringPos - debrisString.length();
+        final int spaceStringPos = debrisStringPos - spaceString.length();
         
         getCharacterImage().drawString(ratioString, ratioStringPos, 0, 0xFFEEEEEE);
         getCharacterImage().drawString(debrisString, debrisStringPos, 0, 0xFFEE2222);
+        getCharacterImage().drawString(spaceString, spaceStringPos, 0, 0xFFEEEEEE);
         
         //getCharacterImage().fillForegroundColorRectangle(ratioStringPos, 0, ratioString.length(), 1, 0xFFEEEEEE);
         //getCharacterImage().fillForegroundColorRectangle(debrisStringPos, 0, debrisString.length(), 1, 0xFFEE2222);
         
         //getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), getHeight(), 0xFFF5EFD2);
+    }
+    
+    public void setDay(int day) {
+        this.day = day;
     }
 }

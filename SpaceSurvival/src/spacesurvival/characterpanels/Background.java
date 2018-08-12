@@ -18,7 +18,7 @@ public class Background extends CharacterPanel {
     public static final int TOP_PADDING = 1;
     public static final int BOTTOM_PADDING = 1;
     
-    public static final int XLINE = 22-9;
+    public static final int XLINE = 22-3;
     
     private Color mainColor;
 

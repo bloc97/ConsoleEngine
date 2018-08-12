@@ -6,6 +6,7 @@
 package spacesurvival.characterpanels;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import spacesurvival.console.CharacterPanel;
 
 /**
@@ -77,5 +78,32 @@ public abstract class ScrollBar extends CharacterPanel {
         
         getScrollablePanel().setScroll(lastScroll + (int)(deltaY * scrollPerSquare));
     }
+
+    @Override
+    public void onKeyPressed(KeyEvent e) {
+        double scrollPerSquare = (double)(maxScroll + getHeight()) / getHeight();
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_UP:
+                getScrollablePanel().setScroll(getScrollablePanel().getScroll() + (int)(-1 * scrollPerSquare));
+                break;
+            case KeyEvent.VK_DOWN:
+                getScrollablePanel().setScroll(getScrollablePanel().getScroll() + (int)(1 * scrollPerSquare));
+                break;
+            case KeyEvent.VK_PAGE_UP:
+                getScrollablePanel().setScroll(getScrollablePanel().getScroll() + (int)(-4 * scrollPerSquare));
+                break;
+            case KeyEvent.VK_PAGE_DOWN:
+                getScrollablePanel().setScroll(getScrollablePanel().getScroll() + (int)(4 * scrollPerSquare));
+                break;
+            case KeyEvent.VK_HOME:
+                getScrollablePanel().setScroll(0);
+                break;
+            case KeyEvent.VK_END:
+                getScrollablePanel().setScroll(getScrollablePanel().getMaxScroll());
+                break;
+        }
+    }
+    
+    
     
 }

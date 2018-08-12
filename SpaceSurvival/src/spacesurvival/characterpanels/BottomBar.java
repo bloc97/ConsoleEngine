@@ -37,12 +37,17 @@ public class BottomBar extends CharacterPanel implements Scrollable {
     public BottomBar(int consoleWidth, int consoleHeight, Color mainColor) {
         super(0, consoleHeight - Background.BOTTOM_PADDING, consoleWidth, Background.BOTTOM_PADDING);
         setScrollingText(scrollingText);
-        objectives = new String[10];
+        objectives = new String[100];
         
         for (int i=0; i<objectives.length; i++) {
-            objectives[i] = "-Objective " + i;
+            objectives[i] = "- Objective " + i;
         }
-        
+        objectives[0] = "- Submit the yearly report to the captain.";
+        objectives[1] = "- Run a daily check on the generators.";
+        objectives[2] = "- Read the news.";
+        objectives[3] = "- Make a report on the incident No. 42.";
+        objectives[4] = "- Stop reading the LDJ42 Feed and go back to work!";
+                
         this.mainColor = mainColor;
         genImage();
     }
@@ -166,6 +171,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
     
     public void toggleMinimized() {
         isMinimized = !isMinimized;
+        checkScroll();
         onScreenDimensionChange(getWidth(), lastHeight, getWidth(), lastHeight);
     }
 

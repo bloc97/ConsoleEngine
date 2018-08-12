@@ -16,8 +16,8 @@ import spacesurvival.console.CharacterPanel;
  */
 public class BuildMenu extends CharacterPanel implements Scrollable {
     
-    public static final int CARD_WIDTH = 11;
-    public static final int CARD_HEIGHT = 7;
+    public static final int CARD_WIDTH = 15;
+    public static final int CARD_HEIGHT = 9;
     
     private Color mainColor;
     
@@ -100,11 +100,6 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
     
     public ScrollBar getScrollBar() {
         return scrollBar;
-    }
-
-    @Override
-    public void onMouseWheelMoved(int i) {
-        setScroll(getScroll() + i);
     }
 
     private int lastX, lastY;

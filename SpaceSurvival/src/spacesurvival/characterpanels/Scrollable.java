@@ -5,12 +5,44 @@
  */
 package spacesurvival.characterpanels;
 
+import java.awt.event.KeyEvent;
+import spacesurvival.console.ConsolePanel;
+
 /**
  *
  * @author bowen
  */
-public interface Scrollable {
+public interface Scrollable extends ConsolePanel {
     public int getScroll();
     public int getMaxScroll();
     public void setScroll(int i);
+    
+    @Override
+    public default void onKeyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_UP:
+                setScroll(getScroll() - 1);
+                break;
+            case KeyEvent.VK_DOWN:
+                setScroll(getScroll() + 1);
+                break;
+            case KeyEvent.VK_PAGE_UP:
+                setScroll(getScroll() - (getHeight() - 2));
+                break;
+            case KeyEvent.VK_PAGE_DOWN:
+                setScroll(getScroll() + (getHeight() - 2));
+                break;
+            case KeyEvent.VK_HOME:
+                setScroll(0);
+                break;
+            case KeyEvent.VK_END:
+                setScroll(getMaxScroll());
+                break;
+        }
+    }
+
+    @Override
+    public default void onMouseWheelMoved(int i) {
+        setScroll(getScroll() + i);
+    }
 }

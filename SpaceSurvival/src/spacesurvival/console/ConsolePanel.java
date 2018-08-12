@@ -5,6 +5,8 @@
  */
 package spacesurvival.console;
 
+import java.awt.event.KeyEvent;
+
 /**
  *
  * @author bowen
@@ -19,7 +21,8 @@ public interface ConsolePanel {
     public int getWidth();
     public int getHeight();
     
-    public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight);
+    public default void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
+    }
     
     public default void onMouseMoved(int x, int y) {
     }
@@ -36,6 +39,12 @@ public interface ConsolePanel {
     public default void onMouseReleased(int x, int y, boolean isLeftClick) {
     }
     public default void onMouseWheelMoved(int i) {
+    }
+    public default void onKeyPressed(KeyEvent e) {
+    }
+    public default void onKeyReleased(KeyEvent e) {
+    }
+    public default void onKeyTyped(KeyEvent e) {
     }
     
 }
