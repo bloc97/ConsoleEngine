@@ -7,6 +7,7 @@ package spacesurvival.characterpanels;
 
 import java.awt.Color;
 import java.util.Random;
+import static spacesurvival.characterpanels.ColonyBuildings.CARD_HEIGHT;
 import static spacesurvival.characterpanels.ColonyBuildings.CARD_WIDTH;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
@@ -64,7 +65,7 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
         Random r = new Random();
         for (int i=0; i<buildingCardNum; i++) {
             getCharacterImage().drawRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT);
-            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, 0xFFFFFFFF);//r.nextInt(0xFFFFFF) | 0xFF000000);
+            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? 0xFFFFFFFF : 0xFFCCCCCC);//r.nextInt(0xFFFFFF) | 0xFF000000);
             currentX += CARD_WIDTH;
             if (currentX + CARD_WIDTH > getWidth()) {
                 currentX = xPad;
@@ -113,6 +114,9 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
     }
 
     private int lastX, lastY;
+    private boolean hasDraggedScroll = false;
+    
+    private int selectedIndex = -1;
     
     @Override
     public void onMousePressed(int x, int y, boolean isLeftClick) {
@@ -127,10 +131,51 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
         lastX = x;
         lastY = y;
         
+        if (deltaX != 0 || deltaY != 0) {
+            hasDraggedScroll = true;
+        }
+        
         setScroll(getScroll() - deltaY);
     }
+
+    @Override
+    public void onMouseMoved(int x, int y) {
+        int xPad = getWidth()%CARD_WIDTH / 2;
+        int originX = xPad;
+        int originY = -scroll;
+        int squaresPerRow = (getWidth() - getWidth()%CARD_WIDTH) / CARD_WIDTH;
+
+        if (x > xPad && x < (squaresPerRow * CARD_WIDTH) + xPad) {
+            x -= originX;
+            y -= originY;
+
+            int iconX = x / CARD_WIDTH;
+            int iconY = y / CARD_HEIGHT;
+
+            selectedIndex = iconY * squaresPerRow + iconX;
+        } else {
+            selectedIndex = -1;
+        }
+        genImage();
+    }
+
+    @Override
+    public void onMouseExited(int x, int y) {
+        selectedIndex = -1;
+        genImage();
+    }
+
     
-    
+    @Override
+    public void onMouseReleased(int x, int y, boolean isLeftClick) {
+        if (!hasDraggedScroll) {
+            
+            System.out.println(selectedIndex);
+            
+        }
+        
+        hasDraggedScroll = false;
+    }
     
     
 }

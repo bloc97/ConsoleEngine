@@ -20,6 +20,8 @@ public abstract class ScrollBar extends CharacterPanel {
     
     private final Scrollable scrollablePanel;
     
+    private boolean isMouseOver = false;
+    
     public ScrollBar(int x, int y, int width, int height, Color mainColor, Scrollable scrollablePanel) {
         super(x, y, width, height);
         this.mainColor = mainColor;
@@ -39,8 +41,11 @@ public abstract class ScrollBar extends CharacterPanel {
         //System.out.println(barHeight);
         //System.out.println(barPos);
         getCharacterImage().drawRectangle(0, barPos, 1, barHeight, '█');
-        
         getCharacterImage().fillForegroundColorRectangle(0, 0, getWidth(), getHeight(), mainColor.brighter().brighter().getRGB());
+        
+        if (isMouseOver) {
+            getCharacterImage().fillForegroundColorRectangle(0, barPos, 1, barHeight, mainColor.brighter().getRGB());
+        }
         getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), getHeight(), mainColor.darker().getRGB());
     }
     
@@ -66,6 +71,21 @@ public abstract class ScrollBar extends CharacterPanel {
     public void onMousePressed(int x, int y, boolean isLeftClick) {
         lastX = x;
         lastY = y;
+        
+        double barRatio = (double)(getHeight()) / (double)(getHeight() + maxScroll);
+        int barHeight = (int)(getHeight() * barRatio);
+        if (barHeight < 1) {
+            barHeight = 1;
+        }
+        int barPos = (int)(((double)scroll/maxScroll) * (getHeight() - barHeight));
+        int newBarPos = (int)(y - barHeight / 2);
+        
+        int distanceToBar = y + barHeight / 2 - (barPos + barHeight / 2);
+        if (distanceToBar != 0) {
+            double scrollPerSquare = (double)(maxScroll + getHeight()) / getHeight();
+            getScrollablePanel().setScroll((int)(newBarPos * scrollPerSquare));
+        }
+        
         lastScroll = getScrollablePanel().getScroll();
     }
 
@@ -105,5 +125,17 @@ public abstract class ScrollBar extends CharacterPanel {
     }
     
     
+    @Override
+    public void onMouseEntered(int x, int y) {
+        isMouseOver = true;
+        genImage();
+    }
+
+    @Override
+    public void onMouseExited(int x, int y) {
+        isMouseOver = false;
+        genImage();
+    }
+
     
 }

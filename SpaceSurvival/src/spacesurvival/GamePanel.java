@@ -31,6 +31,7 @@ import spacesurvival.characterpanels.BottomBar;
 import spacesurvival.characterpanels.BuildMenu;
 import spacesurvival.characterpanels.ColonyBuildings;
 import spacesurvival.characterpanels.DayEndPopupOverlay;
+import spacesurvival.characterpanels.EventPopupOverlay;
 import spacesurvival.characterpanels.MiddleScrollBar;
 import spacesurvival.characterpanels.RightScrollBar;
 import spacesurvival.characterpanels.TopBar;
@@ -59,7 +60,8 @@ public class GamePanel extends JPanel {
     
     private final Color mainColor = new Color(120, 146, 190);
     private final BottomBar bottomBar = new BottomBar(30, 30, mainColor);
-    private final ColonyBuildings colonyBuildings = new ColonyBuildings(30, 30, mainColor);
+    private final DayEndPopupOverlay dayEndOverlay = new DayEndPopupOverlay(30, 30, mainColor);
+    private final ColonyBuildings colonyBuildings = new ColonyBuildings(30, 30, mainColor, dayEndOverlay);
     private final BuildMenu buildMenu = new BuildMenu(30, 30, mainColor);
     private final Background background = new Background(30, 30, mainColor);
     
@@ -108,7 +110,8 @@ public class GamePanel extends JPanel {
         
         screen.addCharacterPanel(20, bottomBar);
         
-        //screen.addCharacterPanel(100, new DayEndPopupOverlay(30, 30, mainColor));
+        screen.addCharacterPanel(100, dayEndOverlay);
+        screen.addCharacterPanel(101, new EventPopupOverlay(30, 30, mainColor));
         //screen.addCharacterPanel(4, new BottomBarOverlay(10, 10));
         //screen.addCharacterPanel(1, panel);
         
@@ -148,10 +151,15 @@ public class GamePanel extends JPanel {
                 Background.setFontHeight(screen.getConsoleFont().getHeight());
                 BuildMenu.setFontHeight(screen.getConsoleFont().getHeight());
                 ColonyBuildings.setFontHeight(screen.getConsoleFont().getHeight());
+                EventPopupOverlay.setFontHeight(screen.getConsoleFont().getHeight());
                 
                 if (focusedPanel != null) {
                     focusedPanel.onKeyPressed(e);
                 }
+                screen.getCharacterPanels().forEach((panel) -> {
+                    panel.onGlobalKeyPressed(e);
+                });
+                
                 repaint();
             }
 
@@ -160,6 +168,9 @@ public class GamePanel extends JPanel {
                 if (focusedPanel != null) {
                     focusedPanel.onKeyReleased(e);
                 }
+                screen.getCharacterPanels().forEach((panel) -> {
+                    panel.onGlobalKeyReleased(e);
+                });
             }
 
             @Override
@@ -167,6 +178,9 @@ public class GamePanel extends JPanel {
                 if (focusedPanel != null) {
                     focusedPanel.onKeyTyped(e);
                 }
+                screen.getCharacterPanels().forEach((panel) -> {
+                    panel.onGlobalKeyTyped(e);
+                });
             }
             
         });
@@ -249,6 +263,12 @@ public class GamePanel extends JPanel {
         this.addMouseWheelListener(mouseAdapter);
         
         ex.scheduleWithFixedDelay(() -> {
+            if (focusedPanel != null) {
+                focusedPanel.onFocusTick();
+            }
+            screen.getCharacterPanels().forEach((panel) -> {
+                panel.onGlobalTick();
+            });
             repaint();
         }, 0, 10, TimeUnit.MILLISECONDS);
         

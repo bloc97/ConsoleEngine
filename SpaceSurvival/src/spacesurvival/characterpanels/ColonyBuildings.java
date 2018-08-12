@@ -24,15 +24,18 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     
     private int scroll = 0;
     
-    private int buildingCardNum = 14;
+    private int buildingCardNum = 4;
     
     private final ScrollBar scrollBar;
     
-    public ColonyBuildings(int consoleWidth, int consoleHeight, Color mainColor) {
+    private final DayEndPopupOverlay dayEndOverlay;
+    
+    public ColonyBuildings(int consoleWidth, int consoleHeight, Color mainColor, DayEndPopupOverlay dayEndOverlay) {
         super(Background.XLINE + 1, Background.TOP_PADDING + 1, consoleWidth - Background.XLINE - 2, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2);
         this.mainColor = mainColor;
         this.scrollBar = new RightScrollBar(consoleWidth, consoleHeight, mainColor, this);
         this.scrollBar.setStatus(scroll, getMaxScroll());
+        this.dayEndOverlay = dayEndOverlay;
     }
     
     @Override
@@ -62,9 +65,15 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         int currentX = xPad;
         int currentY = -scroll;
         Random r = new Random();
-        for (int i=0; i<buildingCardNum; i++) {
+        for (int i=0; i<=buildingCardNum; i++) {
             getCharacterImage().drawRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT);
-            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, 0xFFFFFFFF);//r.nextInt(0xFFFFFF) | 0xFF000000);
+            
+            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? 0xFFFFFFFF : 0xFFCCCCCC);//r.nextInt(0xFFFFFF) | 0xFF000000);
+            
+            if (i == buildingCardNum) {
+                getCharacterImage().drawString("■End Day", currentX + CARD_WIDTH/2 - 4, currentY + CARD_HEIGHT/2, 0xFFFFAA00);
+            }
+            
             currentX += CARD_WIDTH;
             if (currentX + CARD_WIDTH > getWidth()) {
                 currentX = xPad;
@@ -83,7 +92,7 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     @Override
     public int getMaxScroll() {
         int squaresPerWidth = getWidth() / CARD_WIDTH;
-        int totalHeight = (int)Math.ceil((double)buildingCardNum / squaresPerWidth) * CARD_HEIGHT;
+        int totalHeight = (int)Math.ceil((double)(buildingCardNum + 1) / squaresPerWidth) * CARD_HEIGHT;
         if (totalHeight < getHeight()) {
             return 0;
         }
@@ -113,6 +122,9 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     }
     
     private int lastX, lastY;
+    private boolean hasDraggedScroll = false;
+    
+    private int selectedIndex = -1;
     
     @Override
     public void onMousePressed(int x, int y, boolean isLeftClick) {
@@ -126,6 +138,10 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         int deltaY = y - lastY;
         lastX = x;
         lastY = y;
+        
+        if (deltaX != 0 || deltaY != 0) {
+            hasDraggedScroll = true;
+        }
         
         setScroll(getScroll() - deltaY);
     }
@@ -143,8 +159,45 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         }
         genImage();
     }
+
+    @Override
+    public void onMouseMoved(int x, int y) {
+        int xPad = getWidth()%CARD_WIDTH / 2;
+        int originX = xPad;
+        int originY = -scroll;
+        int squaresPerRow = (getWidth() - (xPad * 2)) / CARD_WIDTH;
+        
+        if (x > xPad && x < (squaresPerRow * CARD_WIDTH) + xPad) {
+            x -= originX;
+            y -= originY;
+
+            int iconX = x / CARD_WIDTH;
+            int iconY = y / CARD_HEIGHT;
+
+            selectedIndex = iconY * squaresPerRow + iconX;
+        } else {
+            selectedIndex = -1;
+        }
+        genImage();
+    }
+
+    @Override
+    public void onMouseExited(int x, int y) {
+        selectedIndex = -1;
+        genImage();
+    }
     
-    
-    
+    @Override
+    public void onMouseReleased(int x, int y, boolean isLeftClick) {
+        if (!hasDraggedScroll) {
+            if (selectedIndex == buildingCardNum) {
+                dayEndOverlay.show();
+            } else {
+                
+            }
+        }
+        
+        hasDraggedScroll = false;
+    }
     
 }

@@ -46,5 +46,17 @@ public interface ConsolePanel {
     }
     public default void onKeyTyped(KeyEvent e) {
     }
+    public default void onFocusTick() {
+    }
+    
+    public default void onGlobalKeyPressed(KeyEvent e) {
+    }
+    public default void onGlobalKeyReleased(KeyEvent e) {
+    }
+    public default void onGlobalKeyTyped(KeyEvent e) {
+    }
+    public default void onGlobalTick() {
+    }
+    
     
 }

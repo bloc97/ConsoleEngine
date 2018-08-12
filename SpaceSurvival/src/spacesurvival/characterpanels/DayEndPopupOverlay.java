@@ -62,8 +62,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
         getCharacterImage().drawRectangle(xPad, yPad, width, height);
         getCharacterImage().drawString(title, xPad + (width / 2) - (title.length() / 2), yPad);
         
-        /*
-            totalSpaceColor = 0xFF00FFFF;
+        /*  totalSpaceColor = 0xFF00FFFF;
             totalSpaceColor = 0xFF00FFAA;
             totalSpaceColor = 0xFF00FF00;
             totalSpaceColor = 0xFFAAFF00;
@@ -193,25 +192,38 @@ public class DayEndPopupOverlay extends CharacterPanel {
         String monstersStringRight   = "" + estimatedMonsters;
         
         
-        int textXPad = xPad + (width / 2) - (maxLength / 2);
+        int textXPad = xPad + (width / 2) - (maxLength / 2) - 1;
         int textYPad = yPad + (height - 6 - 10) / 2;
         
         getCharacterImage().drawString(totalSpaceStringLeft, textXPad, textYPad + 2);
         getCharacterImage().drawString(usedSpaceStringLeft, textXPad, textYPad + 4);
         getCharacterImage().drawString(debrisStringLeft, textXPad, textYPad + 6);
-        getCharacterImage().drawString(defenseStringLeft, textXPad, textYPad + 8);
-        getCharacterImage().drawString(decoyStringLeft, textXPad, textYPad + 10);
-        getCharacterImage().drawString(monstersStringLeft, textXPad, textYPad + 12);
+        if (day > 2) {
+            getCharacterImage().drawString(defenseStringLeft, textXPad, textYPad + 8);
+            getCharacterImage().drawString(decoyStringLeft, textXPad, textYPad + 10);
+            getCharacterImage().drawString(monstersStringLeft, textXPad, textYPad + 12);
+        }
         
         
         getCharacterImage().drawString(totalSpaceStringRight, textXPad + totalSpaceStringLeft.length(), textYPad + 2, totalSpaceColor);
         getCharacterImage().drawString(usedSpaceStringRight, textXPad + usedSpaceStringLeft.length(), textYPad + 4);
         //getCharacterImage().drawString(debrisStringRight, textXPad + debrisStringLeft.length(), textYPad + 6, debrisColor);
-        getCharacterImage().drawString(defenseStringRight, textXPad + defenseStringLeft.length(), textYPad + 8, defenseColor);
-        getCharacterImage().drawString(decoyStringRight, textXPad + decoyStringLeft.length(), textYPad + 10, decoyColor);
-        getCharacterImage().drawString(monstersStringRight, textXPad + monstersStringLeft.length(), textYPad + 12, monstersColor);
+        if (day > 2) {
+            getCharacterImage().drawString(defenseStringRight, textXPad + defenseStringLeft.length(), textYPad + 8, defenseColor);
+            getCharacterImage().drawString(decoyStringRight, textXPad + decoyStringLeft.length(), textYPad + 10, decoyColor);
+            getCharacterImage().drawString(monstersStringRight, textXPad + monstersStringLeft.length(), textYPad + 12, monstersColor);
+        }
+        if (isYesSelected) {
+            getCharacterImage().drawString("(Y)es", xPad + 7, textYPad + 15, 0xFF00FF00);
+        } else {
+            getCharacterImage().drawString("(Y)es", xPad + 7, textYPad + 15);
+        }
+        if (isNoSelected) {
+            getCharacterImage().drawString("(N)o", getWidth() - xPad - 11, textYPad + 15, 0xFFFF0000);
+        } else {
+            getCharacterImage().drawString("(N)o", getWidth() - xPad - 11, textYPad + 15);
+        }
         
-        getCharacterImage().drawString("    (Y)es       (N)o", textXPad, textYPad + 15);
         
     }
     
@@ -224,6 +236,60 @@ public class DayEndPopupOverlay extends CharacterPanel {
         }
         return maxLength;
     }
+    
+    
+    private boolean isYesSelected = false;
+    private boolean isNoSelected = false;
+
+    @Override
+    public void onMouseMoved(int x, int y) {
+        
+        int width = getWidth() * 3 / 5;
+        int height = getHeight() * 3 / 5;
+        
+        int xPad = (getWidth() - width) / 2;
+        int yPad = (getHeight() - height) / 2;
+        
+        int textYPad = yPad + (height - 6 - 10) / 2;
+        
+        isYesSelected = false;
+        isNoSelected = false;
+        if (y == textYPad + 15) {
+            if (x >= xPad + 7 && x < xPad + 7 + 5) {
+                isYesSelected = true;
+            } else if (x >= getWidth() - xPad - 11 && x < getWidth() - xPad - 11 + 4) {
+                isNoSelected = true;
+            }
+        }
+        genImage();
+    }
+
+    @Override
+    public void onMouseExited(int x, int y) {
+        isYesSelected = false;
+        isNoSelected = false;
+        genImage();
+    }
+
+    @Override
+    public void onMousePressed(int x, int y, boolean isLeftClick) {
+        if (isNoSelected) {
+            hide();
+        }
+        if (isYesSelected) {
+            hide();
+        }
+    }
+    
+    public void hide() {
+        setX(-100000);
+    }
+    
+    public void show() {
+        setX(0);
+    }
+    
+    
     
     public void setEndDayStatus(int day, int currentTotalSpace, int tomorrowTotalSpace, int currentUsedSpace, int tommorrowUsedSpace, int currentDebris, int tomorrowDebris, int defendability, int decoys, int estimatedMonsters) {
         this.day = day;
