@@ -19,7 +19,7 @@ public class Event {
     private String name;
     private String discription;
     private int eventTriggeringDay = -1; // if this event happens on specific day, use this, else = -1;
-    private EventChoice eventRequiredEventChoice = null;//if this event required a previous event already happened to be taken place, use this, else = "";
+    private EventChoice eventRequiredEventChoice = new EventChoice();//if this event required a previous event already happened to be taken place, use this, else = "";
     
     private int requiredHapinessLower = -1;
     private int requiredHapinessUpper = -1;
