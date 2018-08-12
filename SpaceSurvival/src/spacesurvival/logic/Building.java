@@ -10,51 +10,48 @@ package spacesurvival.logic;
  * @author panbe
  */
 
+import java.util.List;
+import static spacesurvival.logic.FactoryBuilding.*;
+import static spacesurvival.logic.HousingBuilding.*;
+import static spacesurvival.logic.SpecialBuilding.*;
 
+public abstract class Building {
 
-public class Building {
-
-    static Building highDensityHousing = new Building("High Density Housing","Disc",5);
-    static Building factoryI= new Building("Basic Factory","Disc",1);
-    static Building factoryII= new Building("Basic Factory","Disc",1);
-    static Building factoryIII= new Building("Basic Factory","Disc",1);
-    static Building factoryIV= new Building("Basic Factory","Disc",1);
-    static Building beacon= new Building("Beacon","Disc",2);
-    static Building ERC= new Building("Emergancy Response Center","Disc",4);
-    static Building riotControlCenter = new Building("Riot Control Center","Disc",2);
     
-    public static Building[] masterBuildingList  ={highDensityHousing,factoryI,beacon,ERC,riotControlCenter};
+    
+    public final static Building[] ALL_BUILDINGS  ={highDensityHousing,beacon,emergencyResponceCenter,riotControlCenter, mFactory,pFactory,eFactory,amFactory,apFactory,aeFactory,bGenerator,cPlant};
     
     
     
+    private final String name;
+    private final String description;
+    
+    private final int requiredSpace;
+    private int constructionState;
+    
+    private final Produce[] requiredProduce;
     
     
-    private String name;
-    private String discription;
-    
+    /*
     private boolean triggerHelpComing = false;
-    
-    private int requiredSpace;
     
     private int onBuildHappiness;
     private int onBuildDayTillPopGrow;
     private int onBuildDayTillSaved;
-    private int onBuildColonyTile;
+    private int onBuildColonyTile;*/
     
     
-    
-    
-    public Building() {
-    }
 
-    public Building(String name, String discription, int requiredSpace) {
+    public Building(String name, String description, int requiredSpace, Produce[] requiredProduce) {
         this.name = name;
-        this.discription = discription;
+        this.description = description;
         this.requiredSpace = requiredSpace;
+        this.requiredProduce = requiredProduce;
+        /*
         this.onBuildHappiness = 0;
         this.onBuildDayTillPopGrow = 0;
         this.onBuildDayTillSaved = 0;
-        this.onBuildColonyTile = 0;
+        this.onBuildColonyTile = 0;*/
     }
     
     
@@ -63,18 +60,47 @@ public class Building {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getDescription() {
+        return description;
     }
 
-    public String getDiscription() {
-        return discription;
+    public int getRequiredSpace() {
+        return requiredSpace;
     }
 
-    public void setDiscription(String discription) {
-        this.discription = discription;
+    public int getConstructionState() {
+        return constructionState;
+    }
+    
+    public void incrementConstructionState() {
+        constructionState++;
+        if (constructionState > requiredSpace) {
+            constructionState = requiredSpace;
+        }
+    }
+    
+    public boolean isBuilt() {
+        return constructionState >= requiredSpace;
     }
 
+    public Produce[] getRequiredProduce() {
+        return requiredProduce;
+    }
+    
+    public void onBuild(Colony colony) {
+        
+    }
+    public void onBeforeNextDay(Colony colony) {
+        
+    }
+    public void onAfterNextDay(Colony colony) {
+        
+    }
+    
+    public abstract Building getCopy();
+    
+    /*
+    
     public int getOnBuildHappiness() {
         return onBuildHappiness;
     }
@@ -111,12 +137,6 @@ public class Building {
         return masterBuildingList;
     }
 
-    public static void setMasterBuildingList(Building[] masterBuildingList) {
-        Building.masterBuildingList = masterBuildingList;
-    }
-
-
-
     public boolean isTriggerHelpComing() {
         return triggerHelpComing;
     }
@@ -124,16 +144,8 @@ public class Building {
     public void setTriggerHelpComing(boolean triggerHelpComing) {
         this.triggerHelpComing = triggerHelpComing;
     }
-
-    public int getRequiredSpace() {
-        return requiredSpace;
-    }
-
-    public void setRequiredSpace(int requiredSpace) {
-        this.requiredSpace = requiredSpace;
-    }
     
-    
+    */
     
     
 }

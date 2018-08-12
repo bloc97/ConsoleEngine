@@ -8,7 +8,6 @@ package spacesurvival;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import spacesurvival.logic.Logic;
 
 /**
  *
@@ -16,6 +15,7 @@ import spacesurvival.logic.Logic;
  */
 public class SpaceSurvival {
 
+    
     /**
      * @param args the command line arguments
      */
@@ -27,7 +27,7 @@ public class SpaceSurvival {
         //System.out.println((int)'░');
 
         //<editor-fold defaultstate="collapsed" desc="Test Section">
-        Logic logic = new Logic();
+        //Logic logic = new Logic();
 //</editor-fold>
     }
 
@@ -45,6 +45,7 @@ public class SpaceSurvival {
         panel.setFocusable(true);
         panel.requestFocus();
         panel.requestFocusInWindow();
+        panel.setFocusTraversalKeysEnabled(false);
 
     }
 }

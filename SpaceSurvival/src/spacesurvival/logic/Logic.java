@@ -9,22 +9,20 @@ package spacesurvival.logic;
  *
  * @author panbe
  */
-public class Logic {
-    private Colony colony = new Colony();
-
-    public Logic() {
-    }
+public enum Logic {
+    INSTANCE;
     
     public void nextDay() {
         
-        colony.applyDailyBuilding();
         
-        colony.avanceDay();
-        colony.avanceHelp();
-        colony.generateNews(); // return string
-        colony.generateEvents();
-        colony.isHelpArrived(); //return t/f
+        Colony.INSTANCE.avanceDay();
+        Colony.INSTANCE.avanceHelp();
+        Colony.INSTANCE.generateNews(); // return string
+        Colony.INSTANCE.generateEvents();
+        Colony.INSTANCE.isHelpArrived(); //return t/f
         
         
     }
+    
+    
 }

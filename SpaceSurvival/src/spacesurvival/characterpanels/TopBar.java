@@ -6,8 +6,10 @@
 package spacesurvival.characterpanels;
 
 import java.awt.Color;
+import spacesurvival.SpaceSurvival;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
+import spacesurvival.logic.Colony;
 
 /**
  *
@@ -15,14 +17,8 @@ import spacesurvival.console.CharacterPanel;
  */
 public class TopBar extends CharacterPanel {
     
-    private int day = 1;
     private String status = "Clear";
     
-    private int maxSpace = 50;
-    private int buildings = 20;
-    private int debris = 10;
-    
-    private int usedSpace = buildings + debris;
     
     
     public TopBar(int consoleWidth, int consoleHeight) {
@@ -36,9 +32,10 @@ public class TopBar extends CharacterPanel {
         genImage();
     }
     
-    private void genImage() {
+    void genImage() {
         
-        final String daysString = "Day " + day;
+        final String daysString = "Day " + Colony.INSTANCE.getDayLanded();
+        
         final String seasonString = "(" + status + ")";
         
         final String timeString = daysString + " " + seasonString;
@@ -48,12 +45,12 @@ public class TopBar extends CharacterPanel {
         
         
         
-        final String maxSpaceString = "" + maxSpace;
-        final String buildingString = "" + maxSpace;
-        final String debrisString = "(" + debris + ")";
+        final String maxSpaceString = "" + Colony.INSTANCE.getColonyMaxSpace();
+        final String debrisString = "(" + Colony.INSTANCE.getColonyLostSpace()+ ")";
         final String spaceString = "Space: ";
         
-        final String usedSpaceString = "" + usedSpace;
+        
+        final String usedSpaceString = "" + Colony.INSTANCE.getColonyPendingOccupiedSpace();
         final String ratioString = usedSpaceString + "/" + maxSpaceString + " ";
         
         final int ratioStringPos = getWidth() - ratioString.length();
@@ -70,7 +67,4 @@ public class TopBar extends CharacterPanel {
         //getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), getHeight(), 0xFFF5EFD2);
     }
     
-    public void setDay(int day) {
-        this.day = day;
-    }
 }

@@ -39,6 +39,7 @@ import spacesurvival.characterpanels.TopPopupTest;
 import spacesurvival.console.CharacterPanel;
 import spacesurvival.console.ConsolePanel;
 import spacesurvival.console.ConsoleScreen;
+import spacesurvival.logic.Logic;
 
 /**
  *
@@ -58,19 +59,21 @@ public class GamePanel extends JPanel {
     
     private final Random random = new Random(42);
     
-    private final Color mainColor = new Color(120, 146, 190);
-    private final BottomBar bottomBar = new BottomBar(30, 30, mainColor);
-    private final DayEndPopupOverlay dayEndOverlay = new DayEndPopupOverlay(30, 30, mainColor);
-    private final ColonyBuildings colonyBuildings = new ColonyBuildings(30, 30, mainColor, dayEndOverlay);
-    private final BuildMenu buildMenu = new BuildMenu(30, 30, mainColor);
-    private final Background background = new Background(30, 30, mainColor);
+    
+    public static final Color mainColor = new Color(120, 146, 190);
+    public static final BottomBar bottomBar = new BottomBar(30, 30, mainColor);
+    public static final DayEndPopupOverlay dayEndOverlay = new DayEndPopupOverlay(30, 30, mainColor);
+    public static final ColonyBuildings colonyBuildings = new ColonyBuildings(30, 30, mainColor, dayEndOverlay);
+    public static final BuildMenu buildMenu = new BuildMenu(30, 30, mainColor);
+    public static final Background background = new Background(30, 30, mainColor);
+    public static final TopBar topBar = new TopBar(30, 30);
+    
     
     ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     
     public GamePanel() {
         /*
         File fontFolder = new File("resources/fonts/VGA");
-        
         fonts = fontFolder.listFiles((pathname) -> {
             return pathname.getName().toLowerCase().endsWith(".ttf");
         });*/
@@ -78,14 +81,11 @@ public class GamePanel extends JPanel {
         File[] fonts0 = new File("resources/fonts/CGA").listFiles((pathname) -> {
             return pathname.getName().toLowerCase().endsWith(".ttf");
         });
-        File[] fonts1 = new File("resources/fonts/EGA").listFiles((pathname) -> {
-            return pathname.getName().toLowerCase().endsWith(".ttf");
-        });
-        File[] fonts2 = new File("resources/fonts/VGA").listFiles((pathname) -> {
+        File[] fonts1 = new File("resources/fonts/VGA").listFiles((pathname) -> {
             return pathname.getName().toLowerCase().endsWith(".ttf");
         });
         
-        fonts = new File[fonts0.length + fonts1.length + fonts2.length];
+        fonts = new File[fonts0.length + fonts1.length];
         
         for (int i=0; i<fonts0.length; i++) {
             fonts[i] = fonts0[i];
@@ -93,15 +93,12 @@ public class GamePanel extends JPanel {
         for (int i=0; i<fonts1.length; i++) {
             fonts[i + fonts0.length] = fonts1[i];
         }
-        for (int i=0; i<fonts2.length; i++) {
-            fonts[i + fonts0.length + fonts1.length] = fonts2[i];
-        }
         
         screen = new ConsoleScreen(80, 50, ConsoleFont.fromFile(fonts[fontIndex]));
         
         screen.addCharacterPanel(-5, background);
         //screen.addCharacterPanel(2, new RightScrollBar(30, 30, mainColor));
-        screen.addCharacterPanel(3, new TopBar(30, 30));
+        screen.addCharacterPanel(3, topBar);
         screen.addCharacterPanel(5, colonyBuildings);
         screen.addCharacterPanel(6, colonyBuildings.getScrollBar());
         

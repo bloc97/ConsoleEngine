@@ -13,8 +13,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import spacesurvival.SpaceSurvival;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
+import spacesurvival.logic.Colony;
+import spacesurvival.logic.Logic;
 
 /**
  *
@@ -25,8 +28,8 @@ public class BottomBar extends CharacterPanel implements Scrollable {
     private Color mainColor;
     
     
-    private volatile String scrollingText = "Clear weather, low chance of precipitations. Temperature is cool, bring a jacket to work.        Reports of space piracy on the system 4AB-RJ, all civilian ships should stay vigilant. We advise you to report any suspicious activities to the local authorities.                               ";
-    private volatile String cleanedText = "";
+    //private volatile String scrollingText = "Clear weather, low chance of precipitations. Temperature is cool, bring a jacket to work.        Reports of space piracy on the system 4AB-RJ, all civilian ships should stay vigilant. We advise you to report any suspicious activities to the local authorities.                               ";
+    //private volatile String cleanedText = "";
     
     private volatile String[] objectives = new String[0];
     private volatile String[] report = new String[0];
@@ -45,7 +48,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
     
     public BottomBar(int consoleWidth, int consoleHeight, Color mainColor) {
         super(0, consoleHeight - Background.BOTTOM_PADDING, consoleWidth, Background.BOTTOM_PADDING);
-        setScrollingText(scrollingText);
+        //setScrollingText(scrollingText);
         objectives = new String[4];
         
         for (int i=0; i<objectives.length; i++) {
@@ -81,6 +84,9 @@ public class BottomBar extends CharacterPanel implements Scrollable {
     }
     
     private void genImage() {
+        String scrollingText = Colony.INSTANCE.getNews();
+        String cleanedText = getCleanedText(scrollingText);
+        
         if (isMinimized) {
             getCharacterImage().clear();
             if (scrollingText.length() <= getWidth()) {
@@ -177,17 +183,20 @@ public class BottomBar extends CharacterPanel implements Scrollable {
     
     public void tickPos() {
         pos--;
-        if (scrollingText.length() + pos <= 0) {
+        if (Colony.INSTANCE.getNews().length() + pos <= 0) {
             pos = 0;
         }
         genImage();
     }
     
-    public void setScrollingText(String string) {
-        scrollingText = string;
+    public String getCleanedText(String string) {
+        if (string == null) {
+            return "";
+        }
+        String scrollingText = string;
         pos = getWidth() + 1;
         
-        cleanedText = "";
+        String cleanedText = "";
         int i = 0;
         while (i < scrollingText.length()) {
             if (i == 0) {
@@ -209,7 +218,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
                 i++;
             }
         }
-        
+        return cleanedText;
     }
     
     ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
@@ -395,7 +404,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
 
     @Override
     public void onGlobalKeyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_Q || e.getKeyCode() == KeyEvent.VK_J || e.getKeyCode() == KeyEvent.VK_O || e.getKeyCode() == KeyEvent.VK_N) {
+        if (e.getKeyCode() == KeyEvent.VK_Q) {
             ex.submit(() -> {
                 toggleMinimized();
             });

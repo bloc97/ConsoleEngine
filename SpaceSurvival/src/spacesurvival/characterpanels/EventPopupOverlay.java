@@ -6,6 +6,7 @@
 package spacesurvival.characterpanels;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import static spacesurvival.characterpanels.ColonyBuildings.CARD_WIDTH;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
@@ -94,6 +95,8 @@ public class EventPopupOverlay extends CharacterPanel {
     }
     
     private int boxSelected = -1;
+    
+    private int lastX, lastY;
 
     @Override
     public void onMouseMoved(int x, int y) {
@@ -107,7 +110,10 @@ public class EventPopupOverlay extends CharacterPanel {
         int horizontalSpace = (width - 4) / choices.length;
         int xBoxPad = (horizontalSpace - CARD_WIDTH) / 2;
         
-        boxSelected = -1;
+        if (lastX != x || lastY != y) {
+            boxSelected = -1;
+        }
+        
         for (int i=0; i<choices.length; i++) {
             int boxX = xPad + 2 + xBoxPad + horizontalSpace * i;
             int boxY = getHeight() - (getHeight() - height - yPad) - 2 - CARD_HEIGHT;
@@ -116,6 +122,8 @@ public class EventPopupOverlay extends CharacterPanel {
                 boxSelected = i;
             }
         }
+        lastX = x;
+        lastY = y;
         genImage();
     }
 
@@ -144,4 +152,26 @@ public class EventPopupOverlay extends CharacterPanel {
     }
     
     
+    @Override
+    public void onKeyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                boxSelected--;
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                boxSelected++;
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            onMousePressed(0, 0, true);
+        } else if (e.getKeyCode() == KeyEvent.VK_TAB) {
+            if (e.isShiftDown()) {
+                boxSelected--;
+            } else {
+                boxSelected++;
+            }
+        }
+        if (boxSelected < 0) {
+            boxSelected = choices.length - 1;
+        } else if (boxSelected >= choices.length) {
+            boxSelected = 0;
+        }
+        genImage();
+    }
 }

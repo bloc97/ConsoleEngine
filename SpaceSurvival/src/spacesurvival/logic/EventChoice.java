@@ -27,7 +27,7 @@ public class EventChoice {
     }
     
     public boolean isChoiceAvailable(Colony colony) {
-        if (colony.getListBuilding().containsAll(requiredBuildings)&& colony.getListChoosed().containsAll(requiredChoosedEvents)) {
+        if (colony.getBuildings().containsAll(requiredBuildings)&& colony.getListChoosed().containsAll(requiredChoosedEvents)) {
             return true;
         }
         else {
@@ -37,9 +37,9 @@ public class EventChoice {
     
     public void applyModifier(Colony colony) {
         colony.addHappiness(modifierHappiness);
-        colony.addColonyMaxTile(modifierColonyMaxTile);
-        colony.addColonyUsingTile(modifierColonyUsingTile);
-        colony.addDayTillSaved(modifierDayTillSaved);
+        colony.addSpaceToColony(modifierColonyMaxTile);
+        //colony.addColonyUsingTile(modifierColonyUsingTile);
+        colony.addDaysTillSaved(modifierDayTillSaved);
         //not done here
     }
     

@@ -6,8 +6,13 @@
 package spacesurvival.characterpanels;
 
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.KeyEvent;
+import spacesurvival.GamePanel;
+import spacesurvival.SpaceSurvival;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
+import spacesurvival.logic.Logic;
 
 /**
  *
@@ -77,9 +82,9 @@ public class DayEndPopupOverlay extends CharacterPanel {
             totalSpaceColor = 0xFF00FFAA;
         } else if (tomorrowTotalSpace - currentTotalSpace > 4) {
             totalSpaceColor = 0xFF00FF00;
-        } else if (tomorrowTotalSpace - currentTotalSpace > 0) {
+        } else if (tomorrowTotalSpace - currentTotalSpace > 1) {
             totalSpaceColor = 0xFFAAFF00;
-        } else if (tomorrowTotalSpace - currentTotalSpace > -3) {
+        } else if (tomorrowTotalSpace - currentTotalSpace > -2) {
             totalSpaceColor = 0xFFFFFF00;
         } else if (tomorrowTotalSpace - currentTotalSpace > -5) {
             totalSpaceColor = 0xFFFFAA00;
@@ -277,8 +282,44 @@ public class DayEndPopupOverlay extends CharacterPanel {
             hide();
         }
         if (isYesSelected) {
+            nextDay();
             hide();
         }
+    }
+
+    @Override
+    public void onKeyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_Y) {
+            nextDay();
+            hide();
+        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_N) {
+            hide();
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            isYesSelected = true;
+            isNoSelected = false;
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            isYesSelected = false;
+            isNoSelected = true;
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            onMousePressed(0, 0, true);
+        } else if (e.getKeyCode() == KeyEvent.VK_TAB) {
+            if (isYesSelected == isNoSelected) {
+                isYesSelected = false;
+                isNoSelected = true;
+            } else {
+                isYesSelected = !isYesSelected;
+                isNoSelected = !isNoSelected;
+            }
+        }
+        genImage();
+    }
+    
+    
+    private void nextDay() {
+        Logic.INSTANCE.nextDay();
+        GamePanel.topBar.genImage();
+        GamePanel.bottomBar.onGlobalKeyReleased(new KeyEvent(new Component() {
+        }, 0, 0, 0, KeyEvent.VK_Q, 'q'));
     }
     
     public void hide() {

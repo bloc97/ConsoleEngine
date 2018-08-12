@@ -10,6 +10,8 @@ import java.awt.event.KeyEvent;
 import java.util.Random;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
+import spacesurvival.logic.Building;
+import spacesurvival.logic.Colony;
 
 /**
  *
@@ -24,7 +26,6 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     
     private int scroll = 0;
     
-    private int buildingCardNum = 4;
     
     private final ScrollBar scrollBar;
     
@@ -64,14 +65,20 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         
         int currentX = xPad;
         int currentY = -scroll;
-        Random r = new Random();
-        for (int i=0; i<=buildingCardNum; i++) {
+        
+        int buildingsNum = Colony.INSTANCE.getBuildings().size();
+        
+        
+        for (int i=0; i<=buildingsNum; i++) {
             getCharacterImage().drawRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT);
             
             getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? 0xFFFFFFFF : 0xFFCCCCCC);//r.nextInt(0xFFFFFF) | 0xFF000000);
             
-            if (i == buildingCardNum) {
+            if (i == buildingsNum) {
                 getCharacterImage().drawString("■End Day", currentX + CARD_WIDTH/2 - 4, currentY + CARD_HEIGHT/2, 0xFFFFAA00);
+            } else {
+                Building b = Colony.INSTANCE.getBuildings().get(i);
+                getCharacterImage().drawStringSpaceWrapPad(b.getName(), currentX + 1, currentY + 1, currentX + 1, getWidth() - (currentX + CARD_WIDTH));
             }
             
             currentX += CARD_WIDTH;
@@ -92,7 +99,8 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     @Override
     public int getMaxScroll() {
         int squaresPerWidth = getWidth() / CARD_WIDTH;
-        int totalHeight = (int)Math.ceil((double)(buildingCardNum + 1) / squaresPerWidth) * CARD_HEIGHT;
+        int buildingsNum = Colony.INSTANCE.getBuildings().size();
+        int totalHeight = (int)Math.ceil((double)(buildingsNum + 1) / squaresPerWidth) * CARD_HEIGHT;
         if (totalHeight < getHeight()) {
             return 0;
         }
@@ -149,15 +157,6 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     @Override
     public void onKeyPressed(KeyEvent e) {
         Scrollable.super.onKeyPressed(e);
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_A:
-                buildingCardNum--;
-                break;
-            case KeyEvent.VK_D:
-                buildingCardNum++;
-                break;
-        }
-        genImage();
     }
 
     @Override
@@ -189,8 +188,9 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     
     @Override
     public void onMouseReleased(int x, int y, boolean isLeftClick) {
+        int buildingsNum = Colony.INSTANCE.getBuildings().size();
         if (!hasDraggedScroll) {
-            if (selectedIndex == buildingCardNum) {
+            if (selectedIndex == buildingsNum) {
                 dayEndOverlay.show();
             } else {
                 
