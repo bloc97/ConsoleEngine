@@ -23,6 +23,8 @@ public class EventChoice {
     private int modifierColonyMaxTile = 0;
     private int modifierColonyUsingTile = 0; 
     
+    private int color = 0xFFCCCCCC;
+    
     public EventChoice() {
     }
     
@@ -81,6 +83,16 @@ public class EventChoice {
     public int getId() {
         return id;
     }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+    
+    
     
     
 }

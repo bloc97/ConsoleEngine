@@ -28,6 +28,8 @@ public class Event {
     private int requiredHapinessUpper = -1;
     
     private ArrayList<EventChoice> listChoice = new ArrayList<>();
+    
+    private int color = 0xFFCCCCCC;
 
     
     public Event() {
@@ -40,6 +42,7 @@ public class Event {
             
             System.out.println("event removed from daily list");
             colony.getListTodayEvent().remove(0);
+            colony.getListChoosed().add(listChoice.get(choice));
         }
     } //this is the master fonction of choosing a eventchoice and applying the modifiers
     
@@ -76,8 +79,22 @@ public class Event {
             event101Revolt.getListChoice().add(EV1011);
             event101Revolt.getListChoice().add(EV1012);
             masterEventList.add(event101Revolt);
-           
-           
+           //
+            Event event200StrangeMeat = new Event("Strange Meat","Newly opened shabby looking restaurants are serving delicious mysterious meat to the public.");
+            event200StrangeMeat.setEventTriggeringDay(6);
+            EventChoice EV2001 = new EventChoice("Investigate",2001);
+            event200StrangeMeat.getListChoice().add(EV2001);
+            masterEventList.add(event200StrangeMeat);
+            //
+            Event event201StrangeMeat = new Event("Strange Meat II", " After investigation, your men discovered that the mysterious meat is from the native monster living in the waste on the planet. The scientist ignore what effect the consumming of these meat have on human body, but one thing is sure, the demand for the meat is high.  the most wealthest are ready to giveout their land for a piece of the meat.");
+           event201StrangeMeat.setEventTriggeringDay(7);
+           event201StrangeMeat.setRequiredPreviousEvent(true);
+           event201StrangeMeat.setEventRequiredEventChoice(EV2001);
+           EventChoice EV2011 = new EventChoice("Ban the meat",2011);
+           EventChoice EV2012 = new EventChoice("Sell some carcass",2012);
+           event201StrangeMeat.getListChoice().add(EV2011);
+           event201StrangeMeat.getListChoice().add(EV2012);
+           masterEventList.add(event201StrangeMeat);
            
     }//need to called the fonction somewhere
 
@@ -147,6 +164,22 @@ public class Event {
 
     public void setUsed(boolean used) {
         this.used = used;
+    }
+
+    public EventChoice getEventRequiredEventChoice() {
+        return eventRequiredEventChoice;
+    }
+
+    public void setEventRequiredEventChoice(EventChoice eventRequiredEventChoice) {
+        this.eventRequiredEventChoice = eventRequiredEventChoice;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
     
     
