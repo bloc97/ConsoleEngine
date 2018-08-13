@@ -442,6 +442,11 @@ public enum Colony {
 
             boolean eventToday = true;
             
+            if(element.isUsed()) {
+                eventToday = false;
+                
+            }
+            
             if (day == -1) {
                 
             }
@@ -467,6 +472,7 @@ public enum Colony {
 
             if (eventToday) { // if all go well generate this and add it to the today event list
                 System.out.println("a event is added today");
+                element.setUsed(true);
                 listTodayEvent.add(element);
             }
         }
