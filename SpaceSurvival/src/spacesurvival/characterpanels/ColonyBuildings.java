@@ -82,11 +82,21 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
             Color frameColor = b.isBuilt() ? b.getColor() : b.getColor().brighter().brighter().brighter().brighter().darker();
             getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? frameColor.getRGB() : frameColor.darker().getRGB());//r.nextInt(0xFFFFFF) | 0xFF000000);
             
-            if (b.getConstructionState() == 0 && !b.isBuilt()) {
-                getCharacterImage().drawStringSpaceWrapPad("Pending", currentX + 1, currentY + CARD_HEIGHT - 2, currentX + 1, getWidth() - (currentX + CARD_WIDTH));
-            } else if (!b.isBuilt()) {
-                getCharacterImage().drawStringSpaceWrapPad("Building", currentX + 1, currentY + CARD_HEIGHT - 2, currentX + 1, getWidth() - (currentX + CARD_WIDTH));
+            if (b.isBuilt()) {
+                getCharacterImage().paintBinaryImageBackground(currentX + 1, currentY + 1, b.getIcon(), (i == selectedIndex) ? b.getRGB() : b.getColor().darker().darker().getRGB(), mainColor.darker().getRGB(), CARD_WIDTH == 24);
+            } else {
+                getCharacterImage().paintBinaryImageBackground(currentX + 1, currentY + 1, b.getIcon(), Color.LIGHT_GRAY.darker().darker().getRGB(), mainColor.darker().getRGB(), CARD_WIDTH == 24);
+                
+                if (Colony.INSTANCE.checkBuildingEnough(b)) {
+                    getCharacterImage().drawStringSpaceWrapPad("Building,", currentX + 1, currentY + CARD_HEIGHT - 3, currentX + 1, getWidth() - (currentX + CARD_WIDTH), 0xFF09FF00);
+                    int daysRemaining = (b.getRequiredSpace() - b.getConstructionState());
+                    getCharacterImage().drawStringSpaceWrapPad(daysRemaining + " Day" + ((daysRemaining > 1) ? "s" : ""), currentX + 1, currentY + CARD_HEIGHT - 2, currentX + 1, getWidth() - (currentX + CARD_WIDTH), 0xFF09FF00);
+                } else {
+                    getCharacterImage().drawStringSpaceWrapPad("Pending", currentX + 1, currentY + CARD_HEIGHT - 2, currentX + 1, getWidth() - (currentX + CARD_WIDTH), 0xFFFF0900);
+                }
+                
             }
+            
                 
             
             

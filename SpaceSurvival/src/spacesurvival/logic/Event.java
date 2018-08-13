@@ -86,7 +86,7 @@ public class Event {
             event200StrangeMeat.getListChoice().add(EV2001);
             masterEventList.add(event200StrangeMeat);
             //
-            Event event201StrangeMeat = new Event("Strange Meat II", " After investigation, your men discovered that the mysterious meat is from the native monster living in the waste on the planet. The scientist ignore what effect the consumming of these meat have on human body, but one thing is sure, the demand for the meat is high.  the most wealthest are ready to giveout their land for a piece of the meat.");
+            Event event201StrangeMeat = new Event("Strange Meat II", "After investigation, your men discovered that the mysterious meat is from the native monster living in the waste on the planet. The scientist ignore what effect the consumming of these meat have on human body, but one thing is sure, the demand for the meat is high.  the most wealthest are ready to giveout their land for a piece of the meat.");
            event201StrangeMeat.setEventTriggeringDay(7);
            event201StrangeMeat.setRequiredPreviousEvent(true);
            event201StrangeMeat.setEventRequiredEventChoice(EV2001);

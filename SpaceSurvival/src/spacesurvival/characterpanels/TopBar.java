@@ -33,7 +33,7 @@ public class TopBar extends CharacterPanel {
     }
     
     void genImage() {
-        
+        getCharacterImage().clear();
         final String daysString = "Day " + Colony.INSTANCE.getDay();
         
         final String seasonString = "(" + status + ")";

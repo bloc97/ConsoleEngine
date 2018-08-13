@@ -11,8 +11,12 @@ package spacesurvival.logic;
  */
 
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import javax.imageio.ImageIO;
 
 public abstract class Building {
 
@@ -33,15 +37,15 @@ public abstract class Building {
     final static HousingBuilding livingQuarters = new HousingBuilding("Living Quarters", "Very cozy.", "Space(x2), Materials(x1), Parts(x1)", 2, Produce.MATERIALS, Produce.MATERIALS, Produce.PARTS);
     final static HousingBuilding highDensityHousing = new HousingBuilding("High Density Housing", "Was decent way to increase city density back home.", "Space(x2), Adv. Mat.(x1), Mat.(x1), Parts(x1), Elect.(x1)", 2, Produce.COMPOSITE_MATERIALS, Produce.MATERIALS, Produce.PARTS, Produce.ELECTRONICS);
     
-    final static FactoryBuilding crashedShip = new FactoryBuilding("Crashed Ship", "One of its kind, now broken and grounded.", "", 0, Produce.MATERIALS, 1);
+    final static FactoryBuilding crashedShip = new FactoryBuilding("Crashed Ship", "One of its kind, now broken and grounded. (+1 Materials)", "", 0xFFFFEE00, 0, Produce.MATERIALS, 1);
     
-    final static FactoryBuilding mFactory = new FactoryBuilding("Materials Factory","Produces materials.", "Space(x3), Materials(x1)", Produce.MATERIALS, 1, Produce.MATERIALS);
+    final static FactoryBuilding mFactory = new FactoryBuilding("Materials Factory","Produces materials. (+1 Materials)", "Space(x3), Materials(x1)", Produce.MATERIALS, 1, Produce.MATERIALS);
     final static FactoryBuilding pFactory = new FactoryBuilding("Parts Factory","Produces parts.", "Space(x3), Materials(x1)", Produce.PARTS, 1, Produce.MATERIALS);
     final static FactoryBuilding eFactory = new FactoryBuilding("Electronics Factory","Produces electronics.", "Space(x3), Materials(x1), Parts(x1)", Produce.ELECTRONICS, 1, Produce.MATERIALS, Produce.PARTS);
     
     final static FactoryBuilding amFactory = new FactoryBuilding("Advanced Materials Factory","Disc", "", Produce.COMPOSITE_MATERIALS, 1, Produce.MATERIALS, Produce.MATERIALS, Produce.PARTS, Produce.ELECTRONICS);
     final static FactoryBuilding apFactory = new FactoryBuilding("Advanced Parts Factory","Disc", "", Produce.ADVANCED_PARTS, 1, Produce.COMPOSITE_MATERIALS, Produce.MATERIALS, Produce.PARTS, Produce.ELECTRONICS);
-    final static FactoryBuilding aeFactory = new FactoryBuilding("Advanced Electronics Factory","Disc", "", Produce.COMPUTERS, 1, Produce.MATERIALS, Produce.MATERIALS, Produce.ADVANCED_PARTS, Produce.PARTS,Produce.ELECTRONICS, Produce.ELECTRONICS);
+    final static FactoryBuilding aeFactory = new FactoryBuilding("Advanced Electronics Factory","Disc", "", Produce.COMPUTERS, 1, Produce.MATERIALS, Produce.MATERIALS, Produce.ADVANCED_PARTS, Produce.PARTS, Produce.ELECTRONICS, Produce.ELECTRONICS);
     
     final static FactoryBuilding bGenerator = new FactoryBuilding("Biomass Generator","Disc", "", Produce.BIOMASS, 1, Produce.MATERIALS, Produce.MATERIALS, Produce.PARTS);
     final static FactoryBuilding cPlant = new FactoryBuilding("Chemical Plant","Disc", "", Produce.ROCKET_FUEL, 1, Produce.COMPOSITE_MATERIALS, Produce.COMPOSITE_MATERIALS, Produce.COMPOSITE_MATERIALS, Produce.ADVANCED_PARTS, Produce.ADVANCED_PARTS, Produce.COMPUTERS, Produce.COMPUTERS);
@@ -49,20 +53,26 @@ public abstract class Building {
     final static UniqueBuilding beacon = new UniqueBuilding("Beacon","The only shining light on this desolate planet.", "Space(x2), Materials(x2)", 2, Produce.MATERIALS, Produce.MATERIALS);
     final static UniqueBuilding emergencyResponceCenter = new UniqueBuilding("Emergency Response Center","Disc", "", 4, Produce.COMPOSITE_MATERIALS, Produce.COMPOSITE_MATERIALS, Produce.PARTS);
     final static UniqueBuilding riotControlCenter = new UniqueBuilding("Riot Control Center","Disc", "", 2, Produce.COMPOSITE_MATERIALS, Produce.COMPOSITE_MATERIALS, Produce.ADVANCED_PARTS, Produce.ADVANCED_PARTS);
+    
+    
+    final static ReclamationBuilding reclamationFacility = new ReclamationBuilding("Soil Reclamation Facility", "Reclaims land for our survival.", "Space(x6), Materials(x2)", 6, 1, Produce.MATERIALS, Produce.MATERIALS);
+    final static ReclamationBuilding terraformer = new ReclamationBuilding("Terraforming Facility", "", "Space(x3), Adv Mat.(x2), Adv. Parts(x1), Elect.(x1)", 3, 2, Produce.COMPOSITE_MATERIALS, Produce.COMPOSITE_MATERIALS, Produce.ADVANCED_PARTS, Produce.ELECTRONICS);
 
     
     public final static Building[] ALL_REPEATABLE_BUILDINGS = {
-        shelter,
-        livingQuarters,
+        terraformer,
+        reclamationFacility,
         highDensityHousing,
-        mFactory,
-        pFactory,
-        eFactory,
+        livingQuarters,
+        shelter,
         amFactory,
         apFactory,
         aeFactory,
+        mFactory,
+        pFactory,
+        eFactory,
         bGenerator,
-        cPlant
+        cPlant,
     };
     
     public final static Building[] ALL_UNIQUE_BUILDINGS = {
@@ -81,6 +91,8 @@ public abstract class Building {
     
     private final Produce[] requiredProduce;
     
+    private final BufferedImage icon;
+    
     public Building(String name, String description, String produceDescription, int color, int requiredSpace, Produce... requiredProduce) {
         this.name = name;
         this.description = description;
@@ -88,6 +100,17 @@ public abstract class Building {
         this.color = color;
         this.requiredSpace = requiredSpace;
         this.requiredProduce = requiredProduce;
+        
+        BufferedImage tempIcon = null;
+        
+        try {
+            tempIcon = ImageIO.read(new File("resources/icons/" + name.toLowerCase().replaceAll(" ", "_") + ".png"));
+        } catch (IOException ex) {
+            tempIcon = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+            tempIcon.setRGB(0, 0, 0xFFFFFF);
+        }
+        
+        icon = tempIcon;
     }
 
     public String getName() {
@@ -133,6 +156,10 @@ public abstract class Building {
             return new Produce[0];
         }
         return requiredProduce;
+    }
+
+    public BufferedImage getIcon() {
+        return icon;
     }
     
     public void onBuild(Colony colony) {

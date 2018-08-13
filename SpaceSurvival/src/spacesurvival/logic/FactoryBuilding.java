@@ -26,7 +26,10 @@ public class FactoryBuilding extends Building {
         this(name, description, produceDescription, 3, produce, produceQuantity, requiredProduce);
     }
     public FactoryBuilding(String name, String description, String produceDescription, int requiredSpace, Produce produce, int produceQuantity, Produce... requiredProduce) {
-        super(name, description, produceDescription, 0xFFFFAA00, requiredSpace, requiredProduce);
+        this(name, description, produceDescription, 0xFFFFAA00, requiredSpace, produce, produceQuantity, requiredProduce);
+    }
+    public FactoryBuilding(String name, String description, String produceDescription, int color, int requiredSpace, Produce produce, int produceQuantity, Produce... requiredProduce) {
+        super(name, description, produceDescription, color, requiredSpace, requiredProduce);
         this.produce = produce;
         this.produceQuantity = produceQuantity;
     }

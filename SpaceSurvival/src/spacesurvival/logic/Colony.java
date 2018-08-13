@@ -64,7 +64,7 @@ public enum Colony {
             }
         }
         
-        return colonyMaxSpace + add;
+        return colonyMaxSpace + add + 1;
     }
 
     public int getColonyWorkingSpace() {
@@ -167,9 +167,6 @@ public enum Colony {
         
         List<FactoryBuilding.Produce> missingProduce = new LinkedList<>();
         
-        if (!pendingBuildings.contains(building)) {
-            return missingProduce;
-        }
         List<FactoryBuilding.Produce> availableProduceList = new LinkedList<>();
         for (Building b : buildings) {
             if (b instanceof FactoryBuilding) {
@@ -182,7 +179,6 @@ public enum Colony {
         
         for (Building b : pendingBuildings) {
             if (b.equals(building)) {
-                remainingSpace -= b.getRequiredSpace();
                 
                 for (FactoryBuilding.Produce p : b.getRequiredProduce()) {
                     boolean removeSuccessful = availableProduceList.remove(p);
@@ -210,13 +206,17 @@ public enum Colony {
                 }
             }
         }
+        
+        for (FactoryBuilding.Produce p : building.getRequiredProduce()) {
+            boolean removeSuccessful = availableProduceList.remove(p);
+            if (!removeSuccessful) {
+                missingProduce.add(p);
+            }
+        }
         return missingProduce;
     }
     
     public int checkBuildingMissingSpace(Building building) {
-        if (!pendingBuildings.contains(building)) {
-            return 0;
-        }
         List<FactoryBuilding.Produce> availableProduceList = new LinkedList<>();
         for (Building b : buildings) {
             if (b instanceof FactoryBuilding) {
@@ -251,7 +251,7 @@ public enum Colony {
                 }
             }
         }
-        return 0;
+        return -remainingSpace;
     }
     
     public List<Building> getIncrementingBuildings() {
@@ -558,13 +558,14 @@ public enum Colony {
         refreshAvailableBuildings();
         
         
-        Colony.INSTANCE.avanceHelp();
-        Colony.INSTANCE.generateNews(); // return string
-        Colony.INSTANCE.generateEvents(Event.getMasterEventList());
-        Colony.INSTANCE.isHelpArrived(); //return t/f
         
+        colonyMaxSpace++;
         
         day++;
+        generateNews(); // return string
+        generateEvents(Event.getMasterEventList());
+        isHelpArrived(); //return t/f
+        avanceHelp();
         
     }
 

@@ -20,7 +20,7 @@ public class ReclamationBuilding extends Building {
 
     @Override
     public Building getCopy() {
-        return new ReclamationBuilding(getName(), getDescription(), getProduceDescription(), 0, getReclaimPerDay(), getRequiredProduce());
+        return new ReclamationBuilding(getName(), getDescription(), getProduceDescription(), getRequiredSpace(), getReclaimPerDay(), getRequiredProduce());
     }
 
     @Override

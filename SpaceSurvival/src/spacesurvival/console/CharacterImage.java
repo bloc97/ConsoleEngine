@@ -5,6 +5,8 @@
  */
 package spacesurvival.console;
 
+import java.awt.image.BufferedImage;
+
 /**
  *
  * @author bowen
@@ -303,6 +305,35 @@ public class CharacterImage {
         for (int i=0; i<height; i++) {
             setBackgroundColor(x, y + i, c);
             setBackgroundColor(x + width - 1, y + i, c);
+        }
+    }
+    
+    public void paintBinaryImageBackground(int x, int y, BufferedImage image, int blackColor, int whiteColor, boolean doScaleWidth) {
+        
+        if (doScaleWidth) {
+            
+            for (int j=0; j<image.getHeight(); j++) {
+                for (int i=0; i<image.getWidth()*2; i++) {
+                    if (image.getRGB(i/2, j) == 0xFF000000) {
+                        setBackgroundColor(i + x, j + y, blackColor);
+                    } else {
+                        setBackgroundColor(i + x, j + y, whiteColor);
+                    }
+                }
+            }
+            
+        } else {
+        
+            for (int j=0; j<image.getHeight(); j++) {
+                for (int i=0; i<image.getWidth(); i++) {
+                    if (image.getRGB(i, j) == 0xFF000000) {
+                        setBackgroundColor(i + x, j + y, blackColor);
+                    } else {
+                        setBackgroundColor(i + x, j + y, whiteColor);
+                    }
+                }
+            }
+
         }
     }
     
