@@ -82,7 +82,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
         genImage();
     }
     
-    private void genImage() {
+    public void genImage() {
         String scrollingText = Colony.INSTANCE.getNews();
         String cleanedText = getCleanedText(scrollingText);
         

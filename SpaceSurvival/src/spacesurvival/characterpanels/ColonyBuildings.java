@@ -69,19 +69,26 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
         List<Building> allBuildings = Colony.INSTANCE.getAllBuildings();
         
         
-        for (int i=0; i<=allBuildings.size(); i++) {
+        for (int i=0; i<allBuildings.size(); i++) {
             getCharacterImage().drawRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT);
             
             
-            if (i == allBuildings.size()) {
+            if (i == 0) {
                 getCharacterImage().drawString("■End Day", currentX + CARD_WIDTH/2 - 4, currentY + CARD_HEIGHT/2, 0xFFFFAA00);
-                getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? 0xFFFFFFFF : 0xFFCCCCCC);//r.nextInt(0xFFFFFF) | 0xFF000000);
-            } else {
-                Building b = allBuildings.get(i);
-                getCharacterImage().drawStringSpaceWrapPad(b.getName(), currentX + 1, currentY + 1, currentX + 1, getWidth() - (currentX + CARD_WIDTH));
-                getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? b.getRGB() : b.getColor().darker().getRGB());//r.nextInt(0xFFFFFF) | 0xFF000000);
-                
+                //getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? 0xFFFFFFFF : 0xFFCCCCCC);//r.nextInt(0xFFFFFF) | 0xFF000000);
             }
+            Building b = allBuildings.get(i);
+            getCharacterImage().drawStringSpaceWrapPad(b.getName(), currentX + 1, currentY + 1, currentX + 1, getWidth() - (currentX + CARD_WIDTH), (b.isBuilt()) ? 0xFFEEEEEE : 0xFF888888);
+            Color frameColor = b.isBuilt() ? b.getColor() : b.getColor().brighter().brighter().brighter().brighter().darker();
+            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? frameColor.getRGB() : frameColor.darker().getRGB());//r.nextInt(0xFFFFFF) | 0xFF000000);
+            
+            if (b.getConstructionState() == 0 && !b.isBuilt()) {
+                getCharacterImage().drawStringSpaceWrapPad("Pending", currentX + 1, currentY + CARD_HEIGHT - 2, currentX + 1, getWidth() - (currentX + CARD_WIDTH));
+            } else if (!b.isBuilt()) {
+                getCharacterImage().drawStringSpaceWrapPad("Building", currentX + 1, currentY + CARD_HEIGHT - 2, currentX + 1, getWidth() - (currentX + CARD_WIDTH));
+            }
+                
+            
             
             currentX += CARD_WIDTH;
             if (currentX + CARD_WIDTH > getWidth()) {
@@ -180,11 +187,9 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
             List<Building> allBuildings = Colony.INSTANCE.getAllBuildings();
             
             if (selectedIndex >= 0 && selectedIndex < allBuildings.size()) {
-                GamePanel.infoBar.setText(allBuildings.get(selectedIndex).getDescription());
-                GamePanel.infoBar.show();
+                GamePanel.infoBar.show(allBuildings.get(selectedIndex).getDescription());
             } else if (selectedIndex == allBuildings.size()) {
-                GamePanel.infoBar.setText("Ends the current day.");
-                GamePanel.infoBar.show();
+                //GamePanel.infoBar.show("Ends the current day.");
             } else {
                 GamePanel.infoBar.hide();
             }
@@ -207,7 +212,7 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
     public void onMouseReleased(int x, int y, boolean isLeftClick) {
         int buildingsNum = Colony.INSTANCE.getAllBuildings().size();
         if (!hasDraggedScroll) {
-            if (selectedIndex == buildingsNum) {
+            if (selectedIndex == 0) {
                 GamePanel.dayEndOverlay.show();
             } else if (selectedIndex >= 0 && selectedIndex < buildingsNum) {
                 Colony.INSTANCE.cancelBuilding(Colony.INSTANCE.getAllBuildings().get(selectedIndex));

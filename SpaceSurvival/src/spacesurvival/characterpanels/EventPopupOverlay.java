@@ -161,7 +161,7 @@ public class EventPopupOverlay extends CharacterPanel {
         for (int i=0; i<choices.length; i++) {
             choices[i] = event.getListChoice().get(i).getName();
         }
-        
+        genImage();
         setX(0);
     }
     

@@ -37,14 +37,10 @@ public class BottomInfoBar extends CharacterPanel {
         getCharacterImage().drawString(infoString, 0, 0, mainColor.brighter().brighter().getRGB());
     }
     
-    public void setText(String string) {
+    public void show(String string) {
         infoString = string;
-        genImage();
-    }
-    
-    
-    public void show() {
         setX(0);
+        genImage();
     }
     
     public void hide() {

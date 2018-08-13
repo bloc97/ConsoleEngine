@@ -11,13 +11,13 @@ package spacesurvival.logic;
  */
 public class HousingBuilding extends Building {
     
-    public HousingBuilding(String name, String description, int requiredSpace, FactoryBuilding.Produce... requiredProduce) {
-        super(name, description, 0xFFFFFFFF, requiredSpace, requiredProduce);
+    public HousingBuilding(String name, String description, String produceDescription, int requiredSpace, FactoryBuilding.Produce... requiredProduce) {
+        super(name, description, produceDescription, 0xFFFFFFFF, requiredSpace, requiredProduce);
     }
 
     @Override
     public Building getCopy() {
-        return new HousingBuilding(getName(), getDescription(), getRequiredSpace());
+        return new HousingBuilding(getName(), getDescription(), getProduceDescription(), getRequiredSpace(), getRequiredProduce());
     }
     
 }

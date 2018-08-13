@@ -6,6 +6,7 @@
 package spacesurvival.logic;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -269,6 +270,7 @@ public enum Colony {
                     removedProduce.add(p);
                 } else {
                     removedAll = false;
+                    break;
                 }
             }
 
@@ -291,12 +293,14 @@ public enum Colony {
     
     public void addBuilding(Building building) {
         pendingBuildings.add(building);
+        refreshAvailableBuildings();
     }
     
     public void cancelBuilding(Building building) {
         if (pendingBuildings.contains(building) && building.getConstructionState() <= 0) {
             pendingBuildings.remove(building);
         }
+        refreshAvailableBuildings();
     }
     
     public void refreshAvailableBuildings() {
@@ -308,7 +312,21 @@ public enum Colony {
             }
         }
         availableBuildings.clear();
-        for (Building b : Building.ALL_BUILDINGS) {
+        for (Building b : Building.ALL_UNIQUE_BUILDINGS) {
+            if (b == null) {
+                continue;
+            }
+            Set<FactoryBuilding.Produce> produceSet = new HashSet<>();
+            for (FactoryBuilding.Produce p : b.getRequiredProduce()) {
+                produceSet.add(p);
+            }
+            if (availableProduceList.containsAll(produceSet)) {
+                if (!availableBuildings.contains(b) && !getAllBuildings().contains(b)) {
+                    availableBuildings.add(b);
+                }
+            }
+        }
+        for (Building b : Building.ALL_REPEATABLE_BUILDINGS) {
             if (b == null) {
                 continue;
             }
@@ -322,6 +340,7 @@ public enum Colony {
                 }
             }
         }
+        GamePanel.buildMenu.genImage();
     }
 
     public List<Building> getAllBuildings() {
@@ -513,6 +532,18 @@ public enum Colony {
             t.incrementConstructionState();
         });
         
+        List<Building> transferedBuildings = new LinkedList<>();
+        
+        for (Building b : getPendingBuildings()) {
+            if (b.isBuilt()) {
+                transferedBuildings.add(b);
+            }
+        }
+        
+        pendingBuildings.removeAll(transferedBuildings);
+        buildings.addAll(transferedBuildings);
+        
+        refreshAvailableBuildings();
         
         Colony.INSTANCE.avanceHelp();
         Colony.INSTANCE.generateNews(); // return string
