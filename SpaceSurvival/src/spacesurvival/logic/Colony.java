@@ -398,24 +398,28 @@ public enum Colony {
         return news;
     } //is called by logic every new day, generate the new based off the colony stats, this is called by logic every day
     public void generateEvents(ArrayList<Event> eventMasterList) {
+        System.out.println("calling generate events");
 
         for (Event element: eventMasterList) { //check for each event stored in the master list
 
             boolean eventToday = true;
-
-            if (!(day >= element.getEventTriggeringDay())) { // if today allow the event to happen
+            
+            if (day == -1) {
+                
+            }
+            else if (!(day >= element.getEventTriggeringDay())) { // if today allow the event to happen
                 eventToday = false;
             }
             if (element.getRequiredHapinessLower() != -1) { //if theres a hapiness check to allow the event to generate
-                if (element.getRequiredHapinessLower() < happiness && happiness < element.getRequiredHapinessUpper()) {
+                if (element.getRequiredHapinessLower() <= happiness && happiness <= element.getRequiredHapinessUpper()) {
 
                 }
                 else {
                     eventToday = false;
                 }
             }
-            if (element.getEventRequiredEvent().equals("")== false) { //if there's a previous eventchoice to be generate
-                if (listChoosed.contains(element.getEventRequiredEvent())) { ///NOT WORKING
+            if (element.isRequiredPreviousEvent() == true) { //if there's a previous eventchoice to be generate
+                if (listChoosed.contains(element.getEventRequiredEvent())) { 
 
                 }
                 else {
@@ -424,6 +428,7 @@ public enum Colony {
             }
 
             if (eventToday) { // if all go well generate this and add it to the today event list
+                System.out.println("a event is added today");
                 listTodayEvent.add(element);
             }
         }

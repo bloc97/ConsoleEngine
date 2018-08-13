@@ -77,6 +77,10 @@ public class EventChoice {
     public int getModifierColonyUsingTile() {
         return modifierColonyUsingTile;
     }
+
+    public int getId() {
+        return id;
+    }
     
     
 }

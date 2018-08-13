@@ -21,6 +21,8 @@ public class Event {
     private int eventTriggeringDay = -1; // if this event happens on specific day, use this, else = -1;
     private EventChoice eventRequiredEventChoice = new EventChoice();//if this event required a previous event already happened to be taken place, use this, else = "";
     
+    private boolean requiredPreviousEvent = false;
+    
     private int requiredHapinessLower = -1;
     private int requiredHapinessUpper = -1;
     
@@ -125,6 +127,14 @@ public class Event {
 
     public void setRequiredHapinessUpper(int requiredHapinessUpper) {
         this.requiredHapinessUpper = requiredHapinessUpper;
+    }
+
+    public boolean isRequiredPreviousEvent() {
+        return requiredPreviousEvent;
+    }
+
+    public void setRequiredPreviousEvent(boolean requiredPreviousEvent) {
+        this.requiredPreviousEvent = requiredPreviousEvent;
     }
     
     

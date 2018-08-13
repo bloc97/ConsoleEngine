@@ -32,6 +32,7 @@ public class SpaceSurvival {
 //</editor-fold>
 
         Event.iniMasterEventList();
+        System.out.println("list is ini");
     }
 
     private static void createAndShowGUI() {
