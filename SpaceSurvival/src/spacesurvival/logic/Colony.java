@@ -55,6 +55,17 @@ public enum Colony {
     public int getColonyMaxSpace() {
         return colonyMaxSpace;
     }
+    
+    public int getTomorrowColonyMaxSpace() {
+        int add = 0;
+        for (Building b : buildings) {
+            if (b instanceof ReclamationBuilding) {
+                add += ((ReclamationBuilding) b).getReclaimPerDay();
+            }
+        }
+        
+        return colonyMaxSpace + add;
+    }
 
     public int getColonyWorkingSpace() {
         int workingTiles = 0;
@@ -74,6 +85,18 @@ public enum Colony {
             if (b.getConstructionState() > 0) {
                 pendingSpace += b.getRequiredSpace();
             }
+        }
+        pendingSpace += getColonyOccupiedSpace();
+        if (pendingSpace > getColonyMaxSpace()) {
+            pendingSpace = getColonyMaxSpace();
+        }
+        return pendingSpace;
+    }
+    
+    public int getColonyTomorrowOccupiedSpace() {
+        int pendingSpace = 0;
+        for (Building b : getIncrementingBuildings()) {
+            pendingSpace += b.getRequiredSpace();
         }
         pendingSpace += getColonyOccupiedSpace();
         if (pendingSpace > getColonyMaxSpace()) {
@@ -102,10 +125,6 @@ public enum Colony {
             pendingSpace = getColonyMaxSpace();
         }
         return pendingSpace;
-    }
-    
-    public int getTomorrowColonyMaxSpace() {
-        return 0;
     }
     
     public boolean checkBuildingEnough(Building building) {
@@ -522,6 +541,10 @@ public enum Colony {
     
     public void nextDay() {
         
+        getBuildings().forEach((t) -> {
+            t.onBeforeNextDay(this);
+        });
+        
         getIncrementingBuildings().forEach((t) -> {
             t.incrementConstructionState();
         });
@@ -538,6 +561,7 @@ public enum Colony {
         buildings.addAll(transferedBuildings);
         
         refreshAvailableBuildings();
+        
         
         Colony.INSTANCE.avanceHelp();
         Colony.INSTANCE.generateNews(); // return string

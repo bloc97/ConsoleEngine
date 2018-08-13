@@ -154,6 +154,7 @@ public class EventPopupOverlay extends CharacterPanel {
     }
     
     public void show(Event event) {
+        this.event = event;
         eventTitle = event.getName();
         eventDescription = event.getDiscription();
         
