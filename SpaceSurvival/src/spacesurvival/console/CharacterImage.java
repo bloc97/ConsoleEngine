@@ -200,6 +200,40 @@ public class CharacterImage {
         }
         return y;
     }
+    public int drawStringSpaceWrapPad(String str, int x, int y, int leftPad, int rightPad, int foregroundColor) {
+        String[] words = str.split(" ");
+        int n = 0;
+        for (String s : words) {
+            if (s.length() > getWidth() - rightPad - leftPad) {
+                for (int i=0; i<s.length(); i++) {
+                    setChar(x, y, s.charAt(i));
+                    setForegroundColor(x, y, foregroundColor);
+                    x++;
+                    if (x >= width - rightPad) {
+                        x = leftPad;
+                        y++;
+                    }
+                }
+                break;
+            }
+            if (s.length() + x > width - rightPad) {
+                x = leftPad;
+                y++;
+            }
+            for (int i=0; i<s.length(); i++) {
+                setChar(x, y, s.charAt(i));
+                setForegroundColor(x, y, foregroundColor);
+                x++;
+            }
+            if (n < words.length - 1) {
+                setChar(x, y, ' ');
+                setForegroundColor(x, y, foregroundColor);
+            }
+            x++;
+            n++;
+        }
+        return y;
+    }
     public int drawStringWrapPad(String str, int x, int y, int leftPad, int rightPad) {
         for (int i=0; i<str.length(); i++) {
             setChar(x, y, str.charAt(i));

@@ -162,6 +162,15 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
             int iconY = y / CARD_HEIGHT;
 
             selectedIndex = iconY * squaresPerRow + iconX;
+            
+            List<Building> availableBuildings = Colony.INSTANCE.getAvailableBuildings();
+            
+            if (selectedIndex >= 0 && selectedIndex < availableBuildings.size()) {
+                GamePanel.infoBar.show("Requires: " + availableBuildings.get(selectedIndex).getProduceDescription());
+            } else {
+                GamePanel.infoBar.hide();
+            }
+            
         } else {
             selectedIndex = -1;
         }
@@ -180,7 +189,7 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
         if (!hasDraggedScroll) {
             int size = Colony.INSTANCE.getAvailableBuildings().size();
             if (selectedIndex >= 0 && selectedIndex < size) {
-                Colony.INSTANCE.addBuilding(Colony.INSTANCE.getAvailableBuildings().get(selectedIndex));
+                Colony.INSTANCE.addBuilding(Colony.INSTANCE.getAvailableBuildings().get(selectedIndex).getCopy());
             }
             
             GamePanel.colonyBuildings.genImage();

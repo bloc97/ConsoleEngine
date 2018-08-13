@@ -8,33 +8,25 @@ package spacesurvival.logic;
 import java.util.LinkedList;
 import java.util.List;
 
+import static spacesurvival.logic.Building.Produce;
+
 /**
  *
  * @author bowen
  */
 public class FactoryBuilding extends Building {
     
-
-    public enum Produce {
-        MATERIALS, PARTS, ELECTRONICS, COMPOSITE_MATERIALS, ADVANCED_PARTS, COMPUTERS, BIOMASS, ROCKET_FUEL;
-
-        @Override
-        public String toString() {
-            return super.toString().substring(0, 1) + super.toString().toLowerCase().substring(1).replaceAll("_", "");
-        }
-        
-    }
     
     private final Produce produce;
     private final int produceQuantity;
     
     private int produceQuantityModifier = 0;
     
-    public FactoryBuilding(String name, String description, Produce produce, int produceQuantity, Produce... requiredProduce) {
-        this(name, description, 3, produce, produceQuantity, requiredProduce);
+    public FactoryBuilding(String name, String description, String produceDescription, Produce produce, int produceQuantity, Produce... requiredProduce) {
+        this(name, description, produceDescription, 3, produce, produceQuantity, requiredProduce);
     }
-    public FactoryBuilding(String name, String description, int requiredSpace, Produce produce, int produceQuantity, Produce... requiredProduce) {
-        super(name, description, 0xFFFFAA00, requiredSpace, requiredProduce);
+    public FactoryBuilding(String name, String description, String produceDescription, int requiredSpace, Produce produce, int produceQuantity, Produce... requiredProduce) {
+        super(name, description, produceDescription, 0xFFFFAA00, requiredSpace, requiredProduce);
         this.produce = produce;
         this.produceQuantity = produceQuantity;
     }
@@ -57,7 +49,7 @@ public class FactoryBuilding extends Building {
     
     @Override
     public Building getCopy() {
-        return new FactoryBuilding(getName(), getDescription(), produce, produceQuantity);
+        return new FactoryBuilding(getName(), getDescription(), getProduceDescription(), getRequiredSpace(), produce, produceQuantity, getRequiredProduce());
     }
     
     

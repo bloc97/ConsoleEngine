@@ -24,14 +24,6 @@ public class DayEndPopupOverlay extends CharacterPanel {
     
     private Color mainColor;
     
-    private int day = 1;
-    private int currentTotalSpace = 10;
-    private int tomorrowTotalSpace = 11;
-    private int currentUsedSpace = 8;
-    private int tomorrowUsedSpace = 9;
-    
-    private int currentDebris = 4;
-    private int tomorrowDebris = 4;
     private int defendability = 2;
     private int decoys = 1;
     private int estimatedMonsters = 3;
@@ -64,7 +56,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
         getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, mainColor.brighter().brighter().getRGB());
         getCharacterImage().fillBackgroundColorRectangle(xPad, yPad, width, height, mainColor.darker().getRGB());
         
-        String title = "End Day " + day + "?";
+        String title = "End Day " + Colony.INSTANCE.getDay() + "?";
         
         getCharacterImage().drawRectangle(xPad, yPad, width, height);
         getCharacterImage().drawString(title, xPad + (width / 2) - (title.length() / 2), yPad);
@@ -77,6 +69,12 @@ public class DayEndPopupOverlay extends CharacterPanel {
             totalSpaceColor = 0xFFFFAA00;
             totalSpaceColor = 0xFFFF0000;*/
             
+        int currentTotalSpace = Colony.INSTANCE.getColonyMaxSpace();
+        int tomorrowTotalSpace = Colony.INSTANCE.getColonyMaxSpace();
+        
+        int currentUsedSpace = Colony.INSTANCE.getColonyPendingOccupiedSpace();
+        int tomorrowUsedSpace = Colony.INSTANCE.getColonyPendingOccupiedSpace();
+        
         int totalSpaceColor = 0xFFFFFF00;
         if (tomorrowTotalSpace - currentTotalSpace > 8) {
             totalSpaceColor = 0xFF00FFFF;
@@ -93,6 +91,9 @@ public class DayEndPopupOverlay extends CharacterPanel {
         } else {
             totalSpaceColor = 0xFFFF0000;
         }
+        
+        int currentDebris = Colony.INSTANCE.getColonyLostSpace();
+        int tomorrowDebris = Colony.INSTANCE.getColonyLostSpace();
         
         int debrisColor = 0xFFFFFF00;
         if (tomorrowDebris - currentDebris < 0) {
@@ -205,7 +206,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
         getCharacterImage().drawString(totalSpaceStringLeft, textXPad, textYPad + 2);
         getCharacterImage().drawString(usedSpaceStringLeft, textXPad, textYPad + 4);
         getCharacterImage().drawString(debrisStringLeft, textXPad, textYPad + 6);
-        if (day > 2) {
+        if (Colony.INSTANCE.getDay() > 2) {
             getCharacterImage().drawString(defenseStringLeft, textXPad, textYPad + 8);
             getCharacterImage().drawString(decoyStringLeft, textXPad, textYPad + 10);
             getCharacterImage().drawString(monstersStringLeft, textXPad, textYPad + 12);
@@ -215,7 +216,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
         getCharacterImage().drawString(totalSpaceStringRight, textXPad + totalSpaceStringLeft.length(), textYPad + 2, totalSpaceColor);
         getCharacterImage().drawString(usedSpaceStringRight, textXPad + usedSpaceStringLeft.length(), textYPad + 4);
         //getCharacterImage().drawString(debrisStringRight, textXPad + debrisStringLeft.length(), textYPad + 6, debrisColor);
-        if (day > 2) {
+        if (Colony.INSTANCE.getDay() > 2) {
             getCharacterImage().drawString(defenseStringRight, textXPad + defenseStringLeft.length(), textYPad + 8, defenseColor);
             getCharacterImage().drawString(decoyStringRight, textXPad + decoyStringLeft.length(), textYPad + 10, decoyColor);
             getCharacterImage().drawString(monstersStringRight, textXPad + monstersStringLeft.length(), textYPad + 12, monstersColor);
@@ -279,6 +280,13 @@ public class DayEndPopupOverlay extends CharacterPanel {
     }
 
     @Override
+    public void onMouseEntered(int x, int y) {
+        isYesSelected = false;
+        isNoSelected = false;
+        genImage();
+    }
+    
+    @Override
     public void onMousePressed(int x, int y, boolean isLeftClick) {
         if (isNoSelected) {
             hide();
@@ -287,6 +295,9 @@ public class DayEndPopupOverlay extends CharacterPanel {
             nextDay();
             hide();
         }
+        isYesSelected = false;
+        isNoSelected = false;
+        genImage();
     }
 
     @Override
@@ -330,7 +341,9 @@ public class DayEndPopupOverlay extends CharacterPanel {
             break;
         }
         
-        
+        GamePanel.buildMenu.genImage();
+        GamePanel.bottomBar.genImage();
+        GamePanel.colonyBuildings.genImage();
     }
     
     public void hide() {
@@ -338,26 +351,11 @@ public class DayEndPopupOverlay extends CharacterPanel {
     }
     
     public void show() {
+        isYesSelected = false;
+        isNoSelected = false;
+        genImage();
         setX(0);
     }
     
-    
-    
-    public void setEndDayStatus(int day, int currentTotalSpace, int tomorrowTotalSpace, int currentUsedSpace, int tommorrowUsedSpace, int currentDebris, int tomorrowDebris, int defendability, int decoys, int estimatedMonsters) {
-        this.day = day;
-        this.currentTotalSpace = currentTotalSpace;
-        this.tomorrowTotalSpace = tomorrowTotalSpace;
-        this.currentUsedSpace = currentUsedSpace;
-        this.tomorrowUsedSpace = tommorrowUsedSpace;
-        this.currentDebris = currentDebris;
-        this.tomorrowDebris = tomorrowDebris;
-        this.defendability = defendability;
-        this.decoys = decoys;
-        this.estimatedMonsters = estimatedMonsters;
-    }
-    
-    public void setDayReportStatus(int day, int lastTotalSpace, int newTotalSpace, int lastUsedSpace, int newUsedSpace, int lastDebris, int newDebris, int lastDecoys, int newDecoys, int totalMonsters, int killedMonsters) {
-        
-    }
     
 }
