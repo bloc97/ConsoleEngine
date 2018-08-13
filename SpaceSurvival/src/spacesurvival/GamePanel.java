@@ -35,6 +35,7 @@ import spacesurvival.characterpanels.DayEndPopupOverlay;
 import spacesurvival.characterpanels.EventPopupOverlay;
 import spacesurvival.characterpanels.MiddleScrollBar;
 import spacesurvival.characterpanels.RightScrollBar;
+import spacesurvival.characterpanels.TextCutscene;
 import spacesurvival.characterpanels.TopBar;
 import spacesurvival.console.CharacterPanel;
 import spacesurvival.console.ConsolePanel;
@@ -70,6 +71,8 @@ public class GamePanel extends JPanel {
     
     public static final BottomInfoBar infoBar = new BottomInfoBar(30, 30, mainColor);
     public static final EventPopupOverlay eventPopup = new EventPopupOverlay(30, 30, mainColor);
+    
+    public static final TextCutscene cutscene = new TextCutscene(30, 30, mainColor);
     
     ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     ScheduledExecutorService ex2 = Executors.newSingleThreadScheduledExecutor();
@@ -123,7 +126,10 @@ public class GamePanel extends JPanel {
         
         
         screen.addCharacterPanel(100, dayEndOverlay);
-        screen.addCharacterPanel(101, eventPopup);
+        
+        screen.addCharacterPanel(150, cutscene);
+        
+        screen.addCharacterPanel(200, eventPopup);
         //screen.addCharacterPanel(4, new BottomBarOverlay(10, 10));
         //screen.addCharacterPanel(1, panel);
         
@@ -281,15 +287,19 @@ public class GamePanel extends JPanel {
             screen.getCharacterPanels().forEach((panel) -> {
                 panel.onGlobalTick();
             });
+            cutscene.addStop();
             repaint();
         }, 0, 10, TimeUnit.MILLISECONDS);
         
         ex.scheduleWithFixedDelay(() -> {
             repaint();
             bottomBar.tickPos();
+            topBar.genImage();
+            buildMenu.genImage();
+            colonyBuildings.genImage();
+            bottomBar.genImage();
         }, 0, 200, TimeUnit.MILLISECONDS);
         
-        Colony.INSTANCE.refreshAvailableBuildings();
         buildMenu.genImage();
     }
     

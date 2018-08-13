@@ -11,6 +11,7 @@ import java.util.Random;
 import spacesurvival.GamePanel;
 import static spacesurvival.characterpanels.ColonyBuildings.CARD_HEIGHT;
 import static spacesurvival.characterpanels.ColonyBuildings.CARD_WIDTH;
+import spacesurvival.characterpanels.sound.SoundEngine;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
 import spacesurvival.logic.Building;
@@ -191,6 +192,7 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
         if (!hasDraggedScroll) {
             int size = Colony.INSTANCE.getAvailableBuildings().size();
             if (selectedIndex >= 0 && selectedIndex < size) {
+                SoundEngine.playClip(SoundEngine.BUILD);
                 Colony.INSTANCE.addBuilding(Colony.INSTANCE.getAvailableBuildings().get(selectedIndex).getCopy());
             }
             

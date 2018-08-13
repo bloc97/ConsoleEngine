@@ -31,8 +31,7 @@ public class SpaceSurvival {
         //Logic logic = new Logic();
 //</editor-fold>
 
-        Event.iniMasterEventList();
-        System.out.println("list is ini");
+        Event.initAllEvents();
     }
 
     private static void createAndShowGUI() {

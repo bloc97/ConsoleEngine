@@ -11,13 +11,16 @@ package spacesurvival.logic;
  */
 public class UniqueBuilding extends Building {
     
+    public UniqueBuilding(String name, String description, String produceDescription, int color, int requiredSpace, FactoryBuilding.Produce... requiredProduce) {
+        super(name, description, produceDescription, color, requiredSpace, requiredProduce);
+    }
     public UniqueBuilding(String name, String description, String produceDescription, int requiredSpace, FactoryBuilding.Produce... requiredProduce) {
         super(name, description, produceDescription, 0xFFFF00FF, requiredSpace, requiredProduce);
     }
 
     @Override
     public Building getCopy() {
-        return new UniqueBuilding(getName(), getDescription(), getProduceDescription(), getRequiredSpace(), getRequiredProduce());
+        return new UniqueBuilding(getName(), getDescription(), getProduceDescription(), getRGB(), getRequiredSpace(), getRequiredProduce());
     }
 
     @Override

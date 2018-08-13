@@ -24,9 +24,6 @@ public class DayEndPopupOverlay extends CharacterPanel {
     
     private Color mainColor;
     
-    private int defendability = 2;
-    private int decoys = 1;
-    private int estimatedMonsters = 3;
 
     public DayEndPopupOverlay(int consoleWidth, int consoleHeight, Color mainColor) {
         super(0, 0, consoleWidth, consoleHeight);
@@ -105,6 +102,10 @@ public class DayEndPopupOverlay extends CharacterPanel {
         
         String defenseSubString = "";
         int defenseColor = 0xFFFFFF00;
+        
+        int defendability = Colony.INSTANCE.getDefense();
+        int decoys = Colony.INSTANCE.getDecoys();
+        int estimatedMonsters = Colony.INSTANCE.getMonstersNum();
         
         if (defendability <= -4) {
             defenseSubString = "Very Low";
@@ -207,7 +208,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
         getCharacterImage().drawString(totalSpaceStringLeft, textXPad, textYPad + 2);
         getCharacterImage().drawString(usedSpaceStringLeft, textXPad, textYPad + 4);
         getCharacterImage().drawString(debrisStringLeft, textXPad, textYPad + 6);
-        if (Colony.INSTANCE.getDay() > 2) {
+        if (Colony.INSTANCE.getMonstersNum() > 0) {
             getCharacterImage().drawString(defenseStringLeft, textXPad, textYPad + 8);
             getCharacterImage().drawString(decoyStringLeft, textXPad, textYPad + 10);
             getCharacterImage().drawString(monstersStringLeft, textXPad, textYPad + 12);
@@ -217,7 +218,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
         getCharacterImage().drawString(totalSpaceStringRight, textXPad + totalSpaceStringLeft.length(), textYPad + 2, totalSpaceColor);
         getCharacterImage().drawString(usedSpaceStringRight, textXPad + usedSpaceStringLeft.length(), textYPad + 4);
         //getCharacterImage().drawString(debrisStringRight, textXPad + debrisStringLeft.length(), textYPad + 6, debrisColor);
-        if (Colony.INSTANCE.getDay() > 2) {
+        if (Colony.INSTANCE.getMonstersNum() > 0) {
             getCharacterImage().drawString(defenseStringRight, textXPad + defenseStringLeft.length(), textYPad + 8, defenseColor);
             getCharacterImage().drawString(decoyStringRight, textXPad + decoyStringLeft.length(), textYPad + 10, decoyColor);
             getCharacterImage().drawString(monstersStringRight, textXPad + monstersStringLeft.length(), textYPad + 12, monstersColor);
@@ -330,7 +331,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
     }
     
     
-    private void nextDay() {
+    public void nextDay() {
         Colony.INSTANCE.nextDay();
         GamePanel.topBar.genImage();
         GamePanel.bottomBar.setScroll(0);

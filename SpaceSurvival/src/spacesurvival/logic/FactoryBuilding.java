@@ -52,7 +52,7 @@ public class FactoryBuilding extends Building {
     
     @Override
     public Building getCopy() {
-        return new FactoryBuilding(getName(), getDescription(), getProduceDescription(), getRequiredSpace(), produce, produceQuantity, getRequiredProduce());
+        return new FactoryBuilding(getName(), getDescription(), getProduceDescription(), getRGB(), getRequiredSpace(), produce, produceQuantity, getRequiredProduce());
     }
     
     

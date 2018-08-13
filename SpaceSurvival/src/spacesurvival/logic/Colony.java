@@ -22,19 +22,20 @@ public enum Colony {
 
     INSTANCE;
     
-    private int happiness = 80; //starting
-    private int dayTillPopGrow = 10; //starting
+    
     private int dayTillSaved = 0;
     private int crime = 0; //starting //not using yet
     private boolean helpComing = false;
-    private String news = "Clear weather, low chance of precipitations. Temperature is cool, bring a jacket to work.        Reports of space piracy on the system 4AB-RJ, all civilian ships should stay vigilant. We advise you to report any suspicious activities to the local authorities.                               ";
+    
+    
+    
     private ArrayList<EventChoice> listChoosed = new ArrayList(); //when ever you made a choice it's store here
     private ArrayList<Event> listTodayEvent = new ArrayList();
     
-    private int day = 1; // start at day one;
+    private int day = 0; // start at day one;
     
     private final int planetMaxSpace = 150; //default 
-    private int colonyMaxSpace = 5;//starting default
+    private int colonyMaxSpace = 8;//starting default
     private int colonyLostSpace; //tiles used by debris
     
     private List<Building> buildings = new ArrayList(); //Completed buildings that take space
@@ -42,12 +43,43 @@ public enum Colony {
     
     private List<Building> availableBuildings = new ArrayList<>();
 
+    
+    private int happiness = 0; //0 is neutral, negative is unhappy, positive is happy
+    private int homelessCount = 0;
+    
+    
+    private String news = "";
+    private String report = "";
+    
+    private List<Objective> objectives = new LinkedList<>();
+    
+    private int monstersAdded = 0;
+    
     private Colony() {
-       buildings.add(FactoryBuilding.crashedShip);
+        //buildings.add(FactoryBuilding.crashedShip);
+        //unlockBuilding(Building.mFactory);
+        //availableBuildings.add(Building.pFactory);
+        //this.news = News.generateNews(this);
+        //checkEvents(Event.allEventsList);
     }
     
-    
+    public int getDecoys() {
+        int num = 0;
+        for (Building b : buildings) {
+            if (b.getName().toLowerCase().equals("decoy")) {
+                num++;
+            }
+        }
+        return num;
+    }
 
+    public void setColonyLostSpace(int i) {
+        colonyLostSpace = i;
+        if (getColonyOccupiedSpace() > getColonyMaxSpace()) {
+            colonyLostSpace -= getColonyOccupiedSpace() - getColonyMaxSpace();
+        }
+    }
+    
     public int getPlanetMaxSpace() {
         return planetMaxSpace;
     }
@@ -56,15 +88,33 @@ public enum Colony {
         return colonyMaxSpace;
     }
     
+    public void addMonstersForNight(int num) {
+        monstersAdded = num;
+    }
+    
     public int getTomorrowColonyMaxSpace() {
-        int add = 0;
+        int reclaimBuildings = 0;
         for (Building b : buildings) {
             if (b instanceof ReclamationBuilding) {
-                add += ((ReclamationBuilding) b).getReclaimPerDay();
+                reclaimBuildings += 1;
             }
         }
+        if (reclaimBuildings > 2) {
+            reclaimBuildings = 2;
+        }
         
-        return colonyMaxSpace + add + ((day % 2 == 0) ? 1 : 0);
+        int newColonyMaxSpace = colonyMaxSpace;
+        
+        if (day < 10) {
+            newColonyMaxSpace += reclaimBuildings + ((day % 2 == 0) ? 1 : 0);
+        } else {
+            newColonyMaxSpace += reclaimBuildings + ((day % (4 - reclaimBuildings) == 0) ? 1 : 0);
+        }
+        
+        if (newColonyMaxSpace > planetMaxSpace) {
+            newColonyMaxSpace = planetMaxSpace;
+        }
+        return newColonyMaxSpace;
     }
 
     public int getColonyWorkingSpace() {
@@ -114,6 +164,25 @@ public enum Colony {
             pendingSpace = getColonyMaxSpace();
         }
         return pendingSpace;
+    }
+    
+    public boolean checkBuildingExists(Building building) {
+        for (Building b : buildings) {
+            if (b.getName().equals(building.getName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean checkBuildingExists(Building building, int count) {
+        int i = 0;
+        for (Building b : buildings) {
+            if (b.getName().equals(building.getName())) {
+                i++;
+            }
+        }
+        return i >= count;
     }
     
     public boolean checkBuildingEnough(Building building) {
@@ -300,56 +369,20 @@ public enum Colony {
     }
     
     public void addBuilding(Building building) {
-        pendingBuildings.add(building);
-        refreshAvailableBuildings();
+        pendingBuildings.add(building.getCopy());
+    }
+    public void spawnBuilding(Building building) {
+        buildings.add(building.getCopy());
     }
     
-    public void cancelBuilding(Building building) {
+    public boolean cancelBuilding(Building building) {
         if (pendingBuildings.contains(building) && building.getConstructionState() <= 0) {
             pendingBuildings.remove(building);
+            return true;
         }
-        refreshAvailableBuildings();
+        return false;
     }
     
-    public void refreshAvailableBuildings() {
-        List<FactoryBuilding.Produce> availableProduceList = new LinkedList<>();
-        for (Building b : buildings) {
-            if (b instanceof FactoryBuilding) {
-                FactoryBuilding f = (FactoryBuilding)b;
-                availableProduceList.addAll(f.getEffectiveProduceList());
-            }
-        }
-        availableBuildings.clear();
-        for (Building b : Building.ALL_UNIQUE_BUILDINGS) {
-            if (b == null) {
-                continue;
-            }
-            Set<FactoryBuilding.Produce> produceSet = new HashSet<>();
-            for (FactoryBuilding.Produce p : b.getRequiredProduce()) {
-                produceSet.add(p);
-            }
-            if (availableProduceList.containsAll(produceSet)) {
-                if (!availableBuildings.contains(b) && !getAllBuildings().contains(b)) {
-                    availableBuildings.add(b);
-                }
-            }
-        }
-        for (Building b : Building.ALL_REPEATABLE_BUILDINGS) {
-            if (b == null) {
-                continue;
-            }
-            Set<FactoryBuilding.Produce> produceSet = new HashSet<>();
-            for (FactoryBuilding.Produce p : b.getRequiredProduce()) {
-                produceSet.add(p);
-            }
-            if (availableProduceList.containsAll(produceSet)) {
-                if (!availableBuildings.contains(b)) {
-                    availableBuildings.add(b);
-                }
-            }
-        }
-        GamePanel.buildMenu.genImage();
-    }
 
     public List<Building> getAllBuildings() {
         ArrayList<Building> list = new ArrayList<>(buildings);
@@ -359,15 +392,33 @@ public enum Colony {
     public List<Building> getBuildings() {
         return Collections.unmodifiableList(buildings);
     }
+    public List<Building> getBuildingsList() {
+        return buildings;
+    }
     public List<Building> getPendingBuildings() {
         return Collections.unmodifiableList(pendingBuildings);
     }
 
     public List<Building> getAvailableBuildings() {
-        return Collections.unmodifiableList(availableBuildings);
+        List<Building> available = new LinkedList<>();
+        List<Building> allBuildings = getAllBuildings();
+        for (Building b : availableBuildings) {
+            if (b instanceof UniqueBuilding) {
+                if (!allBuildings.contains(b)) {
+                    available.add(b);
+                }
+            } else {
+                available.add(b);
+            }
+        }
+        return available;
     }
     
-    
+    public void unlockBuilding(Building building) {
+        if (!availableBuildings.contains(building)) {
+            availableBuildings.add(building);
+        }
+    }
     
     
     
@@ -383,102 +434,27 @@ public enum Colony {
     
     
     
-    public void addHappiness(int amountAdded) {
-        if (happiness + amountAdded >= 0) {
-            happiness += amountAdded;
-        }
-    }  //happiness is caped at 0, use this whenever you want to change Happiness
-
     
     public void addDaysTillSaved(int days) {
         dayTillSaved+=days;
     }
 
-    public void whipNews() {
-        news = "";
-    } //clear the var news
-
-    public void buildNews(String wordsToAdd) {
-        news += " " + wordsToAdd;
-    }//add string behind in the string var
-
-    public String generateNews() {
-        whipNews();
-
-        buildNews("Today is day " + Integer.toString(day));
-
-        if (dayTillPopGrow == 5) {
-            buildNews(""); //housing crisis
-        }
-        if (dayTillPopGrow <= 5) {
-            buildNews(""); //housing crisis continue
-        } else {
-            //blabla
-        }
-        if (happiness >= 100) {
-            buildNews("");//
-        }
-        if (happiness < 15) {
-            buildNews("");//civil unrest
-        }
-
-        return news;
-    } //is called by logic every new day, generate the new based off the colony stats, this is called by logic every day
-    public void generateEvents(ArrayList<Event> eventMasterList) {
-        System.out.println("calling generate events");
-
-        for (Event element: eventMasterList) { //check for each event stored in the master list
-
-            boolean eventToday = true;
+    
+    public void checkEvents(List<Event> allEvents) {
+        for (Event e: allEvents) { //check for each event stored in the master list
             
-            if(element.isUsed()) {
-                eventToday = false;
-                
+            if (e.checkTrigger(this)) {
+                listTodayEvent.add(e);
+                e.applyEffects(this);
             }
-            
-            if (day == -1) {
-                
-            }
-            else if (!(day >= element.getEventTriggeringDay())) { // if today allow the event to happen
-                eventToday = false;
-            }
-            if (element.getRequiredHapinessLower() != -1) { //if theres a hapiness check to allow the event to generate
-                if (element.getRequiredHapinessLower() <= happiness && happiness <= element.getRequiredHapinessUpper()) {
-
-                }
-                else {
-                    eventToday = false;
-                }
-            }
-            if (element.isRequiredPreviousEvent() == true) { //if there's a previous eventchoice to be generate
-                if (listChoosed.contains(element.getEventRequiredEvent())) { 
-
-                }
-                else {
-                    eventToday = false;
-                }
-            }
-
-            if (eventToday) { // if all go well generate this and add it to the today event list
-                System.out.println("a event is added today");
-                element.setUsed(true);
-                listTodayEvent.add(element);
-            }
+        }
+        for (Event e : listTodayEvent) {
+            allEvents.remove(e);
         }
 
     }// called every day in logic, generate event to be resolve for the day according to condition.
     
     
-    public void resolveHapiness() {
-        if (happiness < 5) {
-            //
-        } else if (happiness < 15) {
-
-        } else if (happiness < 25) {
-            //
-        }
-    } //not done yet, this is called by logic each day, apple the consequence of low or high hapiness
-
     public void avanceDay() {
         day++;
     }// increment the dayLaned var, this is called every day in logic
@@ -513,18 +489,26 @@ public enum Colony {
         return listChoosed;
     }
 
-
-    public int getHappiness() {
-        return happiness;
-    }
-
-    public int getDayTillPopGrow() {
-        return dayTillPopGrow;
+    
+    public boolean checkEventChoosedId(int id) {
+        for (EventChoice e : getListChoosed()) {
+            if (e.getId() == id) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getNews() {
         return news;
     }
+
+    public String getReport() {
+        return report;
+    }
+    
+    
+    
     public ArrayList<Event> getListTodayEvent() {
         return listTodayEvent;
     }
@@ -533,8 +517,103 @@ public enum Colony {
         return day;
     }
     
+    public int getMonstersNum() {
+        if (day < 11) {
+            return 0;
+        }
+        
+        
+        /*
+        if ((day - 2) % 8 == 0 || day == 11) {
+            return (day / 4 + 1) + (getColonyMaxSpace() / 5);
+        }*/
+        
+        return (day / 10 + 1) + (getColonyMaxSpace() / 10) + monstersAdded;
+    }
+    
+    public int getDefense() {
+        int baseDefense = ((getColonyWorkingSpace() - getColonyLostSpace()) * 4) / getColonyMaxSpace();
+        
+        for (Building b : buildings) {
+            if (b instanceof MilitaryBuilding) {
+                baseDefense += ((MilitaryBuilding) b).getDefense();
+            }
+        }
+        return baseDefense;
+    }
+
+    public String getObjectives() {
+        String text = "";
+        for (Objective o : objectives) {
+            text += "- " + o.getText() + "\n";
+        }
+        return text;
+    }
+    
+    public void addObjective(Objective objective) {
+        objectives.add(objective);
+    }
+    
+    public void updateObjectives() {
+        List<Objective> removeObjectives = new LinkedList<>();
+        for (Objective o : objectives) {
+            if (o.getCheckComplete().apply(this)) {
+                removeObjectives.add(o);
+            }
+        }
+        
+        for (Objective o : removeObjectives) {
+            objectives.remove(o);
+        }
+    }
+    
+    public void appendReport(String string) {
+        report += string;
+    }
     
     public void nextDay() {
+        
+        int spacesToDestroy = getMonstersNum() - getDefense();
+        
+        List<Building> destroyedBuildings = new LinkedList<>();
+        
+        int destroyedDecoy = 0;
+        
+        String report = "";
+        
+        for (Building b : buildings) {
+            if (b instanceof MilitaryBuilding) {
+                if (b.getName().toLowerCase().equals("decoy")) {
+                    if (spacesToDestroy > 0) {
+                        spacesToDestroy -= b.getRequiredSpace();
+                        colonyLostSpace += b.getRequiredSpace();
+                        destroyedBuildings.add(b);
+                        destroyedDecoy++;
+                    }
+                }
+            }
+        }
+        if (destroyedDecoy > 1) {
+            report += "- " + destroyedDecoy + " decoys were destroyed.\n";
+        } else if (destroyedDecoy == 1) {
+            report += "- A decoy was destroyed, creating one debris.\n";
+        }
+        
+        buildings.removeAll(destroyedBuildings);
+        destroyedBuildings.clear();
+        
+        for (Building b : buildings) {
+            if (!(b instanceof UniqueBuilding) && !b.getName().toLowerCase().equals("hq") && !b.getName().toLowerCase().equals("crashed ship")) {
+                if (spacesToDestroy > b.getRequiredSpace()) {
+                    spacesToDestroy -= b.getRequiredSpace();
+                    colonyLostSpace += b.getRequiredSpace();
+                    destroyedBuildings.add(b);
+                    report += "- " + b.getName() + " was destroyed, creating " + b.getRequiredSpace() + " debris.\n";
+                }
+            }
+        }
+        buildings.removeAll(destroyedBuildings);
+        
         
         getBuildings().forEach((t) -> {
             t.onBeforeNextDay(this);
@@ -549,23 +628,28 @@ public enum Colony {
         for (Building b : getPendingBuildings()) {
             if (b.isBuilt()) {
                 transferedBuildings.add(b);
+                report += "- " + b.getName() + " was completed, taking up " + b.getRequiredSpace() + " space.\n";
             }
         }
         
         pendingBuildings.removeAll(transferedBuildings);
         buildings.addAll(transferedBuildings);
         
-        refreshAvailableBuildings();
+        
+        colonyMaxSpace = getTomorrowColonyMaxSpace();
         
         
-        
-        colonyMaxSpace++;
         
         day++;
-        generateNews(); // return string
-        generateEvents(Event.getMasterEventList());
+        this.news = News.generateNews(this);
+        this.report = report;
+        updateObjectives();
+        
+        
+        checkEvents(Event.allEventsList);
         isHelpArrived(); //return t/f
         avanceHelp();
+        monstersAdded = 0;
         
     }
 

@@ -32,16 +32,16 @@ public class TopBar extends CharacterPanel {
         genImage();
     }
     
-    void genImage() {
+    public void genImage() {
         getCharacterImage().clear();
         final String daysString = "Day " + Colony.INSTANCE.getDay();
         
-        final String seasonString = "(" + status + ")";
+        //final String seasonString = "(" + status + ")";
         
-        final String timeString = daysString + " " + seasonString;
+        //final String timeString = daysString + " " + seasonString;
         
         getCharacterImage().drawString(daysString, 1, 0, 0xFFEEEEEE);
-        getCharacterImage().drawString(seasonString, daysString.length() + 2, 0, 0xFFEEEEFF);
+        //getCharacterImage().drawString(seasonString, daysString.length() + 2, 0, 0xFFEEEEFF);
         
         
         

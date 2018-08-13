@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Random;
 import spacesurvival.GamePanel;
+import spacesurvival.characterpanels.sound.SoundEngine;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
 import spacesurvival.logic.Building;
@@ -225,7 +226,9 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
             if (selectedIndex == 0) {
                 GamePanel.dayEndOverlay.show();
             } else if (selectedIndex >= 0 && selectedIndex < buildingsNum) {
-                Colony.INSTANCE.cancelBuilding(Colony.INSTANCE.getAllBuildings().get(selectedIndex));
+                if (Colony.INSTANCE.cancelBuilding(Colony.INSTANCE.getAllBuildings().get(selectedIndex))) {
+                    SoundEngine.playClip(SoundEngine.CANCEL);
+                }
             }
             genImage();
         }

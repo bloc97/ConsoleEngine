@@ -17,29 +17,34 @@ public class BottomInfoBar extends CharacterPanel {
 
     private Color mainColor;
     private String infoString = "";
+    private int textHeight = 1;
     
     public BottomInfoBar(int consoleWidth, int consoleHeight, Color mainColor) {
-        super(0, consoleHeight - Background.BOTTOM_PADDING, consoleWidth, Background.BOTTOM_PADDING);
+        super(0, consoleHeight - Background.BOTTOM_PADDING, consoleWidth, 1);
         this.mainColor = mainColor;
         genImage();
     }
 
     @Override
     public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
-        this.setCharacterImage(new CharacterImage(newWidth, Background.BOTTOM_PADDING));
-        setY(newHeight - Background.BOTTOM_PADDING);
+        this.setCharacterImage(new CharacterImage(newWidth, getHeight()));
+        setY(newHeight - getHeight());
         genImage();
     }
     
     public final void genImage() {
         getCharacterImage().clear();
         getCharacterImage().fillBackgroundColor(mainColor.getRGB());
-        getCharacterImage().drawString(infoString, 0, 0, mainColor.brighter().brighter().getRGB());
+        getCharacterImage().drawStringSpaceWrapPad(infoString, 0, 0, 0, 0, mainColor.brighter().brighter().getRGB());
     }
     
     public void show(String string) {
         infoString = string;
+        int finalY = getCharacterImage().drawStringSpaceWrapPad(infoString, 0, 0, 0, 0) + 1;
         setX(0);
+        setY(getY() + (textHeight - finalY));
+        textHeight = finalY;
+        this.setCharacterImage(new CharacterImage(getWidth(), textHeight));
         genImage();
     }
     

@@ -25,9 +25,9 @@ public class EventPopupOverlay extends CharacterPanel {
     private Event event;
     private String eventTitle = "Event Title";
     private String eventDescription = "Description, this is a long description for an event popup.";
-    private int eventColor = 0xFF880900;
+    private int defaultEventColor = 0xFF880900;
     private String[] choices = new String[]{"Choice 1", "Investigate", "Explode Explode"};
-    private int[] choicesColor = new int[]{0xFFAAFF00, 0xFF00FFFF, 0xFFFFFF00};
+    private int[] defaultChoicesColor = new int[]{0xFFAAFF00, 0xFF00FFFF, 0xFFFFFF00};
     
     public static int CARD_WIDTH = 12;
     public static int CARD_HEIGHT = 7;
@@ -75,29 +75,34 @@ public class EventPopupOverlay extends CharacterPanel {
         
         
         getCharacterImage().drawRectangle(xPad, yPad, width, height);
-        getCharacterImage().drawString(eventTitle, xPad + (width / 2) - (eventTitle.length() / 2), yPad);
+        getCharacterImage().drawString(eventTitle, xPad + (width / 2) - (eventTitle.length() / 2 - 1), yPad);
         
+        String[] eventDescriptionSeparated = eventDescription.split("\n");
         
-        getCharacterImage().drawStringSpaceWrapPad(eventDescription, xPad + 2, yPad + 2, xPad + 2, getWidth() - width - xPad + 2);
-        
-        
-        int horizontalSpace = (width - 4) / choices.length;
-        int xBoxPad = (horizontalSpace - CARD_WIDTH) / 2;
-        
-        for (int i=0; i<choices.length; i++) {
-            int boxX = xPad + 2 + xBoxPad + horizontalSpace * i;
-            int boxY = getHeight() - (getHeight() - height - yPad) - 2 - CARD_HEIGHT;
-            getCharacterImage().drawRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT);
-            
-            if (boxSelected == i) {
-                getCharacterImage().fillForegroundColorRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, choicesColor[i]);
-            } else {
-                getCharacterImage().fillForegroundColorRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, new Color(choicesColor[i]).darker().getRGB());
-            }
-            
-            getCharacterImage().drawStringSpaceWrapPad(choices[i], boxX + 1, boxY + 1, boxX + 1, getWidth() - boxX - CARD_WIDTH + 1);
+        int newY = yPad + 2;
+        for (String s : eventDescriptionSeparated) {
+            newY = getCharacterImage().drawStringSpaceWrapPad(s, xPad + 2, newY, xPad + 2, getWidth() - width - xPad + 2) + 1;
         }
         
+        if (choices.length > 0) {
+        
+            int horizontalSpace = (width - 4) / choices.length;
+            int xBoxPad = (horizontalSpace - CARD_WIDTH) / 2;
+
+            for (int i=0; i<choices.length; i++) {
+                int boxX = xPad + 2 + xBoxPad + horizontalSpace * i;
+                int boxY = getHeight() - (getHeight() - height - yPad) - 2 - CARD_HEIGHT;
+                getCharacterImage().drawRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT);
+
+                if (boxSelected == i) {
+                    getCharacterImage().fillForegroundColorRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, defaultChoicesColor[i]);
+                } else {
+                    getCharacterImage().fillForegroundColorRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, new Color(defaultChoicesColor[i]).darker().getRGB());
+                }
+
+                getCharacterImage().drawStringSpaceWrapPad(choices[i], boxX + 1, boxY + 1, boxX + 1, getWidth() - boxX - CARD_WIDTH + 1);
+            }
+        }
         
     }
     
@@ -114,19 +119,22 @@ public class EventPopupOverlay extends CharacterPanel {
         int xPad = (getWidth() - width) / 2;
         int yPad = (getHeight() - height) / 2;
         
-        int horizontalSpace = (width - 4) / choices.length;
-        int xBoxPad = (horizontalSpace - CARD_WIDTH) / 2;
+        if (choices.length > 0) {
         
-        if (lastX != x || lastY != y) {
-            boxSelected = -1;
-        }
-        
-        for (int i=0; i<choices.length; i++) {
-            int boxX = xPad + 2 + xBoxPad + horizontalSpace * i;
-            int boxY = getHeight() - (getHeight() - height - yPad) - 2 - CARD_HEIGHT;
-            
-            if (x >= boxX && x < boxX + CARD_WIDTH && y >= boxY && y < boxY + CARD_HEIGHT) {
-                boxSelected = i;
+            int horizontalSpace = (width - 4) / choices.length;
+            int xBoxPad = (horizontalSpace - CARD_WIDTH) / 2;
+
+            if (lastX != x || lastY != y) {
+                boxSelected = -1;
+            }
+
+            for (int i=0; i<choices.length; i++) {
+                int boxX = xPad + 2 + xBoxPad + horizontalSpace * i;
+                int boxY = getHeight() - (getHeight() - height - yPad) - 2 - CARD_HEIGHT;
+
+                if (x >= boxX && x < boxX + CARD_WIDTH && y >= boxY && y < boxY + CARD_HEIGHT) {
+                    boxSelected = i;
+                }
             }
         }
         lastX = x;
@@ -159,11 +167,12 @@ public class EventPopupOverlay extends CharacterPanel {
     public void show(Event event) {
         this.event = event;
         eventTitle = event.getName();
-        eventDescription = event.getDiscription();
+        eventDescription = event.getDescription();
         
-        choices = new String[event.getListChoice().size()];
+        choices = new String[event.getAvailableChoices().size()];
         for (int i=0; i<choices.length; i++) {
-            choices[i] = event.getListChoice().get(i).getName();
+            choices[i] = event.getAvailableChoices().get(i).getName();
+            
         }
         genImage();
         setX(0);

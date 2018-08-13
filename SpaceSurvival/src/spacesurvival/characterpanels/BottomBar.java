@@ -7,6 +7,7 @@ package spacesurvival.characterpanels;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -14,6 +15,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import spacesurvival.SpaceSurvival;
+import spacesurvival.characterpanels.sound.SoundEngine;
 import spacesurvival.console.CharacterImage;
 import spacesurvival.console.CharacterPanel;
 import spacesurvival.logic.Colony;
@@ -30,8 +32,6 @@ public class BottomBar extends CharacterPanel implements Scrollable {
     //private volatile String scrollingText = "Clear weather, low chance of precipitations. Temperature is cool, bring a jacket to work.        Reports of space piracy on the system 4AB-RJ, all civilian ships should stay vigilant. We advise you to report any suspicious activities to the local authorities.                               ";
     //private volatile String cleanedText = "";
     
-    private volatile String[] objectives = new String[0];
-    private volatile String[] report = new String[0];
     
     
     private volatile int pos = 0;
@@ -47,24 +47,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
     
     public BottomBar(int consoleWidth, int consoleHeight, Color mainColor) {
         super(0, consoleHeight - Background.BOTTOM_PADDING, consoleWidth, Background.BOTTOM_PADDING);
-        //setScrollingText(scrollingText);
-        objectives = new String[4];
         
-        for (int i=0; i<objectives.length; i++) {
-            objectives[i] = "- Objective " + i;
-        }
-        /*
-        objectives[0] = "- Submit the yearly report to the captain.";
-        objectives[1] = "- Run a daily check on the generators.";
-        objectives[2] = "- Read the news.";
-        objectives[3] = "- Make a report on the incident No. 42.";
-        objectives[4] = "- Stop reading the LDJ42 Feed and go back to work!";
-        */
-        report = new String[5];
-        for (int i=0; i<report.length; i++) {
-            report[i] = "- Report " + i;
-        }
-                
         this.mainColor = mainColor;
         genImage();
     }
@@ -130,6 +113,11 @@ public class BottomBar extends CharacterPanel implements Scrollable {
             }
             getCharacterImage().drawString(horizontalLine, textPadding, newY);
             
+            String rawReport = Colony.INSTANCE.getReport();
+            String[] report = (rawReport.length() > 0) ? Colony.INSTANCE.getReport().split("\n") : new String[0];
+            
+            
+            
             if (report.length > 0) {
             
                 getCharacterImage().drawString("Report", textPadding + textWidth / 2 - 3, newY);
@@ -141,6 +129,9 @@ public class BottomBar extends CharacterPanel implements Scrollable {
                 }
                 getCharacterImage().drawString(horizontalLine, textPadding, newY);
             }
+            
+            String rawObjectives = Colony.INSTANCE.getObjectives();
+            String[] objectives = (rawObjectives.length() > 0) ? Colony.INSTANCE.getObjectives().split("\n") : new String[0];
             
             if (objectives.length > 0) {
             
@@ -227,6 +218,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
         checkScroll();
         
         if (isMinimized) { //going to fullscreen
+            SoundEngine.playClip(SoundEngine.OPENBOOK);
             isMinimized = !isMinimized;
             int currentY = lastHeight - 1;
             onScreenDimensionChange(getWidth(), lastHeight, getWidth(), lastHeight);
@@ -240,6 +232,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
                 }
             }
         } else {
+            SoundEngine.playClip(SoundEngine.CLOSEBOOK);
             int currentY = Background.TOP_PADDING;
             while (currentY <= lastHeight - Background.BOTTOM_PADDING) {
                 setY(currentY);
@@ -256,10 +249,6 @@ public class BottomBar extends CharacterPanel implements Scrollable {
         
     }
 
-
-    public void setObjectives(String... objectives) {
-        this.objectives = objectives;
-    }
 
     @Override
     public int getScroll() {

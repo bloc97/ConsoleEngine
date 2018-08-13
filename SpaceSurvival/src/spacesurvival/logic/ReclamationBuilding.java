@@ -9,28 +9,18 @@ package spacesurvival.logic;
  *
  * @author bowen
  */
-public class ReclamationBuilding extends Building {
+public class ReclamationBuilding extends UniqueBuilding {
     
-    private final int reclaimPerDay;
     
-    public ReclamationBuilding(String name, String description, String produceDescription, int requiredSpace, int reclaimPerDay, Produce... requiredProduce) {
+    public ReclamationBuilding(String name, String description, String produceDescription, int requiredSpace, Produce... requiredProduce) {
         super(name, description, produceDescription, 0xFF00EE11, requiredSpace, requiredProduce);
-        this.reclaimPerDay = reclaimPerDay;
     }
 
     @Override
     public Building getCopy() {
-        return new ReclamationBuilding(getName(), getDescription(), getProduceDescription(), getRequiredSpace(), getReclaimPerDay(), getRequiredProduce());
+        return new ReclamationBuilding(getName(), getDescription(), getProduceDescription(), getRequiredSpace(), getRequiredProduce());
     }
 
-    @Override
-    public void onBeforeNextDay(Colony colony) {
-        colony.addSpaceToColony(reclaimPerDay);
-    }
-    
-    public int getReclaimPerDay() {
-        return reclaimPerDay;
-    }
     
     
     

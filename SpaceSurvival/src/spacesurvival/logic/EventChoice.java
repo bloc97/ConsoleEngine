@@ -6,6 +6,10 @@
 package spacesurvival.logic;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  *
@@ -14,70 +18,38 @@ import java.util.ArrayList;
 public class EventChoice {
 
     private String name;
-    private ArrayList<Building> requiredBuildings = new ArrayList(); // leave this if this doesnt required a building.
-    private ArrayList<Event> requiredChoosedEvents = new ArrayList();
     private int id; //11,12,13,         21,22,23
-    
-    private int modifierDayTillSaved = 0;
-    private int modifierHappiness = 0;
-    private int modifierColonyMaxTile = 0;
-    private int modifierColonyUsingTile = 0; 
     
     private int color = 0xFFCCCCCC;
     
-    public EventChoice() {
-    }
+    private final Function<Colony, Boolean> checkAvailable;
+    private final Consumer<Colony> effects;
     
-    public EventChoice(String name, int id) {
+    public EventChoice(String name) { //Always available
+        this(name, -1);
+    }
+    public EventChoice(String name, int id) { //Always available
+        this(name, id, (c) -> {return true;}, (c) -> {});
+    }
+    public EventChoice(String name, int id, Consumer<Colony> effects) { //Always available
+        this(name, id, (c) -> {return true;}, effects);
+    }
+    public EventChoice(String name, int id, Function<Colony, Boolean> checkAvailable, Consumer<Colony> effects) {
         this.name = name;
         this.id = id;
+        this.checkAvailable = checkAvailable;
+        this.effects = effects;
     }
     
-    public boolean isChoiceAvailable(Colony colony) {
-        if (colony.getBuildings().containsAll(requiredBuildings)&& colony.getListChoosed().containsAll(requiredChoosedEvents)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }//check if this choice is available to the colony
-    
-    public void applyModifier(Colony colony) {
-        colony.addHappiness(modifierHappiness);
-        colony.addSpaceToColony(modifierColonyMaxTile);
-        //colony.addColonyUsingTile(modifierColonyUsingTile);
-        colony.addDaysTillSaved(modifierDayTillSaved);
-        //not done here
+    public boolean checkAvailable(Colony colony) {
+        return checkAvailable.apply(colony);
+    }
+    public void applyEffects(Colony colony) {
+        effects.accept(colony);
     }
     
-    
-
     public String getName() {
         return name;
-    }
-
-    public ArrayList<Building> getRequiredBuildings() {
-        return requiredBuildings;
-    }
-
-    public ArrayList<Event> getRequiredChoosedEvents() {
-        return requiredChoosedEvents;
-    }
-
-    public int getModifierDayTillSaved() {
-        return modifierDayTillSaved;
-    }
-
-    public int getModifierHappiness() {
-        return modifierHappiness;
-    }
-
-    public int getModifierColonyMaxTile() {
-        return modifierColonyMaxTile;
-    }
-
-    public int getModifierColonyUsingTile() {
-        return modifierColonyUsingTile;
     }
 
     public int getId() {
@@ -87,12 +59,15 @@ public class EventChoice {
     public int getColor() {
         return color;
     }
-
+    
     public void setColor(int color) {
         this.color = color;
+        useDefaultColor = false;
     }
     
+    private boolean useDefaultColor = true;
     
-    
-    
+    public boolean useDefaultColor() {
+        return useDefaultColor;
+    }
 }
