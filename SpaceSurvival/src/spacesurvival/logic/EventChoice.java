@@ -14,8 +14,8 @@ import java.util.ArrayList;
 public class EventChoice {
 
     private String name;
-    private ArrayList<Building> requiredBuildings; // leave this if this doesnt required a building.
-    private ArrayList<Event> requiredChoosedEvents;
+    private ArrayList<Building> requiredBuildings = new ArrayList(); // leave this if this doesnt required a building.
+    private ArrayList<Event> requiredChoosedEvents = new ArrayList();
     private int id; //11,12,13,         21,22,23
     
     private int modifierDayTillSaved = 0;
