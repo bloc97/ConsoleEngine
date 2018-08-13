@@ -70,10 +70,10 @@ public class DayEndPopupOverlay extends CharacterPanel {
             totalSpaceColor = 0xFFFF0000;*/
             
         int currentTotalSpace = Colony.INSTANCE.getColonyMaxSpace();
-        int tomorrowTotalSpace = Colony.INSTANCE.getColonyMaxSpace();
+        int tomorrowTotalSpace = Colony.INSTANCE.getTomorrowColonyMaxSpace();
         
         int currentUsedSpace = Colony.INSTANCE.getColonyPendingOccupiedSpace();
-        int tomorrowUsedSpace = Colony.INSTANCE.getColonyPendingOccupiedSpace();
+        int tomorrowUsedSpace = Colony.INSTANCE.getTomorrowColonyPendingOccupiedSpace();
         
         int totalSpaceColor = 0xFFFFFF00;
         if (tomorrowTotalSpace - currentTotalSpace > 8) {
