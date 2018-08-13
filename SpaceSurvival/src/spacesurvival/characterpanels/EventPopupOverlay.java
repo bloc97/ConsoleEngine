@@ -86,7 +86,7 @@ public class EventPopupOverlay extends CharacterPanel {
         
         
         getCharacterImage().drawRectangle(xPad, yPad, width, height);
-        getCharacterImage().drawString(eventTitle, xPad + (width / 2) - (eventTitle.length() / 2 - 1), yPad);
+        getCharacterImage().drawString(eventTitle, xPad + (width / 2) - (eventTitle.length() / 2), yPad);
         
         String[] eventDescriptionSeparated = eventDescription.split("\n");
         
