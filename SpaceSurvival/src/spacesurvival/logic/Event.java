@@ -96,8 +96,16 @@ public class Event {
            event201StrangeMeat.getListChoice().add(EV2012);
            masterEventList.add(event201StrangeMeat);
            
+           Event event204StrangeMeat = new Event("Strange Meat III","After the ban of the meat,intensive research was made and show that the consumming of the meat is highly toxic to the human body. Symptoms are similar to radioactive poisoning.");
+           event204StrangeMeat.setEventTriggeringDay(8);
+           event204StrangeMeat.setRequiredPreviousEvent(true);
+           event204StrangeMeat.setEventRequiredEventChoice(EV2011);
+           EventChoice EV2041 = new EventChoice("Good ridance",2041);
+           event204StrangeMeat.getListChoice().add(EV2041);
+            masterEventList.add(event204StrangeMeat);
+           
            Event event202StrangeMeat = new Event("Public Health Issue","Report of increasing number of citizens falling ill, including symptom are loss of hair, heavy vomiting, heat.");
-           event202StrangeMeat.setEventTriggeringDay(8);
+           event202StrangeMeat.setEventTriggeringDay(9);
            event202StrangeMeat.setRequiredPreviousEvent(true);
            event202StrangeMeat.setEventRequiredEventChoice(EV2012);
            EventChoice EV2021 = new EventChoice("Investigate",2021);
@@ -105,10 +113,10 @@ public class Event {
             masterEventList.add(event202StrangeMeat);
             
             Event event203StrangeMeat = new Event("Strange Meat IV","After full investigation on the previous medical problem amount the citizens, the scientist found out all persons failling ill had consummed the monster meat,  since the last report of the illness, some ill had died.");
-           event203StrangeMeat.setEventTriggeringDay(9);
+           event203StrangeMeat.setEventTriggeringDay(10);
            event203StrangeMeat.setRequiredPreviousEvent(true);
            event203StrangeMeat.setEventRequiredEventChoice(EV2021);
-           EventChoice EV2031 = new EventChoice("Publish the report and ban the consuming of the meat",2031);
+           EventChoice EV2031 = new EventChoice("Ban the meat",2031);
            event203StrangeMeat.getListChoice().add(EV2031);
             masterEventList.add(event203StrangeMeat);
            
