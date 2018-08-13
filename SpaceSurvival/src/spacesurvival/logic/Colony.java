@@ -64,7 +64,7 @@ public enum Colony {
             }
         }
         
-        return colonyMaxSpace + add + 1;
+        return colonyMaxSpace + add + ((day % 2 == 0) ? 1 : 0);
     }
 
     public int getColonyWorkingSpace() {

@@ -26,7 +26,7 @@ public class EventPopupOverlay extends CharacterPanel {
     private String eventTitle = "Event Title";
     private String eventDescription = "Description, this is a long description for an event popup.";
     private int eventColor = 0xFF880900;
-    private String[] choices = new String[]{"Choice 1", "Choice 2", "Explode"};
+    private String[] choices = new String[]{"Choice 1", "Investigate", "Explode Explode"};
     private int[] choicesColor = new int[]{0xFFAAFF00, 0xFF00FFFF, 0xFFFFFF00};
     
     public static int CARD_WIDTH = 12;
@@ -34,6 +34,7 @@ public class EventPopupOverlay extends CharacterPanel {
     
     public EventPopupOverlay(int consoleWidth, int consoleHeight, Color mainColor) {
         super(0, 0, consoleWidth, consoleHeight);
+        hide();
         this.mainColor = mainColor;
         this.setOverrideMode(true);
         genImage();
@@ -67,8 +68,10 @@ public class EventPopupOverlay extends CharacterPanel {
         
         
         getCharacterImage().fillRectangle(xPad, yPad, width, height, ' ');
-        getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, new Color(eventColor).brighter().brighter().getRGB());
-        getCharacterImage().fillBackgroundColorRectangle(xPad, yPad, width, height, new Color(eventColor).darker().getRGB());
+        //getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, new Color(eventColor).brighter().brighter().getRGB());
+        //getCharacterImage().fillBackgroundColorRectangle(xPad, yPad, width, height, new Color(eventColor).darker().getRGB());
+        getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, mainColor.brighter().brighter().getRGB());
+        getCharacterImage().fillBackgroundColorRectangle(xPad, yPad, width, height, mainColor.darker().getRGB());
         
         
         getCharacterImage().drawRectangle(xPad, yPad, width, height);
@@ -92,7 +95,7 @@ public class EventPopupOverlay extends CharacterPanel {
                 getCharacterImage().fillForegroundColorRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, new Color(choicesColor[i]).darker().getRGB());
             }
             
-            getCharacterImage().drawStringWrap(choices[i], boxX + 1, boxY + 1);
+            getCharacterImage().drawStringSpaceWrapPad(choices[i], boxX + 1, boxY + 1, boxX + 1, getWidth() - boxX - CARD_WIDTH + 1);
         }
         
         

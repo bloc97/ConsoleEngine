@@ -343,7 +343,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
     public void onMouseReleased(int x, int y, boolean isLeftClick) {
         doScrollUp = false;
         doScrollDown = false;
-        if (!isMinimized && !hasDraggedScroll) {
+        if (!isMinimized && !hasDraggedScroll && !isMouseOverTopArrow && !isMouseOverBottomArrow) {
             ex.submit(() -> {
                 toggleMinimized();
             });

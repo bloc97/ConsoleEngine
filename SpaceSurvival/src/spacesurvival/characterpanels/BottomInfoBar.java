@@ -46,5 +46,19 @@ public class BottomInfoBar extends CharacterPanel {
     public void hide() {
         setX(-100000);
     }
+
+    @Override
+    public void onMouseEntered(int x, int y) {
+        hide();
+    }
+
+    @Override
+    public void onMouseMoved(int x, int y) {
+        hide();
+    }
+    
+    
+    
+    
     
 }

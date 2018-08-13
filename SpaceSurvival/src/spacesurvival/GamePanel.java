@@ -36,7 +36,6 @@ import spacesurvival.characterpanels.EventPopupOverlay;
 import spacesurvival.characterpanels.MiddleScrollBar;
 import spacesurvival.characterpanels.RightScrollBar;
 import spacesurvival.characterpanels.TopBar;
-import spacesurvival.characterpanels.TopPopupTest;
 import spacesurvival.console.CharacterPanel;
 import spacesurvival.console.ConsolePanel;
 import spacesurvival.console.ConsoleScreen;
@@ -82,23 +81,32 @@ public class GamePanel extends JPanel {
             return pathname.getName().toLowerCase().endsWith(".ttf");
         });*/
         
-        File[] fonts0 = new File("resources/fonts/CGA").listFiles((pathname) -> {
-            return pathname.getName().toLowerCase().endsWith(".ttf");
-        });
-        File[] fonts1 = new File("resources/fonts/VGA").listFiles((pathname) -> {
+        File[] fonts0 = new File("resources/fonts").listFiles((pathname) -> {
             return pathname.getName().toLowerCase().endsWith(".ttf");
         });
         
-        fonts = new File[fonts0.length + fonts1.length];
+        fonts = new File[fonts0.length];
         
         for (int i=0; i<fonts0.length; i++) {
             fonts[i] = fonts0[i];
         }
-        for (int i=0; i<fonts1.length; i++) {
-            fonts[i + fonts0.length] = fonts1[i];
-        }
-        
         screen = new ConsoleScreen(80, 50, ConsoleFont.fromFile(fonts[fontIndex]));
+        
+        screen.setConsoleFont(ConsoleFont.fromFile(fonts[fontIndex]));
+
+        if (screen.getConsoleFont().getHeight() == 8) {
+            preferredConsoleWidth = 40;
+        } else if (screen.getConsoleFont().getHeight() == 14) {
+            preferredConsoleWidth = 70;
+        } else {
+            preferredConsoleWidth = 80;
+        }
+        Background.setFontHeight(screen.getConsoleFont().getHeight());
+        BuildMenu.setFontHeight(screen.getConsoleFont().getHeight());
+        ColonyBuildings.setFontHeight(screen.getConsoleFont().getHeight());
+        EventPopupOverlay.setFontHeight(screen.getConsoleFont().getHeight());
+
+        
         
         screen.addCharacterPanel(-5, background);
         //screen.addCharacterPanel(2, new RightScrollBar(30, 30, mainColor));

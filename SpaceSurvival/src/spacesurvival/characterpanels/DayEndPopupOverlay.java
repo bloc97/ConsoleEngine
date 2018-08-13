@@ -30,6 +30,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
 
     public DayEndPopupOverlay(int consoleWidth, int consoleHeight, Color mainColor) {
         super(0, 0, consoleWidth, consoleHeight);
+        hide();
         this.mainColor = mainColor;
         this.setOverrideMode(true);
         genImage();
@@ -222,14 +223,14 @@ public class DayEndPopupOverlay extends CharacterPanel {
             getCharacterImage().drawString(monstersStringRight, textXPad + monstersStringLeft.length(), textYPad + 12, monstersColor);
         }
         if (isYesSelected) {
-            getCharacterImage().drawString("(Y)es", xPad + 7, textYPad + 15, 0xFF00FF00);
+            getCharacterImage().drawString("(Y)es", xPad + width/4 - 3, textYPad + 15, 0xFF00FF00);
         } else {
-            getCharacterImage().drawString("(Y)es", xPad + 7, textYPad + 15);
+            getCharacterImage().drawString("(Y)es", xPad + width/4 - 3, textYPad + 15);
         }
         if (isNoSelected) {
-            getCharacterImage().drawString("(N)o", getWidth() - xPad - 11, textYPad + 15, 0xFFFF0000);
+            getCharacterImage().drawString("(N)o", getWidth() - xPad - width/4 - 2, textYPad + 15, 0xFFFF0000);
         } else {
-            getCharacterImage().drawString("(N)o", getWidth() - xPad - 11, textYPad + 15);
+            getCharacterImage().drawString("(N)o", getWidth() - xPad - width/4 - 2, textYPad + 15);
         }
         
         
@@ -263,9 +264,9 @@ public class DayEndPopupOverlay extends CharacterPanel {
         isYesSelected = false;
         isNoSelected = false;
         if (y == textYPad + 15) {
-            if (x >= xPad + 7 && x < xPad + 7 + 5) {
+            if (x >= xPad + width/4 - 3 && x < xPad + width/4 - 3 + 5) {
                 isYesSelected = true;
-            } else if (x >= getWidth() - xPad - 11 && x < getWidth() - xPad - 11 + 4) {
+            } else if (x >= getWidth() - xPad - width/4 - 2 && x < getWidth() - xPad - width/4 - 2 + 4) {
                 isNoSelected = true;
             }
         }
@@ -297,6 +298,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
         }
         isYesSelected = false;
         isNoSelected = false;
+        GamePanel.infoBar.hide();
         genImage();
     }
 
@@ -331,6 +333,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
     private void nextDay() {
         Colony.INSTANCE.nextDay();
         GamePanel.topBar.genImage();
+        GamePanel.bottomBar.setScroll(0);
         GamePanel.bottomBar.onGlobalKeyReleased(new KeyEvent(new Component() {
         }, 0, 0, 0, KeyEvent.VK_Q, 'q'));
         
@@ -340,6 +343,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
             GamePanel.eventPopup.show(event);
             break;
         }
+        
         
         GamePanel.buildMenu.genImage();
         GamePanel.bottomBar.genImage();

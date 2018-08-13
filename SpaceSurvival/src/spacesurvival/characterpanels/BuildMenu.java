@@ -74,7 +74,7 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
             getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? b.getRGB(): b.getColor().darker().getRGB());//r.nextInt(0xFFFFFF) | 0xFF000000);
             
             getCharacterImage().drawStringSpaceWrapPad(b.getName(), currentX + 1, currentY + 1, currentX + 1, currentX + 1);
-            getCharacterImage().paintBinaryImageBackground(currentX + 1, currentY + 1, b.getIcon(), (i == selectedIndex) ? b.getRGB() : b.getColor().darker().darker().getRGB(), mainColor.darker().getRGB(), CARD_WIDTH == 30);
+            getCharacterImage().paintBinaryImageBackground(currentX + 1, currentY + 1, b.getIcon(), (i == selectedIndex) ? b.getColor().darker().getRGB() : b.getColor().darker().darker().getRGB(), mainColor.darker().getRGB(), CARD_WIDTH == 30);
             
             currentX += CARD_WIDTH;
             if (currentX + CARD_WIDTH > getWidth()) {
@@ -174,6 +174,7 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
             
         } else {
             selectedIndex = -1;
+            GamePanel.infoBar.hide();
         }
         genImage();
     }

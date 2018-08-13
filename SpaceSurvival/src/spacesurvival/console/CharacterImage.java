@@ -175,7 +175,7 @@ public class CharacterImage {
         String[] words = str.split(" ");
         int n = 0;
         for (String s : words) {
-            if (s.length() > getWidth() - rightPad - leftPad) {
+            if (s.length() >= getWidth() - rightPad - leftPad) {
                 for (int i=0; i<s.length(); i++) {
                     setChar(x, y, s.charAt(i));
                     x++;
@@ -186,7 +186,7 @@ public class CharacterImage {
                 }
                 break;
             }
-            if (s.length() + x > width - rightPad) {
+            if (s.length() + x >= width - rightPad) {
                 x = leftPad;
                 y++;
             }
@@ -194,7 +194,7 @@ public class CharacterImage {
                 setChar(x, y, s.charAt(i));
                 x++;
             }
-            if (n < words.length - 1) {
+            if (n < words.length - 1 && x < width - rightPad) {
                 setChar(x, y, ' ');
             }
             x++;
@@ -216,7 +216,8 @@ public class CharacterImage {
                         y++;
                     }
                 }
-                break;
+                //break;
+                continue;
             }
             if (s.length() + x > width - rightPad) {
                 x = leftPad;
