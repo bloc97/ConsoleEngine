@@ -20,6 +20,7 @@ public class Event {
     private String discription;
     private int eventTriggeringDay = -1; // if this event happens on specific day, use this, else = -1;
     private EventChoice eventRequiredEventChoice = new EventChoice();//if this event required a previous event already happened to be taken place, use this, else = "";
+    private boolean used = false;
     
     private boolean requiredPreviousEvent = false;
     
@@ -36,6 +37,9 @@ public class Event {
     public void resolveEvent(int choice, Colony colony) {
         if(listChoice.get(choice).isChoiceAvailable(colony)) {
             listChoice.get(choice).applyModifier(colony);
+            
+            System.out.println("event removed from daily list");
+            colony.getListTodayEvent().remove(0);
         }
     } //this is the master fonction of choosing a eventchoice and applying the modifiers
     
@@ -135,6 +139,14 @@ public class Event {
 
     public void setRequiredPreviousEvent(boolean requiredPreviousEvent) {
         this.requiredPreviousEvent = requiredPreviousEvent;
+    }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
     }
     
     
