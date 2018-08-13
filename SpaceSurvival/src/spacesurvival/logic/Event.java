@@ -96,6 +96,22 @@ public class Event {
            event201StrangeMeat.getListChoice().add(EV2012);
            masterEventList.add(event201StrangeMeat);
            
+           Event event202StrangeMeat = new Event("Public Health Issue","Report of increasing number of citizens falling ill, including symptom are loss of hair, heavy vomiting, heat.");
+           event202StrangeMeat.setEventTriggeringDay(8);
+           event202StrangeMeat.setRequiredPreviousEvent(true);
+           event202StrangeMeat.setEventRequiredEventChoice(EV2012);
+           EventChoice EV2021 = new EventChoice("Investigate",2021);
+           event202StrangeMeat.getListChoice().add(EV2021);
+            masterEventList.add(event202StrangeMeat);
+            
+            Event event203StrangeMeat = new Event("Strange Meat IV","After full investigation on the previous medical problem amount the citizens, the scientist found out all persons failling ill had consummed the monster meat,  since the last report of the illness, some ill had died.");
+           event203StrangeMeat.setEventTriggeringDay(9);
+           event203StrangeMeat.setRequiredPreviousEvent(true);
+           event203StrangeMeat.setEventRequiredEventChoice(EV2021);
+           EventChoice EV2031 = new EventChoice("Publish the report and ban the consuming of the meat",2031);
+           event203StrangeMeat.getListChoice().add(EV2031);
+            masterEventList.add(event203StrangeMeat);
+           
     }//need to called the fonction somewhere
 
     public static void setMasterEventList(ArrayList<Event> masterEventList) {
