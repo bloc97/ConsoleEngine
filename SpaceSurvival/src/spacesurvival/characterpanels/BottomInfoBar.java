@@ -20,7 +20,7 @@ public class BottomInfoBar extends CharacterPanel {
     private int textHeight = 1;
     
     public BottomInfoBar(int consoleWidth, int consoleHeight, Color mainColor) {
-        super(0, consoleHeight - Background.BOTTOM_PADDING, consoleWidth, 1);
+        super(-10000, consoleHeight - Background.BOTTOM_PADDING, consoleWidth, 1);
         this.mainColor = mainColor;
         genImage();
     }

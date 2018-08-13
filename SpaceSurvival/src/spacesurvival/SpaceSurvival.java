@@ -37,7 +37,7 @@ public class SpaceSurvival {
     private static void createAndShowGUI() {
         //System.out.println("Created GUI on EDT? "+
         //SwingUtilities.isEventDispatchThread());
-        JFrame frame = new JFrame("Swing Paint Demo");
+        JFrame frame = new JFrame("The Unfortunate Story of Hans");
         JPanel panel = new GamePanel();
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

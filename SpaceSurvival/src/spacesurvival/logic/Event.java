@@ -573,9 +573,16 @@ public class Event {
     public int getColor() {
         return color;
     }
+    
+    int backgroundColor = 0xFFEEEEEE;
+    
+    public int getBackgroundColor() {
+        return backgroundColor;
+    }
 
-    public void setColor(int color) {
-        this.color = color;
+    public void setColor(int foregroundColor, int backgroundColor) {
+        this.color = foregroundColor;
+        this.backgroundColor = backgroundColor;
         useDefaultColor = false;
     }
     

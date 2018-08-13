@@ -87,9 +87,10 @@ public class News {
             
         }
         
-        news += "                    ";
         
         news += "      " + forecastUnavailable;
+        
+        news += "                            ";
         
         return news;
     }

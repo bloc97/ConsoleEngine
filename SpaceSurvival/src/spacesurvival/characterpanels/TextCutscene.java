@@ -6,6 +6,7 @@
 package spacesurvival.characterpanels;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import spacesurvival.GamePanel;
 import static spacesurvival.GamePanel.dayEndOverlay;
 import spacesurvival.console.CharacterImage;
@@ -131,13 +132,20 @@ public class TextCutscene extends CharacterPanel {
         }
         
         if (currentLine == 6) {
-            GamePanel.eventPopup.show(new Event("Chicken Nuggets", "Look for chicken nuggets for our good captain?", -1, (t) -> {
-            }, new EventChoice("Of course.", -1, (t) -> {
+            EventChoice yes = new EventChoice("Of course.", -1, (t) -> {
                 currentLine = 8;
-            }), new EventChoice("No.", -1, (t) -> {
+            });
+            EventChoice no = new EventChoice("No.", -1, (t) -> {
                 currentLine = 12;
                 chickenNuggets = false;
-            })));
+            });
+            yes.setColor(0xFF00EE00);
+            no.setColor(0xFFEE0000);
+            
+            Event thisEvent = new Event("Chicken Nuggets", "Look for chicken nuggets for our good captain?", -1, (t) -> {
+            }, yes, no);
+            thisEvent.setColor(0xFFEEEEEE, 0xFF302040);
+            GamePanel.eventPopup.show(thisEvent);
             return;
         }
         
@@ -167,6 +175,18 @@ public class TextCutscene extends CharacterPanel {
     @Override
     public void onMousePressed(int x, int y, boolean isLeftClick) {
         nextLine();
+    }
+
+    @Override
+    public void onKeyPressed(KeyEvent e) {
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_SPACE:
+            case KeyEvent.VK_ENTER:
+                nextLine();
+                break;
+            default :
+                break;
+        }
     }
     
     

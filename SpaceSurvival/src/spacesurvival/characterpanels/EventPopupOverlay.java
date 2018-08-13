@@ -25,7 +25,7 @@ public class EventPopupOverlay extends CharacterPanel {
     private Event event;
     private String eventTitle = "Event Title";
     private String eventDescription = "Description, this is a long description for an event popup.";
-    private int defaultEventColor = 0xFF880900;
+    
     private String[] choices = new String[]{"Choice 1", "Investigate", "Explode Explode"};
     private int[] defaultChoicesColor = new int[]{0xFFAAFF00, 0xFF00FFFF, 0xFFFFFF00};
     
@@ -70,8 +70,19 @@ public class EventPopupOverlay extends CharacterPanel {
         getCharacterImage().fillRectangle(xPad, yPad, width, height, ' ');
         //getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, new Color(eventColor).brighter().brighter().getRGB());
         //getCharacterImage().fillBackgroundColorRectangle(xPad, yPad, width, height, new Color(eventColor).darker().getRGB());
-        getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, mainColor.brighter().brighter().getRGB());
-        getCharacterImage().fillBackgroundColorRectangle(xPad, yPad, width, height, mainColor.darker().getRGB());
+        
+        if (event == null) {
+            return;
+        }
+        
+        if (event.useDefaultColor()) {
+            getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, mainColor.brighter().brighter().getRGB());
+            getCharacterImage().fillBackgroundColorRectangle(xPad, yPad, width, height, mainColor.darker().getRGB());
+        } else {
+            getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, event.getColor());
+            getCharacterImage().fillBackgroundColorRectangle(xPad, yPad, width, height, event.getBackgroundColor());
+        }
+        
         
         
         getCharacterImage().drawRectangle(xPad, yPad, width, height);
@@ -93,11 +104,14 @@ public class EventPopupOverlay extends CharacterPanel {
                 int boxX = xPad + 2 + xBoxPad + horizontalSpace * i;
                 int boxY = getHeight() - (getHeight() - height - yPad) - 2 - CARD_HEIGHT;
                 getCharacterImage().drawRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT);
+                
+                
+                Color choiceColor = (event.getAvailableChoices().get(i).useDefaultColor()) ? new Color(defaultChoicesColor[i]) : new Color(event.getAvailableChoices().get(i).getColor());
 
                 if (boxSelected == i) {
-                    getCharacterImage().fillForegroundColorRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, defaultChoicesColor[i]);
+                    getCharacterImage().fillForegroundColorRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, choiceColor.getRGB());
                 } else {
-                    getCharacterImage().fillForegroundColorRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, new Color(defaultChoicesColor[i]).darker().getRGB());
+                    getCharacterImage().fillForegroundColorRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, choiceColor.darker().getRGB());
                 }
 
                 getCharacterImage().drawStringSpaceWrapPad(choices[i], boxX + 1, boxY + 1, boxX + 1, getWidth() - boxX - CARD_WIDTH + 1);

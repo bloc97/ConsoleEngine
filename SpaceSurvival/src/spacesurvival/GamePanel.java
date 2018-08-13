@@ -93,6 +93,7 @@ public class GamePanel extends JPanel {
         for (int i=0; i<fonts0.length; i++) {
             fonts[i] = fonts0[i];
         }
+        fontIndex = 1;
         screen = new ConsoleScreen(80, 50, ConsoleFont.fromFile(fonts[fontIndex]));
         
         screen.setConsoleFont(ConsoleFont.fromFile(fonts[fontIndex]));
@@ -142,15 +143,9 @@ public class GamePanel extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 switch (e.getKeyCode()) {
-                    case KeyEvent.VK_RIGHT:
+                    case KeyEvent.VK_F:
                         fontIndex++;
                         if (fontIndex >= fonts.length) {
-                            fontIndex = fonts.length - 1;
-                        }
-                        break;
-                    case KeyEvent.VK_LEFT:
-                        fontIndex--;
-                        if (fontIndex < 0) {
                             fontIndex = 0;
                         }
                         break;
@@ -292,13 +287,16 @@ public class GamePanel extends JPanel {
         }, 0, 10, TimeUnit.MILLISECONDS);
         
         ex.scheduleWithFixedDelay(() -> {
-            repaint();
             bottomBar.tickPos();
+            repaint();
+        }, 0, 200, TimeUnit.MILLISECONDS);
+        
+        ex.scheduleWithFixedDelay(() -> {
             topBar.genImage();
             buildMenu.genImage();
             colonyBuildings.genImage();
             bottomBar.genImage();
-        }, 0, 200, TimeUnit.MILLISECONDS);
+        }, 0, 500, TimeUnit.MILLISECONDS);
         
         buildMenu.genImage();
     }
