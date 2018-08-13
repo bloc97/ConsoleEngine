@@ -27,15 +27,15 @@ public class TextCutscene extends CharacterPanel {
         "Meanwhile, the captain of the ship, an opportunistic hoarder, has been grumbling about food variety to his second-in-command.",
         "\"Hans!\"",
         "\"Hans, why do I have to eat this crap every day?!\"",
-        "\"My captain, with all due respect, you were the one who ordered the deconstruction of the kitchen facility. You insisted to carry extra luxury cargo despite the fact that we ran out of space... Beside, food is not permitted on the bri-\"",
+        "\"My captain, with all due respect, you were the one who ordered the deconstruction of the kitchen facilities. You insisted to carry extra luxury cargo despite the fact that we ran out of space... Beside, food is not permitted on the bri-\"",
         "\"Silence, fool! Go fetch me some chicken nuggets, right now!\"",
         
         "",
         
         "\"Yes my captain, Right away!\"",
-        "* Objective: find some chicken nuggets for the captain. *",
+        "* Objective Added: find some chicken nuggets for the captain. *",
         "You took too long to find the chicken nuggets - of course: there weren't any on the ship to begin with - and the captain went on a rampage.",
-        "As the captain let out his anger, he slammed his soylent drink on the dashboard. The force sends the content of the bottle all over the electronics, causing a short circuit. Out of control, the SP4-C3 heads to a nearby planet at full throttle...",
+        "As the captain let out his anger, he slammed his soylent drink on the dashboard. The force sends the content of the bottle all over the pilot's console, causing a short circuit. Out of control, the SP4-C3 heads to a nearby planet at full throttle...",
         
         "My captain, you WILL cease your tantrum and act responsibly for once! There are NO chicken nuggets on this ship, so forget about it!",
         "HOW DARE YOU!",
@@ -49,9 +49,9 @@ public class TextCutscene extends CharacterPanel {
         "With the head still hurting, you open your eyes and slowly get up. The captain is lying in front of you, his face distorted by pain. He calls for your help to carry him outside. As you comply, you notice that he is severely injured.",
         "Gathering your strength, you pull the captain and yourself out of the wreck. There were already other survivors, and as soon as they see you two, they all come to gather around, innocently seeking leadership and guidance from the cause of this disaster. However, the captain was in no shape to take the situation in hand. He looks at you in the eyes.",
         
-        "\"Hans. I know you are someone responsible. You make smart decisions, you are always eager to help others. I shall trust you with my passengers, and my luxury cargos of course. People are going to count on you... And I'm still counting on you for my chicken nuggets.\"",
+        "\"Hans. I know you are someone responsible. You make smart decisions, you are always eager to help others. I shall trust you with my passengers, and of course, my luxury cargo. People are going to count on you... Don't forget, I'm still counting on you for my chicken nuggets.\"",
             
-        "* Objective: find some chicken nuggets for the captain *",
+        "* Objective Added: find some chicken nuggets for the captain *",
         
         
     };
