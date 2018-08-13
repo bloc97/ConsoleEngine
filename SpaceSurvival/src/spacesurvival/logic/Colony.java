@@ -93,17 +93,6 @@ public enum Colony {
         return pendingSpace;
     }
     
-    public int getColonyTomorrowOccupiedSpace() {
-        int pendingSpace = 0;
-        for (Building b : getIncrementingBuildings()) {
-            pendingSpace += b.getRequiredSpace();
-        }
-        pendingSpace += getColonyOccupiedSpace();
-        if (pendingSpace > getColonyMaxSpace()) {
-            pendingSpace = getColonyMaxSpace();
-        }
-        return pendingSpace;
-    }
     
     public int getColonyAvailableSpace() {
         return getColonyMaxSpace() - getColonyWorkingSpace();
