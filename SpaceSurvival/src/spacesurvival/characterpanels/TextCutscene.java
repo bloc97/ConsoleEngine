@@ -34,12 +34,12 @@ public class TextCutscene extends CharacterPanel {
         
         "\"Yes my captain, Right away!\"",
         "* Objective Added: find some chicken nuggets for the captain. *",
-        "You took too long to find the chicken nuggets - of course: there weren't any on the ship to begin with - and the captain went on a rampage.",
+        "You took too long to find the chicken nuggets - of course: as there weren't any on the ship to begin with - the captain went on a rampage.",
         "As the captain let out his anger, he slammed his soylent drink on the dashboard. The force sends the content of the bottle all over the pilot's console, causing a short circuit. Out of control, the SP4-C3 heads to a nearby planet at full throttle...",
         
         "My captain, you WILL cease your tantrum and act responsibly for once! There are NO chicken nuggets on this ship, so forget about it!",
         "HOW DARE YOU!",
-        "The captain forcefully slams his soylent drink on the dashboard. The force sends the content of the bottle all over the electronics, causing a short circuit. Out of control, the SP4-C3 heads to a nearby planet at full throttle...",
+        "The captain forcefully slams his soylent drink on the dashboard. The force sends the content of the bottle all over the pilot's console, causing a short circuit. Out of control, the SP4-C3 heads to a nearby planet at full throttle...",
         
         
         "...",
