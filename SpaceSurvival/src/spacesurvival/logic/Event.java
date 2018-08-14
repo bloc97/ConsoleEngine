@@ -455,15 +455,17 @@ public class Event {
         ));
         allEventsList.add(new Event(
                 "Strange Meat II", 
-                "Your men discovered that the mysterious meat is from one of the native creatures living in the waste. The people consuming it ignore what effect these meat have on their body, but one thing is for sure, the demand for the meat is high.\n\n" +
-                "Even the wealthest are ready to give out their land for a piece of the meat.",
+                "Your men discovered that the mysterious meat is from one of the native creatures living in our sewers. The people consuming seems to ignore its effects on their bodies, Wseemingly addicted to it. One thing is certain, the demand for the meat is high and will rise even higher.\n\n" +
+                "Even the wealthiest are ready to give out their land for a piece of the meat.",
                 (c) -> {
                     return c.getDay() >= 13 && c.checkEventChoosedId(9);
                 }, 
                 (c) -> {
                 },
                 new EventChoice("Ban the meat.", 10),
-                new EventChoice("Sell some carcass.", 11)
+                new EventChoice("Sell some carcass.", 11, (c) -> {
+                    c.appendReport("You tried to sell some mystery meat, but everyone seems to only buy from the restaurants.\n");
+                })
         ));
         allEventsList.add(new Event(
                 "Public Health Issue", 
@@ -479,9 +481,9 @@ public class Event {
         ));
         allEventsList.add(new Event(
                 "Strange Meat III", 
-                "Extensive research has shown that the consumption of the natives' meat is highly dangerous and toxic to the human body. The symptoms are similar to radioactive poisoning.\n\n" + 
+                "Extensive research has shown that the consumption of the natives' meat is highly dangerous and toxic to the human body. The resulting symptoms are similar to radioactive poisoning.\n\n" + 
                 "The meat was banned and an antidote was quickly developped and distributed to those affected.\n" +
-                "There was discontent among those affected.",
+                "There was discontent among those affected. Some have been quarantined and are currently being treated. It is unknown if the debilitating effects can be fully cured.",
                 (c) -> {
                     return c.getDay() >= 17 && c.checkEventChoosedId(10);
                 }, 
