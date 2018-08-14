@@ -286,7 +286,7 @@ public class Event {
                 "Cramped", 
                 "The available space around the crash site is becoming scarce. Building a soil reclamation facility will allow us to change nature at our will for a more appropriate construction site.\n\n" +
                 "Objective Added: Build a Soil Reclamation Facility\n" +
-                "Unlocked: Build a Soil Reclamation Facility"
+                "Unlocked: Soil Reclamation Facility"
                 ,
                 (c) -> {
                     return c.getDay() >= 14 && c.checkEventChoosedId(23);
