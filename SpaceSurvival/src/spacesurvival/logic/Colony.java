@@ -145,7 +145,7 @@ public enum Colony {
     
     
     public int getColonyAvailableSpace() {
-        return getColonyMaxSpace() - getColonyWorkingSpace();
+        return getColonyMaxSpace() - getColonyOccupiedSpace();
     }
 
     public int getColonyLostSpace() {

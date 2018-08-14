@@ -22,7 +22,7 @@ public class TextCutscene extends CharacterPanel {
     
     
     public final static String[] cutscene = new String[] {
-        "As humanity mastered space travel, it did not lose time to spread itself throughout the galaxy. The once idle universe is soon filled with spaceships of all shapes and sizes cruising between systems, transporting goods and people.",
+        "As humanity mastered space travel, it did not lose time to spread itself throughout the galaxy. The once idle universe was soon filled with spaceships of all shapes and sizes cruising between systems, transporting goods and people.",
         "Aboard the gigabus SP4-C3, sailing for Sector 6UD-7H3M3, passengers are eagerly waiting for their arrival at home, where their family are preparing to welcome them at their long anticipated return.",
         "Meanwhile, the captain of the ship, an opportunistic hoarder, has been grumbling about food variety to his second-in-command.",
         "\"Hans!\"",

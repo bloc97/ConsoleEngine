@@ -476,7 +476,7 @@ public class Event {
         ));
         allEventsList.add(new Event(
                 "Strange Meat II", 
-                "Your men discovered that the mysterious meat is from one of the native creatures living in our sewers. The people consuming seems to ignore its effects on their bodies, Seemingly addicted to it. However, one thing is certain - the demand for the meat is high and will rise even higher.\n\n" +
+                "Your men discovered that the mysterious meat is from one of the native creatures living in our sewers. The people consuming it seems to ignore its effects on their bodies, seemingly addicted to it. However, one thing is certain - the demand for the meat is high and will rise even higher.\n\n" +
                 "Even the wealthiest are ready to give out their land for a piece of the meat.",
                 (c) -> {
                     return c.getDay() >= 13 && c.checkEventChoosedId(9);
