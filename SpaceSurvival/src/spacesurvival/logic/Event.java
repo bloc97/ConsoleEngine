@@ -456,7 +456,7 @@ public class Event {
         allEventsList.add(new Event(
                 "Strange Meat II", 
                 "Your men discovered that the mysterious meat is from one of the native creatures living in the waste. The people consuming it ignore what effect these meat have on their body, but one thing is for sure, the demand for the meat is high.\n\n" +
-                "Event the wealthest are ready to give out their land for a piece of the meat.",
+                "Even the wealthest are ready to give out their land for a piece of the meat.",
                 (c) -> {
                     return c.getDay() >= 13 && c.checkEventChoosedId(9);
                 }, 

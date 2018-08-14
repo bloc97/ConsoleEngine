@@ -134,10 +134,12 @@ public class TextCutscene extends CharacterPanel {
         if (currentLine == 6) {
             EventChoice yes = new EventChoice("Of course.", -1, (t) -> {
                 currentLine = 8;
+                currentStop = 0;
             });
             EventChoice no = new EventChoice("No.", -1, (t) -> {
                 currentLine = 12;
                 chickenNuggets = false;
+                currentStop = 0;
             });
             yes.setColor(0xFF00EE00);
             no.setColor(0xFFEE0000);
