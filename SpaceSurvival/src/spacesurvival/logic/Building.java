@@ -59,13 +59,13 @@ public abstract class Building {
     final static UniqueBuilding rocket = new UniqueBuilding("Rocket","Sends stuff to outer space.", "Space(x8), Adv. Mat.(x2), Adv. Parts(x1), Computers(x1), Chemicals(x2)", 8, Produce.COMPOSITE_MATERIALS, Produce.COMPOSITE_MATERIALS, Produce.ADVANCED_PARTS, Produce.COMPUTERS, Produce.ROCKET_FUEL, Produce.ROCKET_FUEL);
     
     final static ReclamationBuilding reclamationFacility = new ReclamationBuilding("Soil Reclamation Facility", "Reclaims land for our survival.", "Space(x4), Materials(x2), Bio.(x1)", 4, Produce.MATERIALS, Produce.MATERIALS, Produce.BIOMASS);
-    final static ReclamationBuilding terraformer = new ReclamationBuilding("Terraforming Facility", "An improved land reclaimer, stay away when operational.", "Space(x3), Adv. Parts(x2), Elect.(x1), Bio.(x2)", 6, Produce.ADVANCED_PARTS, Produce.ADVANCED_PARTS, Produce.ELECTRONICS, Produce.BIOMASS, Produce.BIOMASS);
+    final static ReclamationBuilding terraformer = new ReclamationBuilding("Terraforming Facility", "An improved land reclaimer, stay away when operational.", "Space(x6), Adv. Parts(x2), Elect.(x1), Bio.(x2)", 6, Produce.ADVANCED_PARTS, Produce.ADVANCED_PARTS, Produce.ELECTRONICS, Produce.BIOMASS, Produce.BIOMASS);
     
     
     final static MilitaryBuilding bunker = new MilitaryBuilding("Bunker", "A military grade bunker.", "Space(x3), Materials(x2)", 3, 1, Produce.MATERIALS, Produce.MATERIALS);
-    final static MilitaryBuilding defensePlatform = new MilitaryBuilding("Defense Platform", "An impressive-looking defensive platform.", "Space(x4), Adv. Mat.(x2), Adv. Parts(x1), Electr.(x1)", 4, 3, Produce.COMPOSITE_MATERIALS, Produce.ADVANCED_PARTS, Produce.ELECTRONICS);
+    final static MilitaryBuilding defensePlatform = new MilitaryBuilding("Defense Platform", "An impressive-looking defensive platform.", "Space(x4), Adv. Mat.(x1), Adv. Parts(x1), Electr.(x1)", 4, 3, Produce.COMPOSITE_MATERIALS, Produce.ADVANCED_PARTS, Produce.ELECTRONICS);
     
-    final static MilitaryBuilding decoy = new MilitaryBuilding("Decoy", "Guides monsters away from important facilities.", "Space(x1), Electronics(x1), Biomass(x1)", 1, 0, Produce.PARTS);
+    final static MilitaryBuilding decoy = new MilitaryBuilding("Decoy", "Guides monsters away from important facilities.", "Space(x1), Parts(x1)", 1, 0, Produce.PARTS);
 
     
     
