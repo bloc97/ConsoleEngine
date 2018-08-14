@@ -404,7 +404,7 @@ public class Event {
         
         allEventsList.add(new Event(
                 "Housing Crisis Resolved", 
-                "After building the promised shelters, confidence towards the leadership was resolved.\n"
+                "After building the promised shelters, confidence towards the leadership was restored.\n"
                 ,
                 (c) -> {
                     return (c.checkEventChoosedId(40) && c.checkBuildingExists(Building.shelter, 2) && c.getDay() <= 25) || (c.checkEventChoosedId(42) && c.checkBuildingExists(Building.shelter, 3));
