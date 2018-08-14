@@ -34,15 +34,15 @@ public abstract class Building {
     final static HousingBuilding encampment = new HousingBuilding("Encampment", "An encampment full of homeless people.", "Space(x1)", 1);
     
     final static HousingBuilding shelter = new HousingBuilding("Shelter", "Quite sturdy, but unsightly to the average eye.", "Space(x2), Materials(x1)", 2, Produce.MATERIALS);
-    final static HousingBuilding livingQuarters = new HousingBuilding("Living Quarters", "Very cozy.", "Space(x2), Materials(x1), Parts(x1)", 2, Produce.MATERIALS, Produce.MATERIALS, Produce.PARTS);
+    final static HousingBuilding livingQuarters = new HousingBuilding("Living Quarters", "Very cozy. (Increases happiness)", "Space(x2), Materials(x1), Parts(x1)", 2, Produce.MATERIALS, Produce.MATERIALS, Produce.PARTS);
     final static HousingBuilding highDensityHousing = new HousingBuilding("High Density Housing", "Back home, this was a decent way to increase city density.", "Space(x2), Adv. Mat.(x1), Mat.(x1), Parts(x1), Elect.(x1)", 2, Produce.COMPOSITE_MATERIALS, Produce.MATERIALS, Produce.PARTS, Produce.ELECTRONICS);
     
     final static FactoryBuilding crashedShip = new FactoryBuilding("Crashed Ship", "One of its kind, now broken and grounded. (+1 Materials)", "", 0xFFFFEE00, 3, Produce.MATERIALS, 1);
     final static FactoryBuilding hq = new FactoryBuilding("HQ", "Home of those in charge. (Increases happiness) (+1 Materials)", "", 0xFF00FFCC, 1, Produce.MATERIALS, 1);
     
     final static FactoryBuilding mFactory = new FactoryBuilding("Materials Factory","Produces materials. (+1 Materials)", "Space(x3), Materials(x1)", Produce.MATERIALS, 1, Produce.MATERIALS);
-    final static FactoryBuilding pFactory = new FactoryBuilding("Parts Factory","Produces parts.", "Space(x3), Materials(x1)", Produce.PARTS, 1, Produce.MATERIALS);
-    final static FactoryBuilding eFactory = new FactoryBuilding("Electronics Factory","Produces electronics.", "Space(x3), Materials(x1), Parts(x1)", Produce.ELECTRONICS, 1, Produce.MATERIALS, Produce.PARTS);
+    final static FactoryBuilding pFactory = new FactoryBuilding("Parts Factory","Produces parts (+1 Parts).", "Space(x3), Materials(x1)", Produce.PARTS, 1, Produce.MATERIALS);
+    final static FactoryBuilding eFactory = new FactoryBuilding("Electronics Factory","Produces electronics. (+1 Electronics)", "Space(x3), Materials(x1), Parts(x1)", Produce.ELECTRONICS, 1, Produce.MATERIALS, Produce.PARTS);
     
     final static FactoryBuilding amFactory = new FactoryBuilding("Advanced Materials Factory","Produces advanced materials. (+1 Adv. Mat.)", "Space(x3), Adv. Mat.(x1), Mat.(x2), Parts(x1), Elect.(x1)", Produce.COMPOSITE_MATERIALS, 1, Produce.MATERIALS, Produce.MATERIALS, Produce.PARTS, Produce.ELECTRONICS);
     final static FactoryBuilding apFactory = new FactoryBuilding("Advanced Parts Factory","Produces advanced parts. (+1 Adv. Parts)", "Space(x3), Adv. Mat.(x1), Mat.(x1), Parts(x1), Elect.(x1)", Produce.ADVANCED_PARTS, 1, Produce.COMPOSITE_MATERIALS, Produce.MATERIALS, Produce.PARTS, Produce.ELECTRONICS);
