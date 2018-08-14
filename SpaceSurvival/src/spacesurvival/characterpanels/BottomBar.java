@@ -173,6 +173,9 @@ public class BottomBar extends CharacterPanel implements Scrollable {
     }
     
     public void tickPos() {
+        if (GamePanel.eventPopup.isVisible() || GamePanel.cutscene.isVisible() || GamePanel.dayEndOverlay.isVisible()) {
+            return;
+        }
         pos--;
         if (Colony.INSTANCE.getNews().length() + pos <= 0) {
             pos = 0;
@@ -214,40 +217,55 @@ public class BottomBar extends CharacterPanel implements Scrollable {
     
     ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     
+    public void maximize() {
+        if (isMinimized) {
+            toggleMinimized();
+        }
+    }
+    public void minimize() {
+        if (!isMinimized) {
+            toggleMinimized();
+        }
+    }
+
+    public boolean isMinimized() {
+        return isMinimized;
+    }
+    
     public void toggleMinimized() {
         isMouseOver = false;
         checkScroll();
-        
-        if (isMinimized) { //going to fullscreen
-            SoundEngine.playClip(SoundEngine.OPENBOOK);
-            isMinimized = !isMinimized;
-            int currentY = lastHeight - 1;
-            onScreenDimensionChange(getWidth(), lastHeight, getWidth(), lastHeight);
-            while (currentY >= Background.TOP_PADDING) {
-                setY(currentY);
-                genImage();
-                currentY--;
-                try {
-                    Thread.sleep(5);
-                } catch (InterruptedException ex) {
+        ex.submit(() -> {
+            if (isMinimized) { //going to fullscreen
+                SoundEngine.playClip(SoundEngine.OPENBOOK);
+                isMinimized = !isMinimized;
+                int currentY = lastHeight - 1;
+                onScreenDimensionChange(getWidth(), lastHeight, getWidth(), lastHeight);
+                while (currentY >= Background.TOP_PADDING) {
+                    setY(currentY);
+                    genImage();
+                    currentY--;
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException ex) {
+                    }
                 }
-            }
-        } else {
-            SoundEngine.playClip(SoundEngine.CLOSEBOOK);
-            int currentY = Background.TOP_PADDING;
-            while (currentY <= lastHeight - Background.BOTTOM_PADDING) {
-                setY(currentY);
-                genImage();
-                currentY++;
-                try {
-                    Thread.sleep(5);
-                } catch (InterruptedException ex) {
+            } else {
+                SoundEngine.playClip(SoundEngine.CLOSEBOOK);
+                int currentY = Background.TOP_PADDING;
+                while (currentY <= lastHeight - Background.BOTTOM_PADDING) {
+                    setY(currentY);
+                    genImage();
+                    currentY++;
+                    try {
+                        Thread.sleep(5);
+                    } catch (InterruptedException ex) {
+                    }
                 }
+                isMinimized = !isMinimized;
+                onScreenDimensionChange(getWidth(), lastHeight, getWidth(), lastHeight);
             }
-            isMinimized = !isMinimized;
-            onScreenDimensionChange(getWidth(), lastHeight, getWidth(), lastHeight);
-        }
-        
+        });
     }
 
 
@@ -306,9 +324,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
                 return;
             }
         } else {
-            ex.submit(() -> {
-                toggleMinimized();
-            });
+            toggleMinimized();
             hasDraggedScroll = true;
         }
     }
@@ -334,9 +350,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
         doScrollUp = false;
         doScrollDown = false;
         if (!isMinimized && !hasDraggedScroll && !isMouseOverTopArrow && !isMouseOverBottomArrow) {
-            ex.submit(() -> {
-                toggleMinimized();
-            });
+            toggleMinimized();
         }
         hasDraggedScroll = false;
     }
@@ -393,17 +407,13 @@ public class BottomBar extends CharacterPanel implements Scrollable {
 
     @Override
     public void onGlobalKeyReleased(KeyEvent e) {
-        if (GamePanel.eventPopup.isVisible() || GamePanel.cutscene.isVisible()) {
+        if (GamePanel.eventPopup.isVisible() || GamePanel.cutscene.isVisible() || GamePanel.dayEndOverlay.isVisible()) {
             return;
         }
         if (e.getKeyCode() == KeyEvent.VK_Q) {
-            ex.submit(() -> {
-                toggleMinimized();
-            });
+            toggleMinimized();
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !isMinimized) {
-            ex.submit(() -> {
-                toggleMinimized();
-            });
+            toggleMinimized();
         }
     }
     

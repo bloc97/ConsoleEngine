@@ -335,8 +335,7 @@ public class DayEndPopupOverlay extends CharacterPanel {
         Colony.INSTANCE.nextDay();
         GamePanel.topBar.genImage();
         GamePanel.bottomBar.setScroll(0);
-        GamePanel.bottomBar.onGlobalKeyReleased(new KeyEvent(new Component() {
-        }, 0, 0, 0, KeyEvent.VK_Q, 'q'));
+        GamePanel.bottomBar.maximize();
         
         List<Event> eventList = Colony.INSTANCE.getListTodayEvent();
         
@@ -361,6 +360,20 @@ public class DayEndPopupOverlay extends CharacterPanel {
         genImage();
         setX(0);
     }
+    
+    @Override
+    public void onGlobalKeyReleased(KeyEvent e) {
+        if (GamePanel.cutscene.isVisible() || GamePanel.eventPopup.isVisible() || !GamePanel.bottomBar.isMinimized()) {
+            return;
+        } else if (e.getKeyCode() == KeyEvent.VK_E) {
+            if (isVisible()) {
+                hide();
+            } else {
+                show();
+            }
+        }
+    }
+    
     
     
 }
