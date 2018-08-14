@@ -398,7 +398,7 @@ public class Event {
                 "Due to unpopular political decisions and dissatisfaction among the citizens, riots are taking place in the streets.\n"
                 ,
                 (c) -> {
-                    return c.getDay() == 25 && (c.checkEventChoosedId(41) || !c.checkBuildingExists(Building.shelter, 2));
+                    return c.getDay() == 25 && (c.checkEventChoosedId(41) || (c.checkEventChoosedId(40) && !c.checkBuildingExists(Building.shelter, 2)));
                 },
                 (c) -> {
                 },
