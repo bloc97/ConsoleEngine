@@ -305,6 +305,9 @@ public class DayEndPopupOverlay extends CharacterPanel {
 
     @Override
     public void onKeyPressed(KeyEvent e) {
+        if (!isVisible()) {
+            return;
+        }
         if (e.getKeyCode() == KeyEvent.VK_Y) {
             nextDay();
             hide();
