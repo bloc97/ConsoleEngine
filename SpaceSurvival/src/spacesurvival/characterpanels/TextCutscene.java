@@ -46,8 +46,8 @@ public class TextCutscene extends CharacterPanel {
         "Something explodes near your head and you lose consciousness.",
         "...",
         "...",
-        "With your head still hurting, you open your eyes and slowly get up. The captain is lying in front of you, his face distorted by pain. He calls for your help to carry him outside. As you comply, you notice that he is severely injured.",
-        "Gathering your strength, you pull the captain and yourself out of the wreck. There were already other survivors, and as soon as they see you two, they all come to gather around, innocently seeking leadership and guidance from the cause of this disaster. However, the captain was in no shape to take the situation in hand. He looks at you in the eyes.",
+        "With your head still hurting, you open your eyes and slowly get up. The captain is lying in front of you, his face distorted by his painful expression. He calls for your help to carry him outside. As you comply, you notice that he is severely injured.",
+        "Gathering your strength, you pull the captain and yourself out of the wreck. There were already other survivors outside, and as soon as they see you two, they all come to gather around, innocently seeking guidance and wanting to know the cause of this disaster. However, the captain was in no shape to take the situation in hand. He looks at you in the eyes.",
         
         "\"Hans. I know you are someone responsible. You make smart decisions, you are always eager to help others. I shall trust you with my passengers, and of course, my luxury cargo. People are going to count on you... Don't forget, I'm still counting on you for my chicken nuggets.\"",
             

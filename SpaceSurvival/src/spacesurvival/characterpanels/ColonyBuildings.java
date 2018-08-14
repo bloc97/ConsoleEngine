@@ -201,7 +201,10 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
                 GamePanel.infoBar.show(allBuildings.get(selectedIndex).getDescription());
             } else if (selectedIndex == allBuildings.size()) {
                 //GamePanel.infoBar.show("Ends the current day.");
+                selectedIndex = -1;
+                GamePanel.infoBar.hide();
             } else {
+                selectedIndex = -1;
                 GamePanel.infoBar.hide();
             }
             

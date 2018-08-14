@@ -107,7 +107,7 @@ public class Event {
                 "Stranded", 
                 "The gigabus has crashed in a crater. Only few of the passengers and crew on board survived the brutal impact. Those who boarded escape pods are now scattered far from the crashed ship.\n\n" +
                 "The ship's captain is severely injured, and is in no condition to lead. You are now the acting commander.\n\n" +
-                "The communication system can still receive transmissions, but sending out signals is now impossible due the extent of the damage. Only the short range S.O.S. signal is working. For the time being, you should start getting used to this planet while you wait for a way to fix the comms system.", 
+                "The communication system can still receive transmissions, but sending out signals is out of question due the extent of the damage. Only the short range S.O.S. signal is working. For the time being, you should start getting used to this planet while you wait for a way to fix the comms system.", 
                 1, 
                 (c) -> {
                     c.spawnBuilding(Building.crashedShip);
@@ -386,7 +386,7 @@ public class Event {
                 "After building the promised shelters, confidence towards the leadership was resolved.\n"
                 ,
                 (c) -> {
-                    return c.checkEventChoosedId(40) && c.checkBuildingExists(Building.shelter, 2);
+                    return c.checkEventChoosedId(40) && c.checkBuildingExists(Building.shelter, 2) && c.getDay() <= 25;
                 },
                 (c) -> {
                 },
@@ -481,7 +481,7 @@ public class Event {
                 "Strange Meat III", 
                 "Extensive research has shown that the consumption of the natives' meat is highly dangerous and toxic to the human body. The symptoms are similar to radioactive poisoning.\n\n" + 
                 "The meat was banned and an antidote was quickly developped and distributed to those affected.\n" +
-                "Discontent was among those affected.",
+                "There was discontent among those affected.",
                 (c) -> {
                     return c.getDay() >= 17 && c.checkEventChoosedId(10);
                 }, 

@@ -28,7 +28,7 @@ public class News {
     
     
     
-    private final static String forecastUnavailable = "- Tomorrow's forecasts is unavailable.";
+    private final static String forecastUnavailable = "- Tomorrow's forecast is unavailable.";
     private final static String forecastClear = "According to weather forecasts, tommorrow will be a clear day.";
     private final static String forecastPrecip = "Chance of precipitations tomorrow.";
     private final static String forecastFog = "High chance of fog in the next days.";
@@ -47,7 +47,7 @@ public class News {
         
         String news = "";
         
-        if (colony.getDay() == 4) {
+        if (colony.getDay() == 5) {
             news += weatherStorm + " " + weatherCold;
         } else {
             switch (random.nextInt(5)) {
