@@ -106,9 +106,9 @@ public enum Colony {
         int newColonyMaxSpace = colonyMaxSpace;
         
         if (day < 10) {
-            newColonyMaxSpace += reclaimBuildings + ((day % 2 == 0) ? 1 : 0);
+            newColonyMaxSpace += ((day % 2 == 0) ? 1 : 0);
         } else {
-            newColonyMaxSpace += reclaimBuildings + ((day % (4 - reclaimBuildings) == 0) ? 1 : 0);
+            newColonyMaxSpace += ((day % (4 - reclaimBuildings) == 0) ? 1 : 0);
         }
         
         if (newColonyMaxSpace > planetMaxSpace) {
@@ -571,6 +571,10 @@ public enum Colony {
         report += string;
     }
     
+    public boolean isAlive() {
+        return checkBuildingExists(Building.hq) || checkBuildingExists(Building.crashedShip);
+    }
+    
     public void nextDay() {
         
         int spacesToDestroy = getMonstersNum() - getDefense();
@@ -612,8 +616,12 @@ public enum Colony {
                 }
             }
         }
+        
         buildings.removeAll(destroyedBuildings);
         
+        if (spacesToDestroy > 2) {
+            buildings.remove(0);
+        }
         
         getBuildings().forEach((t) -> {
             t.onBeforeNextDay(this);

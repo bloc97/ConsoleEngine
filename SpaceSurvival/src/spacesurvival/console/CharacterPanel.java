@@ -67,4 +67,7 @@ public abstract class CharacterPanel implements ConsolePanel {
         this.overrideMode = overrideMode;
     }
 
+    public boolean isVisible() {
+        return getX() >= -getWidth();
+    }
 }

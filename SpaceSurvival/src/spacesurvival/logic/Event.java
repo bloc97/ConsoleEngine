@@ -253,7 +253,7 @@ public class Event {
                 "Unlocked: Decoy, Biomass Generator"
                 ,
                 (c) -> {
-                    return c.getDay() >= 12 && c.checkEventChoosedId(21);
+                    return c.getDay() >= 12 && c.checkEventChoosedId(21) && c.isAlive();
                 }, 
                 (c) -> {
                     c.unlockBuilding(Building.decoy);
@@ -272,7 +272,7 @@ public class Event {
                 "Unlocked: Bunker"
                 ,
                 (c) -> {
-                    return c.getDay() >= 12 && c.checkEventChoosedId(22);
+                    return c.getDay() >= 12 && c.checkEventChoosedId(22) && c.isAlive();
                 }, 
                 (c) -> {
                     c.unlockBuilding(Building.bunker);
@@ -337,13 +337,13 @@ public class Event {
         allEventsList.add(new Event(
                 "The Others", 
                 "\"Commander, after what happened yesterday, I think it is our duty to save the other survivors of the crash, we should build a beacon to signal the rally point.\"\n\n" +
-                "Objective Added: Build a beacon to signal the rally point.\n" +
+                "Objective Added: Build a beacon\n" +
                 "Unlocked: Beacon"
                 ,
                 20, 
                 (c) -> {
                     c.unlockBuilding(Building.beacon);
-                    c.appendReport("- Beacon was unlocked.");
+                    c.appendReport("- Beacon was unlocked");
                     c.addObjective(new Objective("Build a Beacon.", (t) -> {return t.checkBuildingExists(Building.beacon);}));
                 },
                 new EventChoice("It is our duty."),
@@ -360,9 +360,30 @@ public class Event {
                 },
                 (c) -> {
                 },
-                new EventChoice("Today is a great day.")
+                new EventChoice("Today is a great day.", 80)
         ));
         
+        allEventsList.add(new Event(
+                "The End?", 
+                "Thank you for playing our game (We really mean it). We hope you enjoyed it as much as we did making it.\n\n" +
+                "There was a lot more things we wanted to add to this game, such as ambient sounds, music, sound effects, images for events, etc. There was simply not much time, compounded by the fact that we do not have an artist in our team. (We are only two programmers and one writer)\n\n" +
+                "However we will not be discouraged, I can assure you that The Unfortunate Story of Hans will have an ending one day. May the captain find his chicken nuggets.\n"
+                ,
+                (c) -> {
+                    return c.checkEventChoosedId(80);
+                }
+        ));
+        
+        allEventsList.add(new Event(
+                "Game Over", 
+                "The settlement was annihilated. No one escaped. With the main colony gone, the future of the other survivors are now looking bleak.\n\n" +
+                "Objectives:\n" + 
+                "Find chicken nuggets for the captain - Failed\n"
+                ,
+                (c) -> {
+                    return !c.isAlive() && c.getDay() >= 10;
+                }
+        ));
         
         allEventsList.add(new Event(
                 "Housing Crisis", 
@@ -415,7 +436,7 @@ public class Event {
         
         allEventsList.add(new Event(
                 "Anarchy", 
-                "The citizen have had enough of the incompetent leadership and are taking arms to start a revolution!\n" +
+                "The citizens have had enough of the incompetent leadership and are taking arms to start a revolution!\n" +
                 "Anarchy has befallen on the settlement, every corner of the colony was plundered by looters."
                 ,
                 (c) -> {
@@ -431,7 +452,7 @@ public class Event {
                 (c) -> {
                 },
                 new EventChoice("Agree.", -1, (c) -> {
-                    c.appendReport("The \"Patroll ship\" was actually a pirate ship, they plundered one of our factories and dumped all of their radioactive waste in our settlement!\n");
+                    c.appendReport("The \"patroll ship\" was actually a pirate ship, they plundered one of our factories and dumped all of their radioactive waste in our settlement!\n");
                     c.appendReport("- Two Debris was added due to radioactive waste.");
                     c.setColonyLostSpace(c.getColonyLostSpace() + 2);
                 }),
@@ -455,7 +476,7 @@ public class Event {
         ));
         allEventsList.add(new Event(
                 "Strange Meat II", 
-                "Your men discovered that the mysterious meat is from one of the native creatures living in our sewers. The people consuming seems to ignore its effects on their bodies, Wseemingly addicted to it. One thing is certain, the demand for the meat is high and will rise even higher.\n\n" +
+                "Your men discovered that the mysterious meat is from one of the native creatures living in our sewers. The people consuming seems to ignore its effects on their bodies, Seemingly addicted to it. However, one thing is certain - the demand for the meat is high and will rise even higher.\n\n" +
                 "Even the wealthiest are ready to give out their land for a piece of the meat.",
                 (c) -> {
                     return c.getDay() >= 13 && c.checkEventChoosedId(9);
@@ -485,7 +506,7 @@ public class Event {
                 "The meat was banned and an antidote was quickly developped and distributed to those affected.\n" +
                 "There was discontent among those affected. Some have been quarantined and are currently being treated. It is unknown if the debilitating effects can be fully cured.",
                 (c) -> {
-                    return c.getDay() >= 17 && c.checkEventChoosedId(10);
+                    return c.getDay() >= 18 && c.checkEventChoosedId(10);
                 }, 
                 (c) -> {
                 },

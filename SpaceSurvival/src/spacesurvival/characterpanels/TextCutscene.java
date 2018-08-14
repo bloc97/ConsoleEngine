@@ -59,6 +59,7 @@ public class TextCutscene extends CharacterPanel {
     private int currentLine = 0;
     private int currentStop = 0;
     private boolean chickenNuggets = true;
+    private boolean isDone = false;
     
     public final static String[] cutscenePerson = new String[] {
         "",
@@ -125,6 +126,11 @@ public class TextCutscene extends CharacterPanel {
     
     
     public void nextLine() {
+        
+        if (isDone) {
+            return;
+        }
+        
         if (currentStop <= cutscene[currentLine].length() + 10) {
             currentStop = cutscene[currentLine].length() + 10;
             genImage();
@@ -160,7 +166,8 @@ public class TextCutscene extends CharacterPanel {
         }
         
         if (currentLine >= cutscene.length - 1) {
-            currentLine = cutscene.length - 1;
+            currentLine = 0;
+            isDone = true;
             dayEndOverlay.nextDay();
             hide();
             return;

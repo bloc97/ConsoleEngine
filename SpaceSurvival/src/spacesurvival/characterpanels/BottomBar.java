@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import spacesurvival.GamePanel;
 import spacesurvival.SpaceSurvival;
 import spacesurvival.characterpanels.sound.SoundEngine;
 import spacesurvival.console.CharacterImage;
@@ -392,6 +393,9 @@ public class BottomBar extends CharacterPanel implements Scrollable {
 
     @Override
     public void onGlobalKeyReleased(KeyEvent e) {
+        if (GamePanel.eventPopup.isVisible() || GamePanel.cutscene.isVisible()) {
+            return;
+        }
         if (e.getKeyCode() == KeyEvent.VK_Q) {
             ex.submit(() -> {
                 toggleMinimized();
