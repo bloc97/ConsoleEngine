@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.characterpanels;
+package spacesurvival.game.gui;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import spacesurvival.GamePanel;
 import static spacesurvival.GamePanel.dayEndOverlay;
 import spacesurvival.console.CharacterImage;
-import spacesurvival.console.CharacterPanel;
+import spacesurvival.console.BufferedConsoleLayer;
 import spacesurvival.logic.Event;
 import spacesurvival.logic.EventChoice;
 
@@ -18,7 +18,7 @@ import spacesurvival.logic.EventChoice;
  *
  * @author bowen
  */
-public class TextCutscene extends CharacterPanel {
+public class TextCutscene extends BufferedConsoleLayer {
     
     
     public final static String[] cutscene = new String[] {
@@ -111,12 +111,12 @@ public class TextCutscene extends CharacterPanel {
     
     public void genImage() {
         getCharacterImage().fillBackgroundColor(0xFF302040);
-        getCharacterImage().fillRectangle(0, getHeight() / 2, getWidth(), getHeight() - (getHeight() / 2), ' ');
+        getCharacterImage().fillRectangleChar(0, getHeight() / 2, getWidth(), getHeight() - (getHeight() / 2), ' ');
         getCharacterImage().drawRectangle(0, getHeight() / 2, getWidth(), getHeight() - (getHeight() / 2));
-        getCharacterImage().fillForegroundColorRectangle(0, getHeight() / 2, getWidth(), getHeight() - (getHeight() / 2), 0xFFEEEEEE);
+        getCharacterImage().fillRectangleForegroundColor(0, getHeight() / 2, getWidth(), getHeight() - (getHeight() / 2), 0xFFEEEEEE);
         
         getCharacterImage().drawString(cutscenePerson[currentLine], 2, getHeight() / 2, 0xFFEEEEEE);
-        getCharacterImage().drawStringSpaceWrapPadStopAt(cutscene[currentLine], 3, getHeight() / 2 + 2, 3, 3, 0xFFEEEEEE, currentStop);
+        getCharacterImage().drawStringWrapWordPaddedStopAt(cutscene[currentLine], 3, getHeight() / 2 + 2, 3, 3, 0xFFEEEEEE, currentStop);
     }
     
     public void addStop() {

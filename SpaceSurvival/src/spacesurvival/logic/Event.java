@@ -57,14 +57,19 @@ public class Event {
     
     
     public boolean resolveEvent(int choice, Colony colony) {
-        EventChoice ec = getAvailableChoices().get(choice);
+        List<EventChoice> availableChoices = getAvailableChoices();
         
-        if (ec.checkAvailable(colony)) {
-            ec.applyEffects(colony);
-            colony.getListTodayEvent().remove(this);
-            colony.getListChoosed().add(ec);
-            return true;
+        if (choice >= 0 && choice < availableChoices.size()) {
+            EventChoice ec = availableChoices.get(choice);
+
+            if (ec.checkAvailable(colony)) {
+                ec.applyEffects(colony);
+                colony.getListTodayEvent().remove(this);
+                colony.getListChoosed().add(ec);
+                return true;
+            }
         }
+        
         return false;
         
     } //this is the master fonction of choosing a eventchoice and applying the modifiers

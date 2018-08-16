@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.characterpanels;
+package spacesurvival.game.gui;
 
 import java.awt.Color;
 import spacesurvival.console.CharacterImage;

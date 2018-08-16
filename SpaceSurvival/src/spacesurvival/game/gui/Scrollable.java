@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.characterpanels;
+package spacesurvival.game.gui;
 
 import java.awt.event.KeyEvent;
-import spacesurvival.console.ConsolePanel;
+import spacesurvival.console.BufferedConsoleLayer;
 
 /**
  *
  * @author bowen
  */
-public interface Scrollable extends ConsolePanel {
+public interface Scrollable extends BufferedConsoleLayer {
     public int getScroll();
     public int getMaxScroll();
     public void setScroll(int i);

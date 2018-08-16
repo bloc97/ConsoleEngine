@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.characterpanels;
+package spacesurvival.game.gui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -12,7 +12,7 @@ import java.util.List;
 import spacesurvival.GamePanel;
 import spacesurvival.SpaceSurvival;
 import spacesurvival.console.CharacterImage;
-import spacesurvival.console.CharacterPanel;
+import spacesurvival.console.BufferedConsoleLayer;
 import spacesurvival.logic.Colony;
 import spacesurvival.logic.Event;
 
@@ -20,7 +20,7 @@ import spacesurvival.logic.Event;
  *
  * @author bowen
  */
-public class DayEndPopupOverlay extends CharacterPanel {
+public class DayEndPopupOverlay extends BufferedConsoleLayer {
     
     private Color mainColor;
     
@@ -50,9 +50,9 @@ public class DayEndPopupOverlay extends CharacterPanel {
         int yPad = (getHeight() - height) / 2;
         
         
-        getCharacterImage().fillRectangle(xPad, yPad, width, height, ' ');
-        getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, mainColor.brighter().brighter().getRGB());
-        getCharacterImage().fillBackgroundColorRectangle(xPad, yPad, width, height, mainColor.darker().getRGB());
+        getCharacterImage().fillRectangleChar(xPad, yPad, width, height, ' ');
+        getCharacterImage().fillRectangleForegroundColor(xPad, yPad, width, height, mainColor.brighter().brighter().getRGB());
+        getCharacterImage().fillRectangleBackgroundColor(xPad, yPad, width, height, mainColor.darker().getRGB());
         
         String title = "End Day " + Colony.INSTANCE.getDay() + "?";
         

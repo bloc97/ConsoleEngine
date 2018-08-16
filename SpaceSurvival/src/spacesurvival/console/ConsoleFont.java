@@ -5,6 +5,7 @@
  */
 package spacesurvival.console;
 
+import spacesurvival.console.utils.Graphics2DUtils;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -24,11 +25,11 @@ public class ConsoleFont {
     private final boolean isUnderscoreContinuous, isUnderscoreBreakOnLeft;
     
 
-    public ConsoleFont(Font font, int width, int height, int topPadding) {
+    private ConsoleFont(Font font, int width, int height, int topPadding) {
         this(font, width, height, topPadding, -1, true, false);
     }
     
-    public ConsoleFont(Font font, int width, int height, int topPadding, int underscoreYPos, boolean isUnderscoreContinuous, boolean isUnderscoreBreakOnLeft) {
+    private ConsoleFont(Font font, int width, int height, int topPadding, int underscoreYPos, boolean isUnderscoreContinuous, boolean isUnderscoreBreakOnLeft) {
         this.font = font;
         this.width = width;
         this.height = height;
@@ -52,6 +53,10 @@ public class ConsoleFont {
 
     public int getHeight() {
         return height;
+    }
+    
+    public int getHeightWidthRatio() {
+        return height / width;
     }
 
     public int getUnderscoreYPos() {
@@ -114,7 +119,7 @@ public class ConsoleFont {
             }
         }
         
-        BufferedImageUtils.clearBufferedImage(image);
+        Graphics2DUtils.clear(image);
         
         g2.drawString("_", 0, 50);
         int underscoreYPos = -1;
@@ -187,6 +192,15 @@ public class ConsoleFont {
         } else {
             return (char)CP437LOOKUP[i];
         }
+    }
+    
+    public static int unicodeToCp437(char c) {
+        for (int i=0; i<CP437LOOKUP.length; i++) {
+            if ((int)c == CP437LOOKUP[i]) {
+                return i;
+            }
+        }
+        return 0;
     }
     
 }

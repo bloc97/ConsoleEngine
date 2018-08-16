@@ -5,6 +5,7 @@
  */
 package spacesurvival.console;
 
+import spacesurvival.console.utils.BoundingBoxUtils;
 import java.awt.image.BufferedImage;
 
 /**
@@ -18,17 +19,19 @@ public class CharacterImage {
     //Paint each inner component, check if drawString goes out of bounds, and don't paint out of bound characters
     //Each component has their own coordinates
     
+    private final int width, height, length;
+    
     private final char[] chars;
     private final int[] foregroundColor;
     private final int[] backgroundColor;
-    private final int width, height;
     
     public CharacterImage(int width, int height) {
-        this.chars = new char[height * width];
-        this.foregroundColor = new int[height * width];
-        this.backgroundColor = new int[height * width];
         this.width = width;
         this.height = height;
+        this.length = width * height;
+        this.chars = new char[length];
+        this.foregroundColor = new int[length];
+        this.backgroundColor = new int[length];
     }
 
     public int getHeight() {
@@ -39,6 +42,10 @@ public class CharacterImage {
         return width;
     }
     
+    public boolean isWithinBounds(int x, int y) {
+        return (x >= 0 && x < width && y >= 0 && y < height);
+    }
+    
     public void clear() {
         for (int i=0; i<chars.length; i++) {
             chars[i] = 0;
@@ -46,20 +53,38 @@ public class CharacterImage {
             backgroundColor[i] = 0;
         }
     }
-    public void fillChar(char c) {
-        for (int i=0; i<chars.length; i++) {
-            chars[i] = c;
-        }
+    
+    public char get(int x, int y) {
+        return getChar(x, y);
     }
-    public void fillForegroundColor(int c) {
-        for (int i=0; i<foregroundColor.length; i++) {
-            foregroundColor[i] = c;
+    
+    public boolean set(int x, int y, char c) {
+        if (isWithinBounds(x, y)) {
+            this.chars[y * width + x] = c;
+            return true;
         }
+        return false;
     }
-    public void fillBackgroundColor(int c) {
-        for (int i=0; i<backgroundColor.length; i++) {
-            backgroundColor[i] = c;
+    
+    public boolean set(int x, int y, char c, int foregroundColor) {
+        if (isWithinBounds(x, y)) {
+            final int index = y * width + x;
+            this.chars[index] = c;
+            this.foregroundColor[index] = foregroundColor;
+            return true;
         }
+        return false;
+    }
+    
+    public boolean set(int x, int y, char c, int foregroundColor, int backgroundColor) {
+        if (isWithinBounds(x, y)) {
+            final int index = y * width + x;
+            this.chars[index] = c;
+            this.foregroundColor[index] = foregroundColor;
+            this.backgroundColor[index] = backgroundColor;
+            return true;
+        }
+        return false;
     }
     
     public char getChar(int x, int y) {
@@ -72,6 +97,16 @@ public class CharacterImage {
     public boolean setChar(int x, int y, char c) {
         if (isWithinBounds(x, y)) {
             chars[y * width + x] = c;
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean setColor(int x, int y, int foregroundColor, int backgroundColor) {
+        if (isWithinBounds(x, y)) {
+            final int index = y * width + x;
+            this.foregroundColor[index] = foregroundColor;
+            this.backgroundColor[index] = backgroundColor;
             return true;
         }
         return false;
@@ -107,19 +142,79 @@ public class CharacterImage {
         return false;
     }
     
-    public boolean isWithinBounds(int x, int y) {
-        return (x >= 0 && x < width && y >= 0 && y < height);
+    public void fill(char c) {
+        for (int i=0; i<chars.length; i++) {
+            this.chars[i] = c;
+        }
+    }
+    
+    public void fill(char c, int foregroundColor) {
+        for (int i=0; i<chars.length; i++) {
+            this.chars[i] = c;
+            this.foregroundColor[i] = foregroundColor;
+        }
+    }
+    
+    public void fill(char c, int foregroundColor, int backgroundColor) {
+        for (int i=0; i<chars.length; i++) {
+            this.chars[i] = c;
+            this.foregroundColor[i] = foregroundColor;
+            this.backgroundColor[i] = backgroundColor;
+        }
+    }
+    
+    public void fillColor(int foregroundColor, int backgroundColor) {
+        for (int i=0; i<length; i++) {
+            this.foregroundColor[i] = foregroundColor;
+            this.backgroundColor[i] = backgroundColor;
+        }
+    }
+    
+    public void fillForegroundColor(int c) {
+        for (int i=0; i<length; i++) {
+            this.foregroundColor[i] = c;
+        }
+    }
+    
+    public void fillBackgroundColor(int c) {
+        for (int i=0; i<length; i++) {
+            this.backgroundColor[i] = c;
+        }
     }
     
     public void fillRectangle(int x, int y, int width, int height, char c) {
         for (int j=0; j<height; j++) {
             for (int i=0; i<width; i++) {
-                setChar(x + i, y + j, c);
+                set(x + i, y + j, c);
             }
         }
     }
     
-    public void fillForegroundColorRectangle(int x, int y, int width, int height, int c) {
+    public void fillRectangle(int x, int y, int width, int height, char c, int foregroundColor) {
+        for (int j=0; j<height; j++) {
+            for (int i=0; i<width; i++) {
+                set(x + i, y + j, c, foregroundColor);
+            }
+        }
+    }
+    
+    public void fillRectangle(int x, int y, int width, int height, char c, int foregroundColor, int backgroundColor) {
+        for (int j=0; j<height; j++) {
+            for (int i=0; i<width; i++) {
+                set(x + i, y + j, c, foregroundColor, backgroundColor);
+            }
+        }
+    }
+    
+    public void fillRectangleColor(int x, int y, int width, int height, int foregroundColor, int backgroundColor) {
+        for (int j=0; j<height; j++) {
+            for (int i=0; i<width; i++) {
+                setColor(x + i, y + j, foregroundColor, backgroundColor);
+            }
+        }
+    }
+    
+    public void fillRectangleForegroundColor(int x, int y, int width, int height, int c) {
         for (int j=0; j<height; j++) {
             for (int i=0; i<width; i++) {
                 setForegroundColor(x + i, y + j, c);
@@ -127,7 +222,7 @@ public class CharacterImage {
         }
     }
     
-    public void fillBackgroundColorRectangle(int x, int y, int width, int height, int c) {
+    public void fillRectangleBackgroundColor(int x, int y, int width, int height, int c) {
         for (int j=0; j<height; j++) {
             for (int i=0; i<width; i++) {
                 setBackgroundColor(x + i, y + j, c);
@@ -135,193 +230,64 @@ public class CharacterImage {
         }
     }
     
-    public void drawString(String str, int x, int y) {
-        for (int i=0; i<str.length(); i++) {
-            setChar(x + i, y, str.charAt(i));
+    public void drawRectangle(int x, int y, int width, int height) {
+        if (width <= 1 || height <= 1) {
+            return;
+        }
+        
+        setChar(x, y, BoundingBoxUtils.addSingleDownRight(getChar(x, y)));
+        setChar(x + width - 1, y, BoundingBoxUtils.addSingleDownLeft(getChar(x + width - 1, y)));
+        setChar(x, y + height - 1, BoundingBoxUtils.addSingleUpRight(getChar(x, y + height - 1)));
+        setChar(x + width - 1, y + height - 1, BoundingBoxUtils.addSingleUpLeft(getChar(x + width - 1, y + height - 1)));
+        for (int i=1; i<width-1; i++) {
+            setChar(x + i, y, BoundingBoxUtils.addSingleHorizontal(getChar(x + i, y)));
+            setChar(x + i, y + height - 1, BoundingBoxUtils.addSingleHorizontal(getChar(x + i, y + height - 1)));
+        }
+        for (int i=1; i<height-1; i++) {
+            setChar(x, y + i, BoundingBoxUtils.addSingleVertical(getChar(x, y + i)));
+            setChar(x + width - 1, y + i, BoundingBoxUtils.addSingleVertical(getChar(x + width - 1, y + i)));
         }
     }
     
-    public void drawString(String str, int x, int y, int foregroundColor) {
-        for (int i=0; i<str.length(); i++) {
-            setChar(x + i, y, str.charAt(i));
-            setForegroundColor(x + i, y, foregroundColor);
-        }
+    public void drawRectangle(int x, int y, int width, int height, int foregroundColor) {
+        drawRectangle(x, y, width, height);
+        drawRectangleForegroundColor(x, y, width, height, foregroundColor);
     }
     
-    public void drawString(String str, int x, int y, int foregroundColor, int backgroundColor) {
-        for (int i=0; i<str.length(); i++) {
-            setChar(x + i, y, str.charAt(i));
-            setForegroundColor(x + i, y, foregroundColor);
-            setBackgroundColor(x + i, y, backgroundColor);
-        }
+    public void drawRectangle(int x, int y, int width, int height, int foregroundColor, int backgroundColor) {
+        drawRectangle(x, y, width, height);
+        drawRectangleColor(x, y, width, height, foregroundColor, backgroundColor);
     }
     
-    public int drawStringWrap(String str, int x, int y) {
-        for (int i=0; i<str.length(); i++) {
-            setChar(x, y, str.charAt(i));
-            x++;
-            if (x >= width) {
-                x = 0;
-                y++;
-            }
+    public void drawRectangleDouble(int x, int y, int width, int height) {
+        if (width <= 1 || height <= 1) {
+            return;
         }
-        return y;
+        
+        setChar(x, y, BoundingBoxUtils.addDoubleDownRight(getChar(x, y)));
+        setChar(x + width - 1, y, BoundingBoxUtils.addDoubleDownLeft(getChar(x + width - 1, y)));
+        setChar(x, y + height - 1, BoundingBoxUtils.addDoubleUpRight(getChar(x, y + height - 1)));
+        setChar(x + width - 1, y + height - 1, BoundingBoxUtils.addDoubleUpLeft(getChar(x + width - 1, y + height - 1)));
+        for (int i=1; i<width-1; i++) {
+            setChar(x + i, y, BoundingBoxUtils.addDoubleHorizontal(getChar(x + i, y)));
+            setChar(x + i, y + height - 1, BoundingBoxUtils.addDoubleHorizontal(getChar(x + i, y + height - 1)));
+        }
+        for (int i=1; i<height-1; i++) {
+            setChar(x, y + i, BoundingBoxUtils.addDoubleVertical(getChar(x, y + i)));
+            setChar(x + width - 1, y + i, BoundingBoxUtils.addDoubleVertical(getChar(x + width - 1, y + i)));
+        }
+    }
+    public void drawRectangleDouble(int x, int y, int width, int height, int foregroundColor) {
+        drawRectangleDouble(x, y, width, height);
+        drawRectangleForegroundColor(x, y, width, height, foregroundColor);
     }
     
-    public int drawStringSpaceWrap(String str, int x, int y) {
-        return drawStringSpaceWrapPad(str, x, y, 0, 0);
-    }
-    public int drawStringSpaceWrapPad(String str, int x, int y, int leftPad, int rightPad) {
-        String[] words = str.split(" ");
-        int n = 0;
-        for (String s : words) {
-            if (s.length() >= getWidth() - rightPad - leftPad) {
-                for (int i=0; i<s.length(); i++) {
-                    setChar(x, y, s.charAt(i));
-                    x++;
-                    if (x >= width - rightPad) {
-                        x = leftPad;
-                        y++;
-                    }
-                }
-                break;
-            }
-            if (s.length() + x >= width - rightPad) {
-                x = leftPad;
-                y++;
-            }
-            for (int i=0; i<s.length(); i++) {
-                setChar(x, y, s.charAt(i));
-                x++;
-            }
-            if (n < words.length - 1 && x < width - rightPad) {
-                setChar(x, y, ' ');
-            }
-            x++;
-            n++;
-        }
-        return y;
-    }
-    public int drawStringSpaceWrapPadStopAt(String str, int x, int y, int leftPad, int rightPad, int foregroundColor, int stop) {
-        String[] words = str.split(" ");
-        int ci = 0;
-        int n = 0;
-        for (String s : words) {
-            if (s.length() > getWidth() - rightPad - leftPad) {
-                for (int i=0; i<s.length(); i++) {
-                if (ci >= stop) {
-                    return y;
-                }
-                    setChar(x, y, s.charAt(i));
-                    setForegroundColor(x, y, foregroundColor);
-                    ci++;
-                    x++;
-                    if (x >= width - rightPad) {
-                        x = leftPad;
-                        y++;
-                    }
-                }
-                //break;
-                continue;
-            }
-            if (s.length() + x > width - rightPad) {
-                x = leftPad;
-                y++;
-            }
-            for (int i=0; i<s.length(); i++) {
-                if (ci >= stop) {
-                    return y;
-                }
-                setChar(x, y, s.charAt(i));
-                setForegroundColor(x, y, foregroundColor);
-                ci++;
-                x++;
-            }
-            if (n < words.length - 1) {
-                setChar(x, y, ' ');
-                setForegroundColor(x, y, foregroundColor);
-                ci++;
-            }
-            x++;
-            n++;
-        }
-        return y;
-    }
-    public int drawStringSpaceWrapPad(String str, int x, int y, int leftPad, int rightPad, int foregroundColor) {
-        String[] words = str.split(" ");
-        int n = 0;
-        for (String s : words) {
-            if (s.length() > getWidth() - rightPad - leftPad) {
-                for (int i=0; i<s.length(); i++) {
-                    setChar(x, y, s.charAt(i));
-                    setForegroundColor(x, y, foregroundColor);
-                    x++;
-                    if (x >= width - rightPad) {
-                        x = leftPad;
-                        y++;
-                    }
-                }
-                //break;
-                continue;
-            }
-            if (s.length() + x > width - rightPad) {
-                x = leftPad;
-                y++;
-            }
-            for (int i=0; i<s.length(); i++) {
-                setChar(x, y, s.charAt(i));
-                setForegroundColor(x, y, foregroundColor);
-                x++;
-            }
-            if (n < words.length - 1) {
-                setChar(x, y, ' ');
-                setForegroundColor(x, y, foregroundColor);
-            }
-            x++;
-            n++;
-        }
-        return y;
-    }
-    public int drawStringWrapPad(String str, int x, int y, int leftPad, int rightPad) {
-        for (int i=0; i<str.length(); i++) {
-            setChar(x, y, str.charAt(i));
-            x++;
-            if (x >= width - rightPad) {
-                x = leftPad;
-                y++;
-            }
-        }
-        return y;
+    public void drawRectangleDouble(int x, int y, int width, int height, int foregroundColor, int backgroundColor) {
+        drawRectangleDouble(x, y, width, height);
+        drawRectangleColor(x, y, width, height, foregroundColor, backgroundColor);
     }
     
-    public int drawStringWrap(String str, int x, int y, int foregroundColor) {
-        for (int i=0; i<str.length(); i++) {
-            setChar(x, y, str.charAt(i));
-            setForegroundColor(x + i, y, foregroundColor);
-            x++;
-            if (x >= width) {
-                x = 0;
-                y++;
-            }
-        }
-        return y;
-    }
-    
-    public int drawStringWrap(String str, int x, int y, int foregroundColor, int backgroundColor) {
-        for (int i=0; i<str.length(); i++) {
-            setChar(x, y, str.charAt(i));
-            setForegroundColor(x + i, y, foregroundColor);
-            setBackgroundColor(x + i, y, backgroundColor);
-            x++;
-            if (x >= width) {
-                x = 0;
-                y++;
-            }
-        }
-        return y;
-    }
-    
-    public void drawRectangle(int x, int y, int width, int height, char c) {
+    public void drawRectangleCustom(int x, int y, int width, int height, char c) {
         for (int i=0; i<width; i++) {
             setChar(x + i, y, c);
             setChar(x + i, y + height - 1, c);
@@ -331,8 +297,32 @@ public class CharacterImage {
             setChar(x + width - 1, y + i, c);
         }
     }
+    public void drawRectangleCustom(int x, int y, int width, int height, char c, int foregroundColor) {
+        drawRectangleCustom(x, y, width, height, c);
+        drawRectangleForegroundColor(x, y, width, height, foregroundColor);
+    }
     
-    public void drawForegroundColorRectangle(int x, int y, int width, int height, int c) {
+    public void drawRectangleCustom(int x, int y, int width, int height, char c, int foregroundColor, int backgroundColor) {
+        drawRectangleCustom(x, y, width, height, c);
+        drawRectangleColor(x, y, width, height, foregroundColor, backgroundColor);
+    }
+    
+    public void drawRectangleColor(int x, int y, int width, int height, int foregroundColor, int backgroundColor) {
+        for (int i=0; i<width; i++) {
+            setForegroundColor(x + i, y, foregroundColor);
+            setForegroundColor(x + i, y + height - 1, foregroundColor);
+            setBackgroundColor(x + i, y, foregroundColor);
+            setBackgroundColor(x + i, y + height - 1, foregroundColor);
+        }
+        for (int i=0; i<height; i++) {
+            setForegroundColor(x, y + i, foregroundColor);
+            setForegroundColor(x + width - 1, y + i, foregroundColor);
+            setBackgroundColor(x, y + i, foregroundColor);
+            setBackgroundColor(x + width - 1, y + i, foregroundColor);
+        }
+    }
+    
+    public void drawRectangleForegroundColor(int x, int y, int width, int height, int c) {
         for (int i=0; i<width; i++) {
             setForegroundColor(x + i, y, c);
             setForegroundColor(x + i, y + height - 1, c);
@@ -343,7 +333,7 @@ public class CharacterImage {
         }
     }
     
-    public void drawBackgroundColorRectangle(int x, int y, int width, int height, int c) {
+    public void drawRectangleBackgroundColor(int x, int y, int width, int height, int c) {
         for (int i=0; i<width; i++) {
             setBackgroundColor(x + i, y, c);
             setBackgroundColor(x + i, y + height - 1, c);
@@ -352,6 +342,48 @@ public class CharacterImage {
             setBackgroundColor(x, y + i, c);
             setBackgroundColor(x + width - 1, y + i, c);
         }
+    }
+    
+    public int drawString(String str, int x, int y) {
+        for (int i=0; i<str.length(); i++) {
+            if (str.charAt(i) == '\n') {
+                x = 0;
+                y++;
+                continue;
+            }
+            set(x + i, y, str.charAt(i));
+            
+        }
+        return y;
+    }
+    
+    public int drawString(String str, int x, int y, int foregroundColor) {
+        for (int i=0; i<str.length(); i++) {
+            if (str.charAt(i) == '\n') {
+                x = 0;
+                y++;
+                continue;
+            }
+            set(x + i, y, str.charAt(i), foregroundColor);
+            
+        }
+        return y;
+    }
+    
+    public int drawString(String str, int x, int y, int foregroundColor, int backgroundColor) {
+        for (int i=0; i<str.length(); i++) {
+            if (str.charAt(i) == '\n') {
+                x = 0;
+                y++;
+                continue;
+            }
+            set(x + i, y, str.charAt(i), foregroundColor, backgroundColor);
+        }
+        return y;
+    }
+    
+    public StringWriter createStringWriter() {
+        return new StringWriter(this, 0, 0, width, height);
     }
     
     public void paintBinaryImageBackground(int x, int y, BufferedImage image, int blackColor, int whiteColor, boolean doScaleWidth) {
@@ -383,43 +415,6 @@ public class CharacterImage {
         }
     }
     
-    public void drawRectangle(int x, int y, int width, int height) {
-        if (width <= 1 || height <= 1) {
-            return;
-        }
-        
-        setChar(x, y, BoundingBoxUtils.addSingleDownRight(getChar(x, y)));
-        setChar(x + width - 1, y, BoundingBoxUtils.addSingleDownLeft(getChar(x + width - 1, y)));
-        setChar(x, y + height - 1, BoundingBoxUtils.addSingleUpRight(getChar(x, y + height - 1)));
-        setChar(x + width - 1, y + height - 1, BoundingBoxUtils.addSingleUpLeft(getChar(x + width - 1, y + height - 1)));
-        for (int i=1; i<width-1; i++) {
-            setChar(x + i, y, BoundingBoxUtils.addSingleHorizontal(getChar(x + i, y)));
-            setChar(x + i, y + height - 1, BoundingBoxUtils.addSingleHorizontal(getChar(x + i, y + height - 1)));
-        }
-        for (int i=1; i<height-1; i++) {
-            setChar(x, y + i, BoundingBoxUtils.addSingleVertical(getChar(x, y + i)));
-            setChar(x + width - 1, y + i, BoundingBoxUtils.addSingleVertical(getChar(x + width - 1, y + i)));
-        }
-    }
-    
-    public void drawDoubleRectangle(int x, int y, int width, int height) {
-        if (width <= 1 || height <= 1) {
-            return;
-        }
-        
-        setChar(x, y, BoundingBoxUtils.addDoubleDownRight(getChar(x, y)));
-        setChar(x + width - 1, y, BoundingBoxUtils.addDoubleDownLeft(getChar(x + width - 1, y)));
-        setChar(x, y + height - 1, BoundingBoxUtils.addDoubleUpRight(getChar(x, y + height - 1)));
-        setChar(x + width - 1, y + height - 1, BoundingBoxUtils.addDoubleUpLeft(getChar(x + width - 1, y + height - 1)));
-        for (int i=1; i<width-1; i++) {
-            setChar(x + i, y, BoundingBoxUtils.addDoubleHorizontal(getChar(x + i, y)));
-            setChar(x + i, y + height - 1, BoundingBoxUtils.addDoubleHorizontal(getChar(x + i, y + height - 1)));
-        }
-        for (int i=1; i<height-1; i++) {
-            setChar(x, y + i, BoundingBoxUtils.addDoubleVertical(getChar(x, y + i)));
-            setChar(x + width - 1, y + i, BoundingBoxUtils.addDoubleVertical(getChar(x + width - 1, y + i)));
-        }
-    }
     
     
 }

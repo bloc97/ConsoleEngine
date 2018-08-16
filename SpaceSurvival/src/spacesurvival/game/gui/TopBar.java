@@ -3,19 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.characterpanels;
+package spacesurvival.game.gui;
 
 import java.awt.Color;
 import spacesurvival.SpaceSurvival;
 import spacesurvival.console.CharacterImage;
-import spacesurvival.console.CharacterPanel;
+import spacesurvival.console.BufferedConsoleLayer;
 import spacesurvival.logic.Colony;
 
 /**
  *
  * @author bowen
  */
-public class TopBar extends CharacterPanel {
+public class TopBar extends BufferedConsoleLayer {
     
     private String status = "Clear";
     

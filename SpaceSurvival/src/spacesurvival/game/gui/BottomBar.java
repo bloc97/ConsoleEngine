@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.characterpanels;
+package spacesurvival.game.gui;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -16,16 +16,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import spacesurvival.GamePanel;
 import spacesurvival.SpaceSurvival;
-import spacesurvival.characterpanels.sound.SoundEngine;
+import spacesurvival.console.sound.SoundEngine;
 import spacesurvival.console.CharacterImage;
-import spacesurvival.console.CharacterPanel;
+import spacesurvival.console.BufferedConsoleLayer;
 import spacesurvival.logic.Colony;
 
 /**
  *
  * @author bowen
  */
-public class BottomBar extends CharacterPanel implements Scrollable {
+public class BottomBar extends BufferedConsoleLayer implements Scrollable {
 
     private Color mainColor;
     
@@ -109,7 +109,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
             getCharacterImage().drawString("News", textPadding + textWidth / 2 - 2, newY);
             newY += 2;
             for (String s : cleanedText.split("\n")) {
-                newY = getCharacterImage().drawStringSpaceWrapPad(s, textPadding, newY, textPadding, textPadding) + 1;
+                newY = getCharacterImage().drawStringWrapWordPadded(s, textPadding, newY, textPadding, textPadding) + 1;
                 newY++;
             }
             getCharacterImage().drawString(horizontalLine, textPadding, newY);
@@ -125,7 +125,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
                 newY += 2;
 
                 for (String s : report) {
-                    newY = getCharacterImage().drawStringSpaceWrapPad(s, textPadding, newY, textPadding, textPadding) + 1;
+                    newY = getCharacterImage().drawStringWrapWordPadded(s, textPadding, newY, textPadding, textPadding) + 1;
                     newY++;
                 }
                 getCharacterImage().drawString(horizontalLine, textPadding, newY);
@@ -140,7 +140,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
                 newY += 2;
 
                 for (String s : objectives) {
-                    newY = getCharacterImage().drawStringSpaceWrapPad(s, textPadding, newY, textPadding, textPadding) + 1;
+                    newY = getCharacterImage().drawStringWrapWordPadded(s, textPadding, newY, textPadding, textPadding) + 1;
                     newY++;
                 }
                 getCharacterImage().drawString(horizontalLine, textPadding, newY);
@@ -152,7 +152,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
             maxY = newY + scroll;
             
             if (getScroll() > 0) {
-                getCharacterImage().fillRectangle(0, 0, getWidth(), 1, ' ');
+                getCharacterImage().fillRectangleChar(0, 0, getWidth(), 1, ' ');
                 //getCharacterImage().fillRectangle(textPadding, 0, textWidth, 1, '░');
                 if (isMouseOverTopArrow) {
                     getCharacterImage().drawString("▲", getWidth() / 2, 0, 0xFFAAFFAA);
@@ -161,7 +161,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
                 }
             }
             if (getScroll() < getMaxScroll()) {
-                getCharacterImage().fillRectangle(0, getHeight() - 1, getWidth(), 1, ' ');
+                getCharacterImage().fillRectangleChar(0, getHeight() - 1, getWidth(), 1, ' ');
                 //getCharacterImage().fillRectangle(textPadding, getHeight() - 1, textWidth, 1, '░');
                 if (isMouseOverBottomArrow) {
                     getCharacterImage().drawString("▼", getWidth() / 2, getHeight() - 1, 0xFFAAFFAA);
@@ -237,7 +237,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
         checkScroll();
         ex.submit(() -> {
             if (isMinimized) { //going to fullscreen
-                SoundEngine.playClip(SoundEngine.OPENBOOK);
+                SoundEngine.play(SoundEngine.OPENBOOK);
                 isMinimized = !isMinimized;
                 int currentY = lastHeight - 1;
                 onScreenDimensionChange(getWidth(), lastHeight, getWidth(), lastHeight);
@@ -251,7 +251,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
                     }
                 }
             } else {
-                SoundEngine.playClip(SoundEngine.CLOSEBOOK);
+                SoundEngine.play(SoundEngine.CLOSEBOOK);
                 int currentY = Background.TOP_PADDING;
                 while (currentY <= lastHeight - Background.BOTTOM_PADDING) {
                     setY(currentY);
@@ -396,7 +396,7 @@ public class BottomBar extends CharacterPanel implements Scrollable {
     }
 
     @Override
-    public void onFocusTick() {
+    public void onTick() {
         if (doScrollUp) {
             setScroll(getScroll() - 1);
         } else if (doScrollDown) {

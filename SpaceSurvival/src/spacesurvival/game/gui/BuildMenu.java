@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.characterpanels;
+package spacesurvival.game.gui;
 
 import java.awt.Color;
 import java.util.List;
 import java.util.Random;
 import spacesurvival.GamePanel;
-import static spacesurvival.characterpanels.ColonyBuildings.CARD_HEIGHT;
-import static spacesurvival.characterpanels.ColonyBuildings.CARD_WIDTH;
-import spacesurvival.characterpanels.sound.SoundEngine;
+import static spacesurvival.game.gui.ColonyBuildings.CARD_HEIGHT;
+import static spacesurvival.game.gui.ColonyBuildings.CARD_WIDTH;
+import spacesurvival.console.sound.SoundEngine;
 import spacesurvival.console.CharacterImage;
-import spacesurvival.console.CharacterPanel;
+import spacesurvival.console.BufferedConsoleLayer;
 import spacesurvival.logic.Building;
 import spacesurvival.logic.Colony;
 
@@ -21,7 +21,7 @@ import spacesurvival.logic.Colony;
  *
  * @author bowen
  */
-public class BuildMenu extends CharacterPanel implements Scrollable {
+public class BuildMenu extends BufferedConsoleLayer implements Scrollable {
     
     public static int CARD_WIDTH = 15;
     public static int CARD_HEIGHT = 9;
@@ -72,9 +72,9 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
         for (int i=0; i<availableBuildings.size(); i++) {
             Building b = availableBuildings.get(i);
             getCharacterImage().drawRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT);
-            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? b.getRGB(): b.getColor().darker().getRGB());//r.nextInt(0xFFFFFF) | 0xFF000000);
+            getCharacterImage().drawRectangleForegroundColor(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? b.getRGB(): b.getColor().darker().getRGB());//r.nextInt(0xFFFFFF) | 0xFF000000);
             
-            getCharacterImage().drawStringSpaceWrapPad(b.getName(), currentX + 1, currentY + 1, currentX + 1, currentX + 1);
+            getCharacterImage().drawStringWrapWordPadded(b.getName(), currentX + 1, currentY + 1, currentX + 1, currentX + 1);
             getCharacterImage().paintBinaryImageBackground(currentX + 1, currentY + 1, b.getIcon(), (i == selectedIndex) ? b.getColor().darker().getRGB() : b.getColor().darker().darker().getRGB(), mainColor.darker().getRGB(), CARD_WIDTH == 30);
             
             currentX += CARD_WIDTH;
@@ -192,7 +192,7 @@ public class BuildMenu extends CharacterPanel implements Scrollable {
         if (!hasDraggedScroll) {
             int size = Colony.INSTANCE.getAvailableBuildings().size();
             if (selectedIndex >= 0 && selectedIndex < size) {
-                SoundEngine.playClip(SoundEngine.BUILD);
+                SoundEngine.play(SoundEngine.BUILD);
                 Colony.INSTANCE.addBuilding(Colony.INSTANCE.getAvailableBuildings().get(selectedIndex).getCopy());
             }
             

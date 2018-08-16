@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.characterpanels;
+package spacesurvival.game.gui;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import spacesurvival.console.CharacterPanel;
+import spacesurvival.console.BufferedConsoleLayer;
 
 /**
  *
  * @author bowen
  */
-public abstract class ScrollBar extends CharacterPanel {
+public abstract class ScrollBar extends BufferedConsoleLayer {
     
     private Color mainColor;
     private int scroll, maxScroll;
@@ -29,7 +29,7 @@ public abstract class ScrollBar extends CharacterPanel {
     }
     
     void genImage() {
-        getCharacterImage().drawRectangle(0, 0, 1, getHeight(), '░');
+        getCharacterImage().drawRectangleCustom(0, 0, 1, getHeight(), '░');
         
         double barRatio = (double)(getHeight()) / (double)(getHeight() + maxScroll);
         int barHeight = (int)(getHeight() * barRatio);
@@ -40,13 +40,13 @@ public abstract class ScrollBar extends CharacterPanel {
         
         //System.out.println(barHeight);
         //System.out.println(barPos);
-        getCharacterImage().drawRectangle(0, barPos, 1, barHeight, '█');
-        getCharacterImage().fillForegroundColorRectangle(0, 0, getWidth(), getHeight(), mainColor.brighter().brighter().getRGB());
+        getCharacterImage().drawRectangleCustom(0, barPos, 1, barHeight, '█');
+        getCharacterImage().fillRectangleForegroundColor(0, 0, getWidth(), getHeight(), mainColor.brighter().brighter().getRGB());
         
         if (isMouseOver) {
-            getCharacterImage().fillForegroundColorRectangle(0, barPos, 1, barHeight, mainColor.brighter().getRGB());
+            getCharacterImage().fillRectangleForegroundColor(0, barPos, 1, barHeight, mainColor.brighter().getRGB());
         }
-        getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), getHeight(), mainColor.darker().getRGB());
+        getCharacterImage().fillRectangleBackgroundColor(0, 0, getWidth(), getHeight(), mainColor.darker().getRGB());
     }
     
     void setStatus(int scroll, int maxScroll) {

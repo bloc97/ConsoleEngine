@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.characterpanels;
+package spacesurvival.game.gui;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import static spacesurvival.characterpanels.ColonyBuildings.CARD_WIDTH;
+import static spacesurvival.game.gui.ColonyBuildings.CARD_WIDTH;
 import spacesurvival.console.CharacterImage;
-import spacesurvival.console.CharacterPanel;
+import spacesurvival.console.BufferedConsoleLayer;
 import spacesurvival.logic.Colony;
 import spacesurvival.logic.Event;
 import spacesurvival.logic.EventChoice;
@@ -18,7 +18,7 @@ import spacesurvival.logic.EventChoice;
  *
  * @author bowen
  */
-public class EventPopupOverlay extends CharacterPanel {
+public class EventPopupOverlay extends BufferedConsoleLayer {
     
     private Color mainColor;
     
@@ -67,7 +67,7 @@ public class EventPopupOverlay extends CharacterPanel {
         int yPad = (getHeight() - height) / 2;
         
         
-        getCharacterImage().fillRectangle(xPad, yPad, width, height, ' ');
+        getCharacterImage().fillRectangleChar(xPad, yPad, width, height, ' ');
         //getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, new Color(eventColor).brighter().brighter().getRGB());
         //getCharacterImage().fillBackgroundColorRectangle(xPad, yPad, width, height, new Color(eventColor).darker().getRGB());
         
@@ -76,11 +76,11 @@ public class EventPopupOverlay extends CharacterPanel {
         }
         
         if (event.useDefaultColor()) {
-            getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, mainColor.brighter().brighter().getRGB());
-            getCharacterImage().fillBackgroundColorRectangle(xPad, yPad, width, height, mainColor.darker().getRGB());
+            getCharacterImage().fillRectangleForegroundColor(xPad, yPad, width, height, mainColor.brighter().brighter().getRGB());
+            getCharacterImage().fillRectangleBackgroundColor(xPad, yPad, width, height, mainColor.darker().getRGB());
         } else {
-            getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, event.getColor());
-            getCharacterImage().fillBackgroundColorRectangle(xPad, yPad, width, height, event.getBackgroundColor());
+            getCharacterImage().fillRectangleForegroundColor(xPad, yPad, width, height, event.getColor());
+            getCharacterImage().fillRectangleBackgroundColor(xPad, yPad, width, height, event.getBackgroundColor());
         }
         
         
@@ -92,7 +92,7 @@ public class EventPopupOverlay extends CharacterPanel {
         
         int newY = yPad + 2;
         for (String s : eventDescriptionSeparated) {
-            newY = getCharacterImage().drawStringSpaceWrapPad(s, xPad + 2, newY, xPad + 2, getWidth() - width - xPad + 2) + 1;
+            newY = getCharacterImage().drawStringWrapWordPadded(s, xPad + 2, newY, xPad + 2, getWidth() - width - xPad + 2) + 1;
         }
         
         if (choices.length > 0) {
@@ -109,12 +109,12 @@ public class EventPopupOverlay extends CharacterPanel {
                 Color choiceColor = (event.getAvailableChoices().get(i).useDefaultColor()) ? new Color(defaultChoicesColor[i]) : new Color(event.getAvailableChoices().get(i).getColor());
 
                 if (boxSelected == i) {
-                    getCharacterImage().fillForegroundColorRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, choiceColor.getRGB());
+                    getCharacterImage().fillRectangleForegroundColor(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, choiceColor.getRGB());
                 } else {
-                    getCharacterImage().fillForegroundColorRectangle(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, choiceColor.darker().getRGB());
+                    getCharacterImage().fillRectangleForegroundColor(boxX, boxY, CARD_WIDTH, CARD_HEIGHT, choiceColor.darker().getRGB());
                 }
 
-                getCharacterImage().drawStringSpaceWrapPad(choices[i], boxX + 1, boxY + 1, boxX + 1, getWidth() - boxX - CARD_WIDTH + 1);
+                getCharacterImage().drawStringWrapWordPadded(choices[i], boxX + 1, boxY + 1, boxX + 1, getWidth() - boxX - CARD_WIDTH + 1);
             }
         }
         

@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.characterpanels;
+package spacesurvival.game.gui;
 
 import java.awt.Color;
 import spacesurvival.console.CharacterImage;
-import spacesurvival.console.CharacterPanel;
+import spacesurvival.console.BufferedConsoleLayer;
 
 /**
  *
  * @author bowen
  */
-public class Background extends CharacterPanel {
+public class Background extends BufferedConsoleLayer {
     
     public static final int TOP_PADDING = 1;
     public static final int BOTTOM_PADDING = 1;
@@ -55,11 +55,11 @@ public class Background extends CharacterPanel {
         getCharacterImage().drawString("Settlement", XLINE + ((getWidth() - XLINE)/2 - 5), TOP_PADDING);
         //getCharacterImage().drawRectangle(xLine, yLine, getWidth()-xLine, getHeight()-yLine-1);
         //getCharacterImage().drawRectangle(getWidth() - 1, topPadding + 1, 1, heightPad - 2, '░');
-        getCharacterImage().fillForegroundColorRectangle(0, 0, getWidth(), getHeight(), colorPalette.brighter().brighter().getRGB());
+        getCharacterImage().fillRectangleForegroundColor(0, 0, getWidth(), getHeight(), colorPalette.brighter().brighter().getRGB());
         //getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), getHeight(), 0xFFF5EFD2);
-        getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), getHeight(), colorPalette.darker().getRGB());
-        getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), TOP_PADDING, mainColor.getRGB());
-        getCharacterImage().fillBackgroundColorRectangle(0, getHeight()-BOTTOM_PADDING, getWidth(), BOTTOM_PADDING, mainColor.getRGB());
+        getCharacterImage().fillRectangleBackgroundColor(0, 0, getWidth(), getHeight(), colorPalette.darker().getRGB());
+        getCharacterImage().fillRectangleBackgroundColor(0, 0, getWidth(), TOP_PADDING, mainColor.getRGB());
+        getCharacterImage().fillRectangleBackgroundColor(0, getHeight()-BOTTOM_PADDING, getWidth(), BOTTOM_PADDING, mainColor.getRGB());
     }
     
 }

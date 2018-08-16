@@ -46,11 +46,19 @@ import spacesurvival.console.ConsoleLayer;
  *
  * @author bowen
  */
-public class GamePanel extends JPanel {
+public class GamePanel1 extends JPanel {
+    
     
     private final ConsoleScreen screen;
+    
     final File[] fonts;
     int fontIndex = 0;
+    
+    
+    public static final String TEST_STRING_CHAR = "█ ▓ ▒▒░░▐▌▌▐ ▀▄ -- __ ── ╔╣ ┌┤";
+    public static final String TEST_STRING_TEXT = "A quick brown fox jumps over the lazy test dog";
+    
+    private final Random random = new Random(42);
     
     
     public static final Color mainColor = new Color(120, 146, 190);
@@ -69,7 +77,7 @@ public class GamePanel extends JPanel {
     ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     ScheduledExecutorService ex2 = Executors.newSingleThreadScheduledExecutor();
     
-    public GamePanel() {
+    public GamePanel1() {
         /*
         File fontFolder = new File("resources/fonts/VGA");
         fonts = fontFolder.listFiles((pathname) -> {

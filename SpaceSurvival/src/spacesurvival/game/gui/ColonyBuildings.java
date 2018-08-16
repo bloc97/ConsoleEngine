@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.characterpanels;
+package spacesurvival.game.gui;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Random;
 import spacesurvival.GamePanel;
-import spacesurvival.characterpanels.sound.SoundEngine;
+import spacesurvival.console.sound.SoundEngine;
 import spacesurvival.console.CharacterImage;
-import spacesurvival.console.CharacterPanel;
+import spacesurvival.console.BufferedConsoleLayer;
 import spacesurvival.logic.Building;
 import spacesurvival.logic.Colony;
 
@@ -20,7 +20,7 @@ import spacesurvival.logic.Colony;
  *
  * @author bowen
  */
-public class ColonyBuildings extends CharacterPanel implements Scrollable {
+public class ColonyBuildings extends BufferedConsoleLayer implements Scrollable {
 
     public static int CARD_WIDTH = 12;
     public static int CARD_HEIGHT = 9;
@@ -81,7 +81,7 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
             Building b = allBuildings.get(i);
             getCharacterImage().drawStringSpaceWrapPad(b.getName(), currentX + 1, currentY + 1, currentX + 1, getWidth() - (currentX + CARD_WIDTH) + 1, (b.isBuilt()) ? 0xFFEEEEEE : 0xFF888888);
             Color frameColor = b.isBuilt() ? b.getColor() : b.getColor().brighter().brighter().brighter().brighter().darker();
-            getCharacterImage().drawForegroundColorRectangle(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? frameColor.getRGB() : frameColor.darker().getRGB());//r.nextInt(0xFFFFFF) | 0xFF000000);
+            getCharacterImage().drawRectangleForegroundColor(currentX, currentY, CARD_WIDTH, CARD_HEIGHT, (i == selectedIndex) ? frameColor.getRGB() : frameColor.darker().getRGB());//r.nextInt(0xFFFFFF) | 0xFF000000);
             
             if (b.isBuilt()) {
                 getCharacterImage().paintBinaryImageBackground(currentX + 1, currentY + 1, b.getIcon(), (i == selectedIndex) ? b.getColor().darker().getRGB() : b.getColor().darker().darker().getRGB(), mainColor.darker().getRGB(), CARD_WIDTH == 24);
@@ -230,7 +230,7 @@ public class ColonyBuildings extends CharacterPanel implements Scrollable {
                 GamePanel.dayEndOverlay.show();
             } else if (selectedIndex >= 0 && selectedIndex < buildingsNum) {
                 if (Colony.INSTANCE.cancelBuilding(Colony.INSTANCE.getAllBuildings().get(selectedIndex))) {
-                    SoundEngine.playClip(SoundEngine.CANCEL);
+                    SoundEngine.play(SoundEngine.CANCEL);
                 }
             }
             genImage();

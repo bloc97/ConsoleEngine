@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.characterpanels;
+package spacesurvival.game.gui;
 
 import java.awt.Color;
 import spacesurvival.console.CharacterImage;
-import spacesurvival.console.CharacterPanel;
+import spacesurvival.console.BufferedConsoleLayer;
 
 /**
  *
  * @author bowen
  */
-public class BottomInfoBar extends CharacterPanel {
+public class BottomInfoBar extends BufferedConsoleLayer {
 
     private Color mainColor;
     private String infoString = "";
@@ -40,7 +40,7 @@ public class BottomInfoBar extends CharacterPanel {
     
     public void show(String string) {
         infoString = string;
-        int finalY = getCharacterImage().drawStringSpaceWrapPad(infoString, 0, 0, 0, 0) + 1;
+        int finalY = getCharacterImage().drawStringWrapWordPadded(infoString, 0, 0, 0, 0) + 1;
         setX(0);
         setY(getY() + (textHeight - finalY));
         textHeight = finalY;
