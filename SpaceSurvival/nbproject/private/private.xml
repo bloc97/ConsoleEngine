@@ -3,15 +3,19 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/console/ConsoleLayer.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/console/CharacterImage.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/logic/EventChoice.java</file>
             <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/console/utils/Graphics2DUtils.java</file>
             <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/console/ConsoleFont.java</file>
             <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/console/sound/SoundEngine.java</file>
             <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/console/BufferedConsoleLayer.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/characterpanels/EventPopupOverlay.java</file>
             <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/console/ConsoleScreen.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/console/StringWriter.java</file>
             <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/console/utils/BoundingBoxUtils.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/logic/Event.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/console/ConsoleLayer.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/console/CharacterImage.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/SpaceSurvival.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/GamePanel.java</file>
         </group>
     </open-files>
 </project-private>

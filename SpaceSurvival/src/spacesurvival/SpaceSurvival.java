@@ -5,9 +5,14 @@
  */
 package spacesurvival;
 
+import java.awt.Color;
+import spacesurvival.gui.GameScreen;
+import spacesurvival.engine.console.ConsoleJPanel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import spacesurvival.engine.console.ConsoleLayer;
+import spacesurvival.gui.layers.Background;
 import spacesurvival.logic.Event;
 
 /**
@@ -16,6 +21,11 @@ import spacesurvival.logic.Event;
  */
 public class SpaceSurvival {
 
+    public static final Color MAINCOLOR = new Color(120, 146, 190);
+    
+    public static final GameScreen GAMESCREEN = new GameScreen();
+    
+    public static final ConsoleLayer BACKGROUNDLAYER = new Background(MAINCOLOR);
     
     /**
      * @param args the command line arguments
@@ -24,13 +34,10 @@ public class SpaceSurvival {
         SwingUtilities.invokeLater(() -> {
             createAndShowGUI();
         });
-        //System.out.println((int)'─');
-        //System.out.println((int)'░');
-
-        //<editor-fold defaultstate="collapsed" desc="Test Section">
-        //Logic logic = new Logic();
-//</editor-fold>
-
+        
+        GAMESCREEN.addCharacterPanel(-1000, BACKGROUNDLAYER);
+        
+        
         Event.initAllEvents();
     }
 
@@ -38,17 +45,18 @@ public class SpaceSurvival {
         //System.out.println("Created GUI on EDT? "+
         //SwingUtilities.isEventDispatchThread());
         JFrame frame = new JFrame("The Unfortunate Story of Hans");
-        JPanel panel = new GamePanel();
+        JPanel panel = new ConsoleJPanel(GAMESCREEN, 40, 30, 30);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel);
         frame.pack();
         frame.setVisible(true);
-
+        
+        /*
         panel.setFocusable(true);
         panel.requestFocus();
         panel.requestFocusInWindow();
-        panel.setFocusTraversalKeysEnabled(false);
+        panel.setFocusTraversalKeysEnabled(false);*/
 
     }
 }

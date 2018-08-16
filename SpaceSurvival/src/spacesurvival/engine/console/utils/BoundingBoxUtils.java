@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.console.utils;
+package spacesurvival.engine.console.utils;
 
 /**
  *

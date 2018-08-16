@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.game.gui;
+package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import spacesurvival.GamePanel;
-import static spacesurvival.GamePanel.dayEndOverlay;
-import spacesurvival.console.CharacterImage;
-import spacesurvival.console.BufferedConsoleLayer;
+import spacesurvival.engine.console.ConsoleJPanel;
+import static spacesurvival.engine.console.ConsoleJPanel.dayEndOverlay;
+import spacesurvival.engine.console.CharacterImage;
+import spacesurvival.engine.console.BufferedConsoleLayer;
 import spacesurvival.logic.Event;
 import spacesurvival.logic.EventChoice;
 
@@ -153,7 +153,7 @@ public class TextCutscene extends BufferedConsoleLayer {
             Event thisEvent = new Event("Chicken Nuggets", "Look for chicken nuggets for our good captain?", -1, (t) -> {
             }, yes, no);
             thisEvent.setColor(0xFFEEEEEE, 0xFF302040);
-            GamePanel.eventPopup.show(thisEvent);
+            ConsoleJPanel.eventPopup.show(thisEvent);
             return;
         }
         

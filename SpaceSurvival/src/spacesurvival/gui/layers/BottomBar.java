@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.game.gui;
+package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -14,11 +14,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import spacesurvival.GamePanel;
+import spacesurvival.engine.console.ConsoleJPanel;
 import spacesurvival.SpaceSurvival;
-import spacesurvival.console.sound.SoundEngine;
-import spacesurvival.console.CharacterImage;
-import spacesurvival.console.BufferedConsoleLayer;
+import spacesurvival.engine.sound.SoundEngine;
+import spacesurvival.engine.console.CharacterImage;
+import spacesurvival.engine.console.BufferedConsoleLayer;
 import spacesurvival.logic.Colony;
 
 /**
@@ -173,7 +173,7 @@ public class BottomBar extends BufferedConsoleLayer implements Scrollable {
     }
     
     public void tickPos() {
-        if (GamePanel.eventPopup.isVisible() || GamePanel.cutscene.isVisible() || GamePanel.dayEndOverlay.isVisible()) {
+        if (ConsoleJPanel.eventPopup.isVisible() || ConsoleJPanel.cutscene.isVisible() || ConsoleJPanel.dayEndOverlay.isVisible()) {
             return;
         }
         pos--;
@@ -407,7 +407,7 @@ public class BottomBar extends BufferedConsoleLayer implements Scrollable {
 
     @Override
     public void onGlobalKeyReleased(KeyEvent e) {
-        if (GamePanel.eventPopup.isVisible() || GamePanel.cutscene.isVisible() || GamePanel.dayEndOverlay.isVisible()) {
+        if (ConsoleJPanel.eventPopup.isVisible() || ConsoleJPanel.cutscene.isVisible() || ConsoleJPanel.dayEndOverlay.isVisible()) {
             return;
         }
         if (e.getKeyCode() == KeyEvent.VK_Q) {

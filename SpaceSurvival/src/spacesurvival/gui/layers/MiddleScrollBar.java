@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.game.gui;
+package spacesurvival.gui.layers;
 
 import java.awt.Color;
-import spacesurvival.console.CharacterImage;
+import spacesurvival.engine.console.CharacterImage;
 
 /**
  *
@@ -16,14 +16,14 @@ public class MiddleScrollBar extends ScrollBar {
     
     
     public MiddleScrollBar(int consoleWidth, int consoleHeight, Color mainColor, Scrollable scrollablePanel) {
-        super(Background.XLINE - 1, Background.TOP_PADDING + 1, 1, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2, mainColor, scrollablePanel);
+        super(Background.xline - 1, Background.TOP_PADDING + 1, 1, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2, mainColor, scrollablePanel);
         genImage();
     }
 
     @Override
     public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
         this.setCharacterImage(new CharacterImage(1, newHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2));
-        setX(Background.XLINE - 1);
+        setX(Background.xline - 1);
         genImage();
     }
     

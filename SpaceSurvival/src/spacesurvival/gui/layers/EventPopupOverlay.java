@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.game.gui;
+package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import static spacesurvival.game.gui.ColonyBuildings.CARD_WIDTH;
-import spacesurvival.console.CharacterImage;
-import spacesurvival.console.BufferedConsoleLayer;
+import static spacesurvival.gui.layers.ColonyBuildings.CARD_WIDTH;
+import spacesurvival.engine.console.CharacterImage;
+import spacesurvival.engine.console.BufferedConsoleLayer;
 import spacesurvival.logic.Colony;
 import spacesurvival.logic.Event;
 import spacesurvival.logic.EventChoice;

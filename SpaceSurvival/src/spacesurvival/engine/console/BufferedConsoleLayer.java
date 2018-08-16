@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.console;
+package spacesurvival.engine.console;
 
 /**
  *
@@ -14,7 +14,7 @@ public abstract class BufferedConsoleLayer extends ConsoleLayer {
     private CharacterImage characterImage;
     
     public BufferedConsoleLayer(int x, int y, int width, int height) {
-        this(x, y, width, height, false, true);
+        this(x, y, width, height, true);
     }
     public BufferedConsoleLayer(int x, int y, int width, int height, boolean isVisible) {
         this(x, y, width, height, false, isVisible);

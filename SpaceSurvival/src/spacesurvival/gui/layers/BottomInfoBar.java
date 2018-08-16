@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.game.gui;
+package spacesurvival.gui.layers;
 
 import java.awt.Color;
-import spacesurvival.console.CharacterImage;
-import spacesurvival.console.BufferedConsoleLayer;
+import spacesurvival.engine.console.CharacterImage;
+import spacesurvival.engine.console.BufferedConsoleLayer;
 
 /**
  *

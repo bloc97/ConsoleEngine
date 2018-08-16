@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.game.gui;
+package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.util.List;
-import spacesurvival.GamePanel;
+import spacesurvival.engine.console.ConsoleJPanel;
 import spacesurvival.SpaceSurvival;
-import spacesurvival.console.CharacterImage;
-import spacesurvival.console.BufferedConsoleLayer;
+import spacesurvival.engine.console.CharacterImage;
+import spacesurvival.engine.console.BufferedConsoleLayer;
 import spacesurvival.logic.Colony;
 import spacesurvival.logic.Event;
 
@@ -299,7 +299,7 @@ public class DayEndPopupOverlay extends BufferedConsoleLayer {
         }
         isYesSelected = false;
         isNoSelected = false;
-        GamePanel.infoBar.hide();
+        ConsoleJPanel.infoBar.hide();
         genImage();
     }
 
@@ -336,21 +336,21 @@ public class DayEndPopupOverlay extends BufferedConsoleLayer {
     
     public void nextDay() {
         Colony.INSTANCE.nextDay();
-        GamePanel.topBar.genImage();
-        GamePanel.bottomBar.setScroll(0);
-        GamePanel.bottomBar.maximize();
+        ConsoleJPanel.topBar.genImage();
+        ConsoleJPanel.bottomBar.setScroll(0);
+        ConsoleJPanel.bottomBar.maximize();
         
         List<Event> eventList = Colony.INSTANCE.getListTodayEvent();
         
         for (Event event : eventList) {
-            GamePanel.eventPopup.show(event);
+            ConsoleJPanel.eventPopup.show(event);
             break;
         }
         
         
-        GamePanel.buildMenu.genImage();
-        GamePanel.bottomBar.genImage();
-        GamePanel.colonyBuildings.genImage();
+        ConsoleJPanel.buildMenu.genImage();
+        ConsoleJPanel.bottomBar.genImage();
+        ConsoleJPanel.colonyBuildings.genImage();
     }
     
     public void hide() {
@@ -366,7 +366,7 @@ public class DayEndPopupOverlay extends BufferedConsoleLayer {
     
     @Override
     public void onGlobalKeyReleased(KeyEvent e) {
-        if (GamePanel.cutscene.isVisible() || GamePanel.eventPopup.isVisible() || !GamePanel.bottomBar.isMinimized()) {
+        if (ConsoleJPanel.cutscene.isVisible() || ConsoleJPanel.eventPopup.isVisible() || !ConsoleJPanel.bottomBar.isMinimized()) {
             return;
         } else if (e.getKeyCode() == KeyEvent.VK_E) {
             if (isVisible()) {

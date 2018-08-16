@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.console;
+package spacesurvival.engine.console;
 
 import java.awt.event.KeyEvent;
 
@@ -124,7 +124,7 @@ public abstract class ConsoleLayer {
     public boolean onMouseReleased(int x, int y, boolean isLeftClick) {
         return false;
     }
-    public boolean onMouseWheelMoved(int i) {
+    public boolean onMouseWheelMoved(int x, int y, int i) {
         return false;
     }
     

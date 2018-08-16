@@ -5,9 +5,9 @@
  */
 package spacesurvival;
 
-import spacesurvival.game.gui.Background;
-import spacesurvival.console.ConsoleFont;
-import spacesurvival.console.CharacterImage;
+import spacesurvival.gui.layers.Background;
+import spacesurvival.engine.console.ConsoleFont;
+import spacesurvival.engine.console.CharacterImage;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -27,20 +27,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JPanel;
-import spacesurvival.game.gui.BottomBar;
-import spacesurvival.game.gui.BottomInfoBar;
-import spacesurvival.game.gui.BuildMenu;
-import spacesurvival.game.gui.ColonyBuildings;
-import spacesurvival.game.gui.DayEndPopupOverlay;
-import spacesurvival.game.gui.EventPopupOverlay;
-import spacesurvival.game.gui.MiddleScrollBar;
-import spacesurvival.game.gui.RightScrollBar;
-import spacesurvival.game.gui.TextCutscene;
-import spacesurvival.game.gui.TopBar;
-import spacesurvival.console.ConsoleLayer;
-import spacesurvival.console.ConsoleScreen;
+import spacesurvival.gui.layers.BottomBar;
+import spacesurvival.gui.layers.BottomInfoBar;
+import spacesurvival.gui.layers.BuildMenu;
+import spacesurvival.gui.layers.ColonyBuildings;
+import spacesurvival.gui.layers.DayEndPopupOverlay;
+import spacesurvival.gui.layers.EventPopupOverlay;
+import spacesurvival.gui.layers.MiddleScrollBar;
+import spacesurvival.gui.layers.RightScrollBar;
+import spacesurvival.gui.layers.TextCutscene;
+import spacesurvival.gui.layers.TopBar;
+import spacesurvival.engine.console.ConsoleLayer;
+import spacesurvival.engine.console.ConsoleScreen;
 import spacesurvival.logic.Colony;
-import spacesurvival.console.ConsoleLayer;
+import spacesurvival.engine.console.ConsoleLayer;
 
 /**
  *
@@ -203,7 +203,7 @@ public class GamePanel1 extends JPanel {
             public void mouseMoved(MouseEvent e) {
                 Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
                 
-                ConsoleLayer newFocusedPanel = screen.getPanel(mouseConsolePoint.x, mouseConsolePoint.y);
+                ConsoleLayer newFocusedPanel = screen.getVisibleLayerAt(mouseConsolePoint.x, mouseConsolePoint.y);
                 
                 if (newFocusedPanel != focusedPanel) {
                     if (focusedPanel != null) {
@@ -233,7 +233,7 @@ public class GamePanel1 extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
-                focusedPanel = screen.getPanel(mouseConsolePoint.x, mouseConsolePoint.y);
+                focusedPanel = screen.getVisibleLayerAt(mouseConsolePoint.x, mouseConsolePoint.y);
                 
                 if (focusedPanel != null) {
                     focusedPanel.onMouseClicked(mouseConsolePoint.x - focusedPanel.getX(), mouseConsolePoint.y - focusedPanel.getY(), e.getButton() == 1);
@@ -243,7 +243,7 @@ public class GamePanel1 extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
-                focusedPanel = screen.getPanel(mouseConsolePoint.x, mouseConsolePoint.y);
+                focusedPanel = screen.getVisibleLayerAt(mouseConsolePoint.x, mouseConsolePoint.y);
                 
                 if (focusedPanel != null) {
                     focusedPanel.onMousePressed(mouseConsolePoint.x - focusedPanel.getX(), mouseConsolePoint.y - focusedPanel.getY(), e.getButton() == 1);

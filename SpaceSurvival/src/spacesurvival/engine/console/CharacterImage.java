@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.console;
+package spacesurvival.engine.console;
 
-import spacesurvival.console.utils.BoundingBoxUtils;
+import spacesurvival.engine.console.utils.BoundingBoxUtils;
 import java.awt.image.BufferedImage;
 
 /**
@@ -386,33 +386,41 @@ public class CharacterImage {
         return new StringWriter(this, 0, 0, width, height);
     }
     
-    public void paintBinaryImageBackground(int x, int y, BufferedImage image, int blackColor, int whiteColor, boolean doScaleWidth) {
+    public void paintImageBackground(int x, int y, BufferedImage image) {
+        paintImageBackground(x, y, image, 1);
+    }
+    @Deprecated
+    public void paintImageBackground(int x, int y, BufferedImage image, boolean doubleWidth) {
+        paintImageBackground(x, y, image, doubleWidth ? 2 : 1);
+    }
+    public void paintImageBackground(int x, int y, BufferedImage image, int scaleWidth) {
         
-        if (doScaleWidth) {
-            
-            for (int j=0; j<image.getHeight(); j++) {
-                for (int i=0; i<image.getWidth()*2; i++) {
-                    if (image.getRGB(i/2, j) == 0xFF000000) {
-                        setBackgroundColor(i + x, j + y, blackColor);
-                    } else {
-                        setBackgroundColor(i + x, j + y, whiteColor);
-                    }
-                }
+        for (int j=0; j<image.getHeight(); j++) {
+            for (int i=0; i<image.getWidth()*scaleWidth; i++) {
+                setBackgroundColor(i + x, j + y, image.getRGB(i/scaleWidth, j));
             }
-            
-        } else {
-        
-            for (int j=0; j<image.getHeight(); j++) {
-                for (int i=0; i<image.getWidth(); i++) {
-                    if (image.getRGB(i, j) == 0xFF000000) {
-                        setBackgroundColor(i + x, j + y, blackColor);
-                    } else {
-                        setBackgroundColor(i + x, j + y, whiteColor);
-                    }
-                }
-            }
-
         }
+    }
+    
+    public void paintBinaryImageBackground(int x, int y, BufferedImage image, int blackColor, int whiteColor) {
+        paintBinaryImageBackground(x, y, image, blackColor, whiteColor, 1);
+    }
+    
+    @Deprecated
+    public void paintBinaryImageBackground(int x, int y, BufferedImage image, int blackColor, int whiteColor, boolean doScaleWidth) {
+        paintBinaryImageBackground(x, y, image, blackColor, whiteColor, doScaleWidth ? 2 : 1);
+    }
+    
+    public void paintBinaryImageBackground(int x, int y, BufferedImage image, int blackColor, int whiteColor, int scaleWidth) {
+        for (int j=0; j<image.getHeight(); j++) {
+            for (int i=0; i<image.getWidth()*scaleWidth; i++) {
+                if (image.getRGB(i/scaleWidth, j) == 0xFF000000) {
+                    setBackgroundColor(i + x, j + y, blackColor);
+                } else {
+                    setBackgroundColor(i + x, j + y, whiteColor);
+                }
+            }
+        } 
     }
     
     

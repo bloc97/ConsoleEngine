@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.game.gui;
+package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Random;
-import spacesurvival.GamePanel;
-import spacesurvival.console.sound.SoundEngine;
-import spacesurvival.console.CharacterImage;
-import spacesurvival.console.BufferedConsoleLayer;
+import spacesurvival.engine.console.ConsoleJPanel;
+import spacesurvival.engine.sound.SoundEngine;
+import spacesurvival.engine.console.CharacterImage;
+import spacesurvival.engine.console.BufferedConsoleLayer;
 import spacesurvival.logic.Building;
 import spacesurvival.logic.Colony;
 
@@ -34,7 +34,7 @@ public class ColonyBuildings extends BufferedConsoleLayer implements Scrollable 
     
     
     public ColonyBuildings(int consoleWidth, int consoleHeight, Color mainColor) {
-        super(Background.XLINE + 1, Background.TOP_PADDING + 1, consoleWidth - Background.XLINE - 2, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2);
+        super(Background.xline + 1, Background.TOP_PADDING + 1, consoleWidth - Background.xline - 2, consoleHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2);
         this.mainColor = mainColor;
         this.scrollBar = new RightScrollBar(consoleWidth, consoleHeight, mainColor, this);
         this.scrollBar.setStatus(scroll, getMaxScroll());
@@ -42,8 +42,8 @@ public class ColonyBuildings extends BufferedConsoleLayer implements Scrollable 
     
     @Override
     public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
-        setCharacterImage(new CharacterImage(newWidth - Background.XLINE - 2, newHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2));
-        setX(Background.XLINE + 1);
+        setCharacterImage(new CharacterImage(newWidth - Background.xline - 2, newHeight - Background.TOP_PADDING - Background.BOTTOM_PADDING - 2));
+        setX(Background.xline + 1);
         genImage();
     }
     
@@ -198,19 +198,19 @@ public class ColonyBuildings extends BufferedConsoleLayer implements Scrollable 
             List<Building> allBuildings = Colony.INSTANCE.getAllBuildings();
             
             if (selectedIndex >= 0 && selectedIndex < allBuildings.size()) {
-                GamePanel.infoBar.show(allBuildings.get(selectedIndex).getDescription());
+                ConsoleJPanel.infoBar.show(allBuildings.get(selectedIndex).getDescription());
             } else if (selectedIndex == allBuildings.size()) {
                 //GamePanel.infoBar.show("Ends the current day.");
                 selectedIndex = -1;
-                GamePanel.infoBar.hide();
+                ConsoleJPanel.infoBar.hide();
             } else {
                 selectedIndex = -1;
-                GamePanel.infoBar.hide();
+                ConsoleJPanel.infoBar.hide();
             }
             
         } else {
             selectedIndex = -1;
-            GamePanel.infoBar.hide();
+            ConsoleJPanel.infoBar.hide();
         }
         genImage();
     }
@@ -218,7 +218,7 @@ public class ColonyBuildings extends BufferedConsoleLayer implements Scrollable 
     @Override
     public void onMouseExited(int x, int y) {
         selectedIndex = -1;
-        GamePanel.infoBar.hide();
+        ConsoleJPanel.infoBar.hide();
         genImage();
     }
     
@@ -227,7 +227,7 @@ public class ColonyBuildings extends BufferedConsoleLayer implements Scrollable 
         int buildingsNum = Colony.INSTANCE.getAllBuildings().size();
         if (!hasDraggedScroll) {
             if (selectedIndex == 0) {
-                GamePanel.dayEndOverlay.show();
+                ConsoleJPanel.dayEndOverlay.show();
             } else if (selectedIndex >= 0 && selectedIndex < buildingsNum) {
                 if (Colony.INSTANCE.cancelBuilding(Colony.INSTANCE.getAllBuildings().get(selectedIndex))) {
                     SoundEngine.play(SoundEngine.CANCEL);
