@@ -5,11 +5,9 @@
  */
 package spacesurvival.engine.console;
 
-import spacesurvival.gui.layers.Background;
-import spacesurvival.engine.console.ConsoleFont;
-import spacesurvival.engine.console.CharacterImage;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -21,26 +19,13 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
-import spacesurvival.gui.layers.BottomBar;
-import spacesurvival.gui.layers.BottomInfoBar;
-import spacesurvival.gui.layers.BuildMenu;
-import spacesurvival.gui.layers.ColonyBuildings;
-import spacesurvival.gui.layers.DayEndPopupOverlay;
-import spacesurvival.gui.layers.EventPopupOverlay;
-import spacesurvival.gui.layers.MiddleScrollBar;
-import spacesurvival.gui.layers.RightScrollBar;
-import spacesurvival.gui.layers.TextCutscene;
-import spacesurvival.gui.layers.TopBar;
-import spacesurvival.engine.console.ConsoleComponent;
 import spacesurvival.engine.console.ConsoleScreen;
-import spacesurvival.logic.Colony;
-import spacesurvival.engine.console.ConsoleComponent;
+import spacesurvival.engine.console.utils.Graphics2DUtils;
 
 /**
  *
@@ -50,12 +35,13 @@ public final class ConsoleJPanel extends JPanel {
     
     private final ConsoleScreen screen;
     
-    private int preferredConsoleWidth;
-    private int preferredConsoleHeight;
+    private int consoleMinimumWidth;
+    private int consoleMinimumHeight;
     
     ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     
-    public ConsoleJPanel(ConsoleScreen consoleScreen, int minWidth, int minHeight, int milisecondsPerFrame) {
+    
+    public ConsoleJPanel(JFrame frame, ConsoleScreen consoleScreen, int minWidth, int minHeight, int milisecondsPerFrame) {
         setBackground(Color.BLACK);
         setFocusable(true);
         requestFocus();
@@ -63,22 +49,54 @@ public final class ConsoleJPanel extends JPanel {
         setFocusTraversalKeysEnabled(false);
         
         this.screen = consoleScreen;
-        this.preferredConsoleWidth = minWidth;
-        this.preferredConsoleHeight = minHeight;
+        this.consoleMinimumWidth = minWidth;
+        this.consoleMinimumHeight = minHeight;
         
         this.addKeyListener(new KeyAdapter() {
+            private boolean isFullScreen = false;
+            private int lastX = 10;
+            private int lastY = 10;
+            private int lastWidth = 100;
+            private int lastHeight = 100;
             @Override
             public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_F11 || (e.getKeyCode() == KeyEvent.VK_ENTER && e.isAltDown())) {
+                    return;
+                }
                 screen.onKeyPressedEvent(e);
             }
 
             @Override
             public void keyReleased(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_F11 || (e.getKeyCode() == KeyEvent.VK_ENTER && e.isAltDown())) {
+                    if (!isFullScreen) {
+                        lastWidth = (frame.getWidth());
+                        lastHeight = (frame.getHeight());
+                        lastX = frame.getX();
+                        lastY = frame.getY();
+                        frame.dispose();
+                        frame.setUndecorated(true);
+                        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+                        frame.setVisible(true);
+                    } else {
+                        frame.dispose();
+                        frame.setUndecorated(false);
+                        frame.setExtendedState(Frame.NORMAL);
+                        frame.setSize((lastWidth), (lastHeight));
+                        frame.setLocation(lastX, lastY);
+                        frame.setVisible(true);
+                    }
+                    isFullScreen = !isFullScreen;
+                    return;
+                }
                 screen.onKeyReleasedEvent(e);
             }
 
             @Override
             public void keyTyped(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_F11 || (e.getKeyCode() == KeyEvent.VK_ENTER && e.isAltDown())) {
+                    return;
+                }
                 screen.onKeyTypedEvent(e);
             }
             
@@ -147,7 +165,7 @@ public final class ConsoleJPanel extends JPanel {
         int consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / customScale;
         int consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight() / customScale;
 
-        while (consoleWidth < preferredConsoleWidth || consoleHeight < preferredConsoleHeight) {
+        while (consoleWidth < consoleMinimumWidth || consoleHeight < consoleMinimumHeight) {
             customScale--;
             if (customScale <= 0) {
                 customScale = 1;
@@ -207,11 +225,31 @@ public final class ConsoleJPanel extends JPanel {
         int consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / customScale;
         int consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight() / customScale;
         
-        while (consoleWidth < preferredConsoleWidth || consoleHeight < preferredConsoleHeight) {
+        while (consoleWidth < consoleMinimumWidth || consoleHeight < consoleMinimumHeight) {
             customScale--;
             if (customScale <= 0) {
                 customScale = 1;
-                break;
+                
+                String error = "Resolution too small.";
+                
+                while ((customScale + 1) * screen.getConsoleFont().getWidth() * error.length() < getWidth()) {
+                    customScale++;
+                }
+                
+                consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / customScale;
+                consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight() / customScale;
+                
+                
+                final int eX = consoleWidth / 2 - error.length() / 2;
+                final int eY = consoleHeight / 2;
+                
+                g2.scale(customScale, customScale);
+                
+                for (int i=0; i<error.length(); i++) {
+                    Graphics2DUtils.drawConsoleChar(g2, eX + i, eY, error.charAt(i), Color.WHITE, Color.BLACK, screen.getConsoleFont());
+                }
+                
+                return;
             }
             consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / customScale;
             consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight() / customScale;

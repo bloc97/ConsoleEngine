@@ -6,9 +6,13 @@
 package spacesurvival;
 
 import java.awt.Color;
+import java.awt.Frame;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javax.swing.ImageIcon;
 import spacesurvival.gui.GameScreen;
 import spacesurvival.engine.console.ConsoleJPanel;
 import javax.swing.JFrame;
@@ -80,12 +84,14 @@ public class SpaceSurvival {
         //System.out.println("Created GUI on EDT? "+
         //SwingUtilities.isEventDispatchThread());
         JFrame frame = new JFrame("The Unfortunate Story of Hans");
-        JPanel panel = new ConsoleJPanel(GAMESCREEN, 40, 30, 10);
+        JPanel panel = new ConsoleJPanel(frame, GAMESCREEN, 60, 30, 10);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel);
         frame.pack();
         frame.setVisible(true);
+        frame.setIconImage(new ImageIcon("resources/icon.png").getImage());
+        
         
         /*
         panel.setFocusable(true);
