@@ -12,7 +12,7 @@ import java.util.Random;
 import spacesurvival.engine.console.ConsoleJPanel;
 import spacesurvival.engine.sound.SoundEngine;
 import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleLayer;
+import spacesurvival.engine.console.BufferedConsoleComponent;
 import spacesurvival.logic.Building;
 import spacesurvival.logic.Colony;
 
@@ -20,7 +20,7 @@ import spacesurvival.logic.Colony;
  *
  * @author bowen
  */
-public class ColonyBuildings extends BufferedConsoleLayer implements Scrollable {
+public class ColonyBuildings extends BufferedConsoleComponent implements Scrollable {
 
     public static int CARD_WIDTH = 12;
     public static int CARD_HEIGHT = 9;

@@ -8,7 +8,7 @@ package spacesurvival.gui.layers;
 import java.awt.Color;
 import spacesurvival.SpaceSurvival;
 import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleLayer;
+import spacesurvival.engine.console.BufferedConsoleComponent;
 import spacesurvival.gui.GameLayer;
 import spacesurvival.logic.Colony;
 
@@ -31,7 +31,7 @@ public class TopBar extends GameLayer {
     }
 
     @Override
-    public boolean onPrePaint(boolean isEntered, boolean isFocused) {
+    public boolean onPrePaintTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
         getCharacterImage().clear();
         final String daysString = "Day " + Colony.INSTANCE.getDay();
         
@@ -66,6 +66,8 @@ public class TopBar extends GameLayer {
         //getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), getHeight(), 0xFFF5EFD2);
         return true;
     }
+
+    
     
     
     

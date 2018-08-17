@@ -7,13 +7,13 @@ package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleLayer;
+import spacesurvival.engine.console.BufferedConsoleComponent;
 
 /**
  *
  * @author bowen
  */
-public class BottomInfoBar extends BufferedConsoleLayer {
+public class BottomInfoBar extends BufferedConsoleComponent {
 
     private Color mainColor;
     private String infoString = "";

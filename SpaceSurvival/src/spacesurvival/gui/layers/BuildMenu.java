@@ -13,7 +13,7 @@ import static spacesurvival.gui.layers.ColonyBuildings.CARD_HEIGHT;
 import static spacesurvival.gui.layers.ColonyBuildings.CARD_WIDTH;
 import spacesurvival.engine.sound.SoundEngine;
 import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleLayer;
+import spacesurvival.engine.console.BufferedConsoleComponent;
 import spacesurvival.logic.Building;
 import spacesurvival.logic.Colony;
 
@@ -21,7 +21,7 @@ import spacesurvival.logic.Colony;
  *
  * @author bowen
  */
-public class BuildMenu extends BufferedConsoleLayer implements Scrollable {
+public class BuildMenu extends BufferedConsoleComponent implements Scrollable {
     
     public static int CARD_WIDTH = 15;
     public static int CARD_HEIGHT = 9;

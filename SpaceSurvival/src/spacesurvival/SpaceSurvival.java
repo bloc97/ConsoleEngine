@@ -14,11 +14,12 @@ import spacesurvival.engine.console.ConsoleJPanel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import spacesurvival.engine.console.ConsoleLayer;
+import spacesurvival.engine.console.ConsoleComponent;
 import spacesurvival.gui.layers.Background;
 import spacesurvival.gui.layers.BottomBar;
 import spacesurvival.gui.layers.DayEndPopupOverlay;
 import spacesurvival.gui.layers.EventPopupOverlay;
+import spacesurvival.gui.layers.ReportPage;
 import spacesurvival.gui.layers.TextCutscene;
 import spacesurvival.gui.layers.TopBar;
 import spacesurvival.logic.Event;
@@ -38,6 +39,7 @@ public class SpaceSurvival {
     public static final Background BACKGROUNDLAYER = new Background(MAINCOLOR);
     public static final TopBar TOPBAR = new TopBar();
     public static final BottomBar BOTTOMBAR = new BottomBar(MAINCOLOR);
+    public static final ReportPage REPORTPAGE = new ReportPage(MAINCOLOR);
     public static final TextCutscene TEXTCUTSCENE = new TextCutscene(MAINCOLOR);
     public static final EventPopupOverlay EVENTPOPUP = new EventPopupOverlay(MAINCOLOR);
     
@@ -51,20 +53,21 @@ public class SpaceSurvival {
             createAndShowGUI();
         });
         
-        GAMESCREEN.addCharacterPanel(-1000, BACKGROUNDLAYER);
+        GAMESCREEN.addComponent(-1000, BACKGROUNDLAYER);
         
-        GAMESCREEN.addCharacterPanel(10, TOPBAR);
-        GAMESCREEN.addCharacterPanel(11, BOTTOMBAR);
+        GAMESCREEN.addComponent(10, TOPBAR);
+        GAMESCREEN.addComponent(11, BOTTOMBAR);
+        GAMESCREEN.addComponent(20, REPORTPAGE);
         
-        GAMESCREEN.addCharacterPanel(100, TEXTCUTSCENE);
-        GAMESCREEN.addCharacterPanel(900, DAYENDPOPUP);
-        GAMESCREEN.addCharacterPanel(1000, EVENTPOPUP);
+        GAMESCREEN.addComponent(100, TEXTCUTSCENE);
+        GAMESCREEN.addComponent(900, DAYENDPOPUP);
+        GAMESCREEN.addComponent(1000, EVENTPOPUP);
         
         ex.scheduleWithFixedDelay(() -> {
             TEXTCUTSCENE.tickHorizontalAnimation();
         }, 0, 8, TimeUnit.MILLISECONDS);
         ex.scheduleWithFixedDelay(() -> {
-            BOTTOMBAR.tickVerticalAnimation();
+            REPORTPAGE.tickVerticalAnimation();
         }, 0, 10, TimeUnit.MILLISECONDS);
         ex.scheduleWithFixedDelay(() -> {
             BOTTOMBAR.tickHorizontalAnimation();

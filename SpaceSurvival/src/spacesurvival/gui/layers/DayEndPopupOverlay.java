@@ -12,7 +12,7 @@ import java.util.List;
 import spacesurvival.engine.console.ConsoleJPanel;
 import spacesurvival.SpaceSurvival;
 import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleLayer;
+import spacesurvival.engine.console.BufferedConsoleComponent;
 import spacesurvival.gui.GameLayer;
 import spacesurvival.logic.Colony;
 import spacesurvival.logic.Event;
@@ -29,6 +29,7 @@ public class DayEndPopupOverlay extends GameLayer {
     public DayEndPopupOverlay(Color mainColor) {
         super();
         hide();
+        disable();
         this.mainColor = mainColor;
         this.setOverrideMode(true);
         genImage();
@@ -247,8 +248,9 @@ public class DayEndPopupOverlay extends GameLayer {
     private boolean isYesSelected = false;
     private boolean isNoSelected = false;
 
+
     @Override
-    public boolean onMouseMoved(int x, int y) {
+    public boolean onMouseMoved(int x, int y, boolean isEntered, boolean isFocused) {
         
         int width = getWidth() * 3 / 5;
         int height = getHeight() * 3 / 5;
@@ -267,20 +269,20 @@ public class DayEndPopupOverlay extends GameLayer {
                 isNoSelected = true;
             }
         }
-        genImage();
+        
         return true;
     }
 
     @Override
-    public boolean onMouseExited(int x, int y) {
+    public boolean onMouseExited(int x, int y, boolean isFocused) {
         isYesSelected = false;
         isNoSelected = false;
-        genImage();
+        
         return true;
     }
 
     @Override
-    public boolean onMouseEntered(int x, int y) {
+    public boolean onMouseEntered(int x, int y, boolean isFocused) {
         isYesSelected = false;
         isNoSelected = false;
         genImage();
@@ -288,31 +290,38 @@ public class DayEndPopupOverlay extends GameLayer {
     }
     
     @Override
-    public boolean onMousePressed(int x, int y, boolean isLeftClick) {
-        if (isNoSelected) {
-            hide();
+    public boolean onMousePressed(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
+        if (isEntered) {
+            if (isNoSelected) {
+                hide();
+                disable();
+            }
+            if (isYesSelected) {
+                nextDay();
+                hide();
+                disable();
+            }
+            isYesSelected = false;
+            isNoSelected = false;
+            //ConsoleJPanel.infoBar.hide();
+
+            return true;
         }
-        if (isYesSelected) {
-            nextDay();
-            hide();
-        }
-        isYesSelected = false;
-        isNoSelected = false;
-        //ConsoleJPanel.infoBar.hide();
-        genImage();
-        return true;
+        return false;
     }
 
     @Override
-    public boolean onKeyPressed(KeyEvent e) {
+    public boolean onKeyPressed(KeyEvent e, boolean isEntered, boolean isFocused) {
         if (!isVisible()) {
             return false;
         }
         if (e.getKeyCode() == KeyEvent.VK_Y) {
             nextDay();
             hide();
+            disable();
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE || e.getKeyCode() == KeyEvent.VK_SPACE || e.getKeyCode() == KeyEvent.VK_N) {
             hide();
+            disable();
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             isYesSelected = true;
             isNoSelected = false;
@@ -320,7 +329,7 @@ public class DayEndPopupOverlay extends GameLayer {
             isYesSelected = false;
             isNoSelected = true;
         } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            onMousePressed(0, 0, true);
+            onMousePressed(0, 0, true, isEntered, isFocused);
         } else if (e.getKeyCode() == KeyEvent.VK_TAB) {
             if (isYesSelected == isNoSelected) {
                 isYesSelected = false;
@@ -330,13 +339,15 @@ public class DayEndPopupOverlay extends GameLayer {
                 isNoSelected = !isNoSelected;
             }
         }
-        genImage();
+        
         return true;
     }
     
     
     public void nextDay() {
         Colony.INSTANCE.nextDay();
+        SpaceSurvival.REPORTPAGE.setScroll(0);
+        SpaceSurvival.REPORTPAGE.maximize();
         /*
         ConsoleJPanel.topBar.genImage();
         ConsoleJPanel.bottomBar.setScroll(0);
@@ -374,6 +385,15 @@ public class DayEndPopupOverlay extends GameLayer {
         return false;
     }
     */
+
+    @Override
+    public boolean onPrePaintTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
+        if (isVisible()) {
+            genImage();
+            return true;
+        }
+        return false;
+    }
     
     
 }

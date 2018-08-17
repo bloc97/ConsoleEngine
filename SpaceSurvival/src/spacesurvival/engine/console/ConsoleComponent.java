@@ -11,22 +11,22 @@ import java.awt.event.KeyEvent;
  *
  * @author bowen
  */
-public abstract class ConsoleLayer {
+public abstract class ConsoleComponent {
     
     private int x, y;
     private boolean overrideMode;
     private boolean isVisible, isEnabled;
 
-    public ConsoleLayer(int x, int y) {
+    public ConsoleComponent(int x, int y) {
         this(x, y, true);
     }
-    public ConsoleLayer(int x, int y, boolean isVisible) {
+    public ConsoleComponent(int x, int y, boolean isVisible) {
         this(x, y, isVisible, isVisible);
     }
-    public ConsoleLayer(int x, int y, boolean isVisible, boolean isEnabled) {
+    public ConsoleComponent(int x, int y, boolean isVisible, boolean isEnabled) {
         this(x, y, false, isVisible, isEnabled);
     }
-    public ConsoleLayer(int x, int y, boolean overrideMode, boolean isVisible, boolean isEnabled) {
+    public ConsoleComponent(int x, int y, boolean overrideMode, boolean isVisible, boolean isEnabled) {
         this.x = x;
         this.y = y;
         this.overrideMode = overrideMode;
@@ -123,6 +123,7 @@ public abstract class ConsoleLayer {
         return false;
     }
     
+    
     public boolean onFocus(boolean isEntered) {
         return false;
     }
@@ -166,16 +167,17 @@ public abstract class ConsoleLayer {
         return false;
     }
     
-    public boolean onTick(boolean isEntered, boolean isFocused) {
+    public boolean onTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
         return false;
     }
-    public boolean onPrePaint(boolean isEntered, boolean isFocused) {
+    public boolean onPrePaintTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
         return false;
     }
-    public boolean onPaint(boolean isEntered, boolean isFocused) {
+    public boolean onPaintTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
         return false;
     }
-    public boolean onPostPaint(boolean isEntered, boolean isFocused) {
+    public boolean onPostPaintTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
         return false;
     }
+    
 }

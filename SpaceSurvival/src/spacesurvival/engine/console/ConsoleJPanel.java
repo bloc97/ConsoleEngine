@@ -37,10 +37,10 @@ import spacesurvival.gui.layers.MiddleScrollBar;
 import spacesurvival.gui.layers.RightScrollBar;
 import spacesurvival.gui.layers.TextCutscene;
 import spacesurvival.gui.layers.TopBar;
-import spacesurvival.engine.console.ConsoleLayer;
+import spacesurvival.engine.console.ConsoleComponent;
 import spacesurvival.engine.console.ConsoleScreen;
 import spacesurvival.logic.Colony;
-import spacesurvival.engine.console.ConsoleLayer;
+import spacesurvival.engine.console.ConsoleComponent;
 
 /**
  *

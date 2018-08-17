@@ -179,7 +179,7 @@ public class TextCutscene extends GameLayer {
             dayEndOverlay.nextDay();
             **/
             Colony.INSTANCE.nextDay();
-            SpaceSurvival.BOTTOMBAR.maximize();
+            SpaceSurvival.REPORTPAGE.maximize();
             
             hide();
             disable();
@@ -192,8 +192,11 @@ public class TextCutscene extends GameLayer {
 
     @Override
     public boolean onMousePressed(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
-        nextLine();
-        return true;
+        if (isEntered) {
+            nextLine();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -210,7 +213,7 @@ public class TextCutscene extends GameLayer {
     }
 
     @Override
-    public boolean onPrePaint(boolean isEntered, boolean isFocused) {
+    public boolean onPrePaintTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
         genImage();
         return true;
     }

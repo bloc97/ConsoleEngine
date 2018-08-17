@@ -9,31 +9,31 @@ package spacesurvival.engine.console;
  *
  * @author bowen
  */
-public abstract class BufferedConsoleLayer extends ConsoleLayer {
+public abstract class BufferedConsoleComponent extends ConsoleComponent {
     
     private CharacterImage characterImage;
 
-    public BufferedConsoleLayer(int width, int height) {
+    public BufferedConsoleComponent(int width, int height) {
         super(0, 0);
         this.characterImage = new CharacterImage(width, height);
     }
     
-    public BufferedConsoleLayer(int x, int y, int width, int height) {
+    public BufferedConsoleComponent(int x, int y, int width, int height) {
         super(x, y);
         this.characterImage = new CharacterImage(width, height);
     }
 
-    public BufferedConsoleLayer(int x, int y, int width, int height, boolean isVisible) {
+    public BufferedConsoleComponent(int x, int y, int width, int height, boolean isVisible) {
         super(x, y, isVisible);
         this.characterImage = new CharacterImage(width, height);
     }
 
-    public BufferedConsoleLayer(int x, int y, int width, int height, boolean isVisible, boolean isEnabled) {
+    public BufferedConsoleComponent(int x, int y, int width, int height, boolean isVisible, boolean isEnabled) {
         super(x, y, isVisible, isEnabled);
         this.characterImage = new CharacterImage(width, height);
     }
 
-    public BufferedConsoleLayer(int x, int y, int width, int height, boolean overrideMode, boolean isVisible, boolean isEnabled) {
+    public BufferedConsoleComponent(int x, int y, int width, int height, boolean overrideMode, boolean isVisible, boolean isEnabled) {
         super(x, y, overrideMode, isVisible, isEnabled);
         this.characterImage = new CharacterImage(width, height);
     }

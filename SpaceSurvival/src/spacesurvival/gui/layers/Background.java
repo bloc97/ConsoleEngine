@@ -25,7 +25,7 @@ public class Background extends GameLayer {
     }
     
     @Override
-    public boolean onPrePaint(boolean isEntered, boolean isFocused) {
+    public boolean onPrePaintTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
         final Color colorPalette = mainColor;
         
         final int heightPad = getHeight() - (TOP_PADDING + BOTTOM_PADDING);

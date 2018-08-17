@@ -11,7 +11,7 @@ import spacesurvival.engine.console.*;
  *
  * @author bowen
  */
-public abstract class GameLayer extends BufferedConsoleLayer {
+public abstract class GameLayer extends BufferedConsoleComponent {
 
     public GameLayer() {
         this(GameScreen.DEFAULT_SIZE, GameScreen.DEFAULT_SIZE);

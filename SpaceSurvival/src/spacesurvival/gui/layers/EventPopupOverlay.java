@@ -10,7 +10,7 @@ import java.awt.event.KeyEvent;
 import spacesurvival.SpaceSurvival;
 import static spacesurvival.gui.layers.ColonyBuildings.CARD_WIDTH;
 import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleLayer;
+import spacesurvival.engine.console.BufferedConsoleComponent;
 import spacesurvival.engine.console.StringWriter;
 import spacesurvival.gui.GameLayer;
 import static spacesurvival.gui.layers.TextCutscene.cutscene;
@@ -124,6 +124,7 @@ public class EventPopupOverlay extends GameLayer {
     
     private int lastX, lastY;
 
+    
     @Override
     public boolean onMouseMoved(int x, int y, boolean isEntered, boolean isFocused) {
         
@@ -169,16 +170,19 @@ public class EventPopupOverlay extends GameLayer {
 
     @Override
     public boolean onMousePressed(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
-        if (boxSelected != -1) {
-            
-            if (event != null) {
-                event.resolveEvent(boxSelected, Colony.INSTANCE);
+        if (isEntered) {
+            if (boxSelected != -1) {
+
+                if (event != null) {
+                    event.resolveEvent(boxSelected, Colony.INSTANCE);
+                }
+                hide();
+                disable();
             }
-            hide();
-            disable();
+            boxSelected = -1;
+            return true;
         }
-        boxSelected = -1;
-        return true;
+        return false;
     }
     
     
@@ -243,8 +247,9 @@ public class EventPopupOverlay extends GameLayer {
     }
 
     @Override
-    public boolean onPrePaint(boolean isEntered, boolean isFocused) {
+    public boolean onPrePaintTick(int x, int y, boolean isEntered, boolean isFocused) {
         if (isVisible()) {
+            onMouseMoved(x, y, isEntered, isFocused);
             genImage();
         }
         return true;
