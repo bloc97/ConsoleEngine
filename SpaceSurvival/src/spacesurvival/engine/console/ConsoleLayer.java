@@ -15,19 +15,23 @@ public abstract class ConsoleLayer {
     
     private int x, y;
     private boolean overrideMode;
-    private boolean isVisible;
+    private boolean isVisible, isEnabled;
 
     public ConsoleLayer(int x, int y) {
-        this(x, y, false, true);
+        this(x, y, true);
     }
     public ConsoleLayer(int x, int y, boolean isVisible) {
-        this(x, y, false, isVisible);
+        this(x, y, isVisible, isVisible);
     }
-    public ConsoleLayer(int x, int y, boolean overrideMode, boolean isVisible) {
+    public ConsoleLayer(int x, int y, boolean isVisible, boolean isEnabled) {
+        this(x, y, false, isVisible, isEnabled);
+    }
+    public ConsoleLayer(int x, int y, boolean overrideMode, boolean isVisible, boolean isEnabled) {
         this.x = x;
         this.y = y;
         this.overrideMode = overrideMode;
         this.isVisible = isVisible;
+        this.isEnabled = isEnabled;
     }
 
     public abstract int getWidth();
@@ -67,20 +71,36 @@ public abstract class ConsoleLayer {
         this.overrideMode = overrideMode;
     }
 
+    public final boolean isEnabled() {
+        return isEnabled;
+    }
+    
+    public final void toggleEnabled() {
+        isEnabled = !isEnabled;
+    }
+    
+    public final boolean enable() {
+        if (isEnabled) {
+            return false;
+        }
+        isEnabled = true;
+        return true;
+    }
+    
+    public final boolean disable() {
+        if (isEnabled) {
+            isEnabled = false;
+            return true;
+        }
+        return false;
+    }
+    
     public final boolean isVisible() {
         return isVisible;
     }
     
     public final void toggleVisible() {
         isVisible = !isVisible;
-    }
-    
-    public final boolean hide() {
-        if (isVisible) {
-            isVisible = false;
-            return true;
-        }
-        return false;
     }
     
     public final boolean show() {
@@ -91,63 +111,71 @@ public abstract class ConsoleLayer {
         return true;
     }
     
+    public final boolean hide() {
+        if (isVisible) {
+            isVisible = false;
+            return true;
+        }
+        return false;
+    }
+    
     public boolean onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
         return false;
     }
     
-    public boolean onFocus() {
+    public boolean onFocus(boolean isEntered) {
         return false;
     }
-    public boolean onUnfocus() {
-        return false;
-    }
-    
-    public boolean onMouseEntered(int x, int y) {
-        return false;
-    }
-    public boolean onMouseExited(int x, int y) {
+    public boolean onUnfocus(boolean isEntered) {
         return false;
     }
     
-    public boolean onMouseMoved(int x, int y) {
+    public boolean onMouseEntered(int x, int y, boolean isFocused) {
         return false;
     }
-    public boolean onMouseDragged(int x, int y, boolean isLeftClick) {
-        return false;
-    }
-    public boolean onMouseClicked(int x, int y, boolean isLeftClick) {
-        return false;
-    }
-    public boolean onMousePressed(int x, int y, boolean isLeftClick) {
-        return false;
-    }
-    public boolean onMouseReleased(int x, int y, boolean isLeftClick) {
-        return false;
-    }
-    public boolean onMouseWheelMoved(int x, int y, int i) {
+    public boolean onMouseExited(int x, int y, boolean isFocused) {
         return false;
     }
     
-    public boolean onKeyPressed(KeyEvent e) {
+    public boolean onMouseMoved(int x, int y, boolean isEntered, boolean isFocused) {
         return false;
     }
-    public boolean onKeyReleased(KeyEvent e) {
+    public boolean onMouseDragged(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
         return false;
     }
-    public boolean onKeyTyped(KeyEvent e) {
+    public boolean onMouseClicked(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
+        return false;
+    }
+    public boolean onMousePressed(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
+        return false;
+    }
+    public boolean onMouseReleased(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
+        return false;
+    }
+    public boolean onMouseWheelMoved(int x, int y, int i, boolean isEntered, boolean isFocused) {
         return false;
     }
     
-    public boolean onTick() {
+    public boolean onKeyPressed(KeyEvent e, boolean isEntered, boolean isFocused) {
         return false;
     }
-    public boolean onPrePaint() {
+    public boolean onKeyReleased(KeyEvent e, boolean isEntered, boolean isFocused) {
         return false;
     }
-    public boolean onPaint() {
+    public boolean onKeyTyped(KeyEvent e, boolean isEntered, boolean isFocused) {
         return false;
     }
-    public boolean onPostPaint() {
+    
+    public boolean onTick(boolean isEntered, boolean isFocused) {
+        return false;
+    }
+    public boolean onPrePaint(boolean isEntered, boolean isFocused) {
+        return false;
+    }
+    public boolean onPaint(boolean isEntered, boolean isFocused) {
+        return false;
+    }
+    public boolean onPostPaint(boolean isEntered, boolean isFocused) {
         return false;
     }
 }

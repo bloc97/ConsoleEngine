@@ -106,6 +106,10 @@ public class ConsoleScreen {
         List<Integer> backgroundColorList = new ArrayList<>();
         
         for (ConsoleLayer panel : panels) {
+            if (!panel.isVisible()) {
+                continue;
+            }
+            
             final CharacterImage characterImage = panel.getCharacterImage();
             final int relX = x - panel.getX();
             final int relY = y - panel.getY();
@@ -176,10 +180,10 @@ public class ConsoleScreen {
         
         if (focusedLayer != lastFocusedLayer) {
             if (lastFocusedLayer != null) {
-                lastFocusedLayer.onUnfocus();
+                lastFocusedLayer.onUnfocus(lastFocusedLayer == enteredLayer);
             }
             if (focusedLayer != null) {
-                focusedLayer.onFocus();
+                focusedLayer.onFocus(focusedLayer == enteredLayer);
             }
         }
     }
@@ -189,87 +193,109 @@ public class ConsoleScreen {
         
         if (enteredLayer != lastEnteredLayer) {
             if (lastEnteredLayer != null) {
-                lastEnteredLayer.onMouseExited(x, y);
+                lastEnteredLayer.onMouseExited(x, y, lastEnteredLayer == focusedLayer);
             }
             if (enteredLayer != null) {
-                enteredLayer.onMouseEntered(x, y);
+                enteredLayer.onMouseEntered(x, y, enteredLayer == focusedLayer);
             }
         }
     }
     
+    private int lastMouseX, lastMouseY;
+    
     public final boolean onMouseMovedEvent(int x, int y) {
+        lastMouseX = x;
+        lastMouseY = y;
         if (onMouseMoved(x, y)) {
             return true;
         }
         updateEnter(x, y);
-        return characterPanelMap.descendingMap().values().stream().anyMatch((layer) -> (layer.onMouseMoved(x - layer.getX(), y - layer.getY())));
+        return characterPanelMap.descendingMap().values().stream().filter((t) -> {return t.isEnabled();}).anyMatch((layer) -> (layer.onMouseMoved(x - layer.getX(), y - layer.getY(), layer == enteredLayer, layer == focusedLayer)));
     }
     public final boolean onMouseDraggedEvent(int x, int y, boolean isLeftClick) {
+        lastMouseX = x;
+        lastMouseY = y;
         if (onMouseDragged(x, y, isLeftClick)) {
             return true;
         }
         updateEnter(x, y);
-        return characterPanelMap.descendingMap().values().stream().anyMatch((layer) -> (layer.onMouseDragged(x - layer.getX(), y - layer.getY(), isLeftClick)));
+        return characterPanelMap.descendingMap().values().stream().filter((t) -> {return t.isEnabled();}).anyMatch((layer) -> (layer.onMouseDragged(x - layer.getX(), y - layer.getY(), isLeftClick, layer == enteredLayer, layer == focusedLayer)));
     }
     public final boolean onMouseClickedEvent(int x, int y, boolean isLeftClick) {
+        lastMouseX = x;
+        lastMouseY = y;
         if (onMouseClicked(x, y, isLeftClick)) {
             return true;
         }
-        return characterPanelMap.descendingMap().values().stream().anyMatch((layer) -> (layer.onMouseClicked(x - layer.getX(), y - layer.getY(), isLeftClick)));
+        return characterPanelMap.descendingMap().values().stream().filter((t) -> {return t.isEnabled();}).anyMatch((layer) -> (layer.onMouseClicked(x - layer.getX(), y - layer.getY(), isLeftClick, layer == enteredLayer, layer == focusedLayer)));
     }
     public final boolean onMousePressedEvent(int x, int y, boolean isLeftClick) {
+        lastMouseX = x;
+        lastMouseY = y;
         if (onMousePressed(x, y, isLeftClick)) {
             return true;
         }
         updateFocus(x, y);
-        return characterPanelMap.descendingMap().values().stream().anyMatch((layer) -> (layer.onMousePressed(x - layer.getX(), y - layer.getY(), isLeftClick)));
+        updateEnter(x, y);
+        return characterPanelMap.descendingMap().values().stream().filter((t) -> {return t.isEnabled();}).anyMatch((layer) -> (layer.onMousePressed(x - layer.getX(), y - layer.getY(), isLeftClick, layer == enteredLayer, layer == focusedLayer)));
     }
     public final boolean onMouseReleasedEvent(int x, int y, boolean isLeftClick) {
+        lastMouseX = x;
+        lastMouseY = y;
         if (onMouseReleased(x, y, isLeftClick)) {
             return true;
         }
         updateEnter(x, y);
-        return characterPanelMap.descendingMap().values().stream().anyMatch((layer) -> (layer.onMouseReleased(x - layer.getX(), y - layer.getY(), isLeftClick)));
+        return characterPanelMap.descendingMap().values().stream().filter((t) -> {return t.isEnabled();}).anyMatch((layer) -> (layer.onMouseReleased(x - layer.getX(), y - layer.getY(), isLeftClick, layer == enteredLayer, layer == focusedLayer)));
     }
     public final boolean onMouseWheelMovedEvent(int x, int y, int i) {
-        if (onMouseWheelMovedEvent(x, y, i)) {
+        lastMouseX = x;
+        lastMouseY = y;
+        if (onMouseWheelMoved(x, y, i)) {
             return true;
         }
-        return characterPanelMap.descendingMap().values().stream().anyMatch((layer) -> (layer.onMouseWheelMoved(x - layer.getX(), y - layer.getY(), i)));
+        updateEnter(x, y);
+        return characterPanelMap.descendingMap().values().stream().filter((t) -> {return t.isEnabled();}).anyMatch((layer) -> (layer.onMouseWheelMoved(x - layer.getX(), y - layer.getY(), i, layer == enteredLayer, layer == focusedLayer)));
     }
     
     public final boolean onKeyPressedEvent(KeyEvent e) {
         if (onKeyPressed(e)) {
             return true;
         }
-        return characterPanelMap.descendingMap().values().stream().anyMatch((layer) -> (layer.onKeyPressed(e)));
+        return characterPanelMap.descendingMap().values().stream().filter((t) -> {return t.isEnabled();}).anyMatch((layer) -> (layer.onKeyPressed(e, layer == enteredLayer, layer == focusedLayer)));
     }
     public final boolean onKeyReleasedEvent(KeyEvent e) {
         if (onKeyReleased(e)) {
             return true;
         }
-        return characterPanelMap.descendingMap().values().stream().anyMatch((layer) -> (layer.onKeyReleased(e)));
+        return characterPanelMap.descendingMap().values().stream().filter((t) -> {return t.isEnabled();}).anyMatch((layer) -> (layer.onKeyReleased(e, layer == enteredLayer, layer == focusedLayer)));
     }
     public final boolean onKeyTypedEvent(KeyEvent e) {
         if (onKeyTyped(e)) {
             return true;
         }
-        return characterPanelMap.descendingMap().values().stream().anyMatch((layer) -> (layer.onKeyTyped(e)));
+        return characterPanelMap.descendingMap().values().stream().filter((t) -> {return t.isEnabled();}).anyMatch((layer) -> (layer.onKeyTyped(e, layer == enteredLayer, layer == focusedLayer)));
     }
     
     public final boolean onTickEvent() {
+        updateEnter(lastMouseX, lastMouseY);
         boolean isTrue = false;
         isTrue |= onTick();
         for (ConsoleLayer layer : characterPanelMap.values()) {
-            isTrue |= layer.onTick();
+            if (layer.isEnabled()) {
+                isTrue |= layer.onTick(layer == enteredLayer, layer == focusedLayer);
+            }
         }
         return isTrue;
     }
     public final boolean onPrePaintEvent() {
+        updateEnter(lastMouseX, lastMouseY);
         boolean isTrue = false;
         isTrue |= onPrePaint();
         for (ConsoleLayer layer : characterPanelMap.values()) {
-            isTrue |= layer.onPrePaint();
+            if (layer.isEnabled() && layer.isVisible()) {
+                isTrue |= layer.onPrePaint(layer == enteredLayer, layer == focusedLayer);
+            }
         }
         return isTrue;
     }
@@ -277,7 +303,9 @@ public class ConsoleScreen {
         boolean isTrue = false;
         isTrue |= onPaint();
         for (ConsoleLayer layer : characterPanelMap.values()) {
-            isTrue |= layer.onPaint();
+            if (layer.isEnabled() && layer.isVisible()) {
+                isTrue |= layer.onPaint(layer == enteredLayer, layer == focusedLayer);
+            }
         }
         return isTrue;
     }
@@ -285,7 +313,9 @@ public class ConsoleScreen {
         boolean isTrue = false;
         isTrue |= onPostPaint();
         for (ConsoleLayer layer : characterPanelMap.values()) {
-            isTrue |= layer.onPostPaint();
+            if (layer.isEnabled() && layer.isVisible()) {
+                isTrue |= layer.onPostPaint(layer == enteredLayer, layer == focusedLayer);
+            }
         }
         return isTrue;
     }

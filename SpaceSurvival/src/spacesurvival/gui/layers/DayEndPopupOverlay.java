@@ -13,6 +13,7 @@ import spacesurvival.engine.console.ConsoleJPanel;
 import spacesurvival.SpaceSurvival;
 import spacesurvival.engine.console.CharacterImage;
 import spacesurvival.engine.console.BufferedConsoleLayer;
+import spacesurvival.gui.GameLayer;
 import spacesurvival.logic.Colony;
 import spacesurvival.logic.Event;
 
@@ -20,24 +21,19 @@ import spacesurvival.logic.Event;
  *
  * @author bowen
  */
-public class DayEndPopupOverlay extends BufferedConsoleLayer {
+public class DayEndPopupOverlay extends GameLayer {
     
     private Color mainColor;
     
 
-    public DayEndPopupOverlay(int consoleWidth, int consoleHeight, Color mainColor) {
-        super(0, 0, consoleWidth, consoleHeight);
+    public DayEndPopupOverlay(Color mainColor) {
+        super();
         hide();
         this.mainColor = mainColor;
         this.setOverrideMode(true);
         genImage();
     }
     
-    @Override
-    public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
-        this.setCharacterImage(new CharacterImage(newWidth, newHeight));
-        genImage();
-    }
     
     private void genImage() {
         getCharacterImage().fillBackgroundColor(0xFF777777);
@@ -252,7 +248,7 @@ public class DayEndPopupOverlay extends BufferedConsoleLayer {
     private boolean isNoSelected = false;
 
     @Override
-    public void onMouseMoved(int x, int y) {
+    public boolean onMouseMoved(int x, int y) {
         
         int width = getWidth() * 3 / 5;
         int height = getHeight() * 3 / 5;
@@ -272,24 +268,27 @@ public class DayEndPopupOverlay extends BufferedConsoleLayer {
             }
         }
         genImage();
+        return true;
     }
 
     @Override
-    public void onMouseExited(int x, int y) {
+    public boolean onMouseExited(int x, int y) {
         isYesSelected = false;
         isNoSelected = false;
         genImage();
+        return true;
     }
 
     @Override
-    public void onMouseEntered(int x, int y) {
+    public boolean onMouseEntered(int x, int y) {
         isYesSelected = false;
         isNoSelected = false;
         genImage();
+        return true;
     }
     
     @Override
-    public void onMousePressed(int x, int y, boolean isLeftClick) {
+    public boolean onMousePressed(int x, int y, boolean isLeftClick) {
         if (isNoSelected) {
             hide();
         }
@@ -299,14 +298,15 @@ public class DayEndPopupOverlay extends BufferedConsoleLayer {
         }
         isYesSelected = false;
         isNoSelected = false;
-        ConsoleJPanel.infoBar.hide();
+        //ConsoleJPanel.infoBar.hide();
         genImage();
+        return true;
     }
 
     @Override
-    public void onKeyPressed(KeyEvent e) {
+    public boolean onKeyPressed(KeyEvent e) {
         if (!isVisible()) {
-            return;
+            return false;
         }
         if (e.getKeyCode() == KeyEvent.VK_Y) {
             nextDay();
@@ -331,11 +331,13 @@ public class DayEndPopupOverlay extends BufferedConsoleLayer {
             }
         }
         genImage();
+        return true;
     }
     
     
     public void nextDay() {
         Colony.INSTANCE.nextDay();
+        /*
         ConsoleJPanel.topBar.genImage();
         ConsoleJPanel.bottomBar.setScroll(0);
         ConsoleJPanel.bottomBar.maximize();
@@ -350,33 +352,28 @@ public class DayEndPopupOverlay extends BufferedConsoleLayer {
         
         ConsoleJPanel.buildMenu.genImage();
         ConsoleJPanel.bottomBar.genImage();
-        ConsoleJPanel.colonyBuildings.genImage();
+        ConsoleJPanel.colonyBuildings.genImage();*/
     }
+
     
-    public void hide() {
-        setX(-100000);
-    }
-    
-    public void show() {
-        isYesSelected = false;
-        isNoSelected = false;
-        genImage();
-        setX(0);
-    }
-    
+    /*
     @Override
-    public void onGlobalKeyReleased(KeyEvent e) {
-        if (ConsoleJPanel.cutscene.isVisible() || ConsoleJPanel.eventPopup.isVisible() || !ConsoleJPanel.bottomBar.isMinimized()) {
-            return;
+    public boolean onKeyReleased(KeyEvent e) {
+        if (other menus are not on) {
+            return false;
         } else if (e.getKeyCode() == KeyEvent.VK_E) {
             if (isVisible()) {
                 hide();
             } else {
+                isYesSelected = false;
+                isNoSelected = false;
                 show();
             }
+            return true;
         }
+        return false;
     }
-    
+    */
     
     
 }

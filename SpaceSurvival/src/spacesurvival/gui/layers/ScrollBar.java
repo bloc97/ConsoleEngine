@@ -7,13 +7,13 @@ package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import spacesurvival.engine.console.BufferedConsoleLayer;
+import spacesurvival.gui.GameLayer;
 
 /**
  *
  * @author bowen
  */
-public abstract class ScrollBar extends BufferedConsoleLayer {
+public abstract class ScrollBar extends GameLayer {
     
     private Color mainColor;
     private int scroll, maxScroll;
@@ -29,7 +29,7 @@ public abstract class ScrollBar extends BufferedConsoleLayer {
     }
     
     void genImage() {
-        getCharacterImage().drawRectangleCustom(0, 0, 1, getHeight(), '░');
+        getCharacterImage().drawRectangleChar(0, 0, 1, getHeight(), '░');
         
         double barRatio = (double)(getHeight()) / (double)(getHeight() + maxScroll);
         int barHeight = (int)(getHeight() * barRatio);
@@ -40,7 +40,7 @@ public abstract class ScrollBar extends BufferedConsoleLayer {
         
         //System.out.println(barHeight);
         //System.out.println(barPos);
-        getCharacterImage().drawRectangleCustom(0, barPos, 1, barHeight, '█');
+        getCharacterImage().drawRectangleChar(0, barPos, 1, barHeight, '█');
         getCharacterImage().fillRectangleForegroundColor(0, 0, getWidth(), getHeight(), mainColor.brighter().brighter().getRGB());
         
         if (isMouseOver) {
@@ -59,16 +59,17 @@ public abstract class ScrollBar extends BufferedConsoleLayer {
     }
     
     @Override
-    public void onMouseWheelMoved(int i) {
+    public boolean onMouseWheelMoved(int x, int y, int i) {
         double scrollPerSquare = (double)(maxScroll + getHeight()) / getHeight();
         getScrollablePanel().setScroll(getScrollablePanel().getScroll() + (int)(i * scrollPerSquare));
+        return true;
     }
     
     private int lastX, lastY;
     private int lastScroll;
     
     @Override
-    public void onMousePressed(int x, int y, boolean isLeftClick) {
+    public boolean onMousePressed(int x, int y, boolean isLeftClick) {
         lastX = x;
         lastY = y;
         
@@ -87,6 +88,7 @@ public abstract class ScrollBar extends BufferedConsoleLayer {
         }
         
         lastScroll = getScrollablePanel().getScroll();
+        return true;
     }
 
     @Override

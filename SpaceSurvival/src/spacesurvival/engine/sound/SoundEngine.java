@@ -52,6 +52,7 @@ public class SoundEngine {
             return;
         }
         if (clip.isOpen() && !clip.isRunning()) {
+            clip.setFramePosition(0);
             clip.start();
         }
     }
@@ -64,6 +65,15 @@ public class SoundEngine {
             clip.stop();
         }
         clip.setFramePosition(0);
+    }
+    
+    public static void resume(Clip clip) {
+        if (clip == null) {
+            return;
+        }
+        if (clip.isOpen() && !clip.isRunning()) {
+            clip.start();
+        }
     }
     
     public static void pause(Clip clip) {

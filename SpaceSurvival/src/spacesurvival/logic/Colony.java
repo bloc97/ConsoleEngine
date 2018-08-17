@@ -48,7 +48,7 @@ public enum Colony {
     private int homelessCount = 0;
     
     
-    private String news = "";
+    private String news = "This is a test news string, you're not supposed to see this. If you're currenty seeing this, raise the alarm and run around the kitchen 10 times.      ";
     private String report = "";
     
     private List<Objective> objectives = new LinkedList<>();

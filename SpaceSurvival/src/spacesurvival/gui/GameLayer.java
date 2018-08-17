@@ -18,8 +18,9 @@ public abstract class GameLayer extends BufferedConsoleLayer {
     }
     
     public GameLayer(int width, int height) {
-        this(0, 0, width, height);
+        super(width, height);
     }
+
     public GameLayer(int x, int y, int width, int height) {
         super(x, y, width, height);
     }
@@ -28,8 +29,12 @@ public abstract class GameLayer extends BufferedConsoleLayer {
         super(x, y, width, height, isVisible);
     }
 
-    public GameLayer(int x, int y, int width, int height, boolean overrideMode, boolean isVisible) {
-        super(x, y, width, height, overrideMode, isVisible);
+    public GameLayer(int x, int y, int width, int height, boolean isVisible, boolean isEnabled) {
+        super(x, y, width, height, isVisible, isEnabled);
+    }
+
+    public GameLayer(int x, int y, int width, int height, boolean overrideMode, boolean isVisible, boolean isEnabled) {
+        super(x, y, width, height, overrideMode, isVisible, isEnabled);
     }
     
     @Override
@@ -37,5 +42,6 @@ public abstract class GameLayer extends BufferedConsoleLayer {
         this.setCharacterImage(new CharacterImage(newWidth, newHeight));
         return true;
     }
+    
     
 }

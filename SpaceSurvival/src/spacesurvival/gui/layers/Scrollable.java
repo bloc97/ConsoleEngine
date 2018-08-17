@@ -6,19 +6,18 @@
 package spacesurvival.gui.layers;
 
 import java.awt.event.KeyEvent;
-import spacesurvival.engine.console.BufferedConsoleLayer;
 
 /**
  *
  * @author bowen
  */
-public interface Scrollable extends BufferedConsoleLayer {
+public interface Scrollable {
+    public int getHeight();
     public int getScroll();
     public int getMaxScroll();
     public void setScroll(int i);
     
-    @Override
-    public default void onKeyPressed(KeyEvent e) {
+    public default boolean onKeyPressed(KeyEvent e, boolean isEntered, boolean isFocused) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_UP:
                 setScroll(getScroll() - 1);
@@ -39,10 +38,14 @@ public interface Scrollable extends BufferedConsoleLayer {
                 setScroll(getMaxScroll());
                 break;
         }
+        return true;
     }
 
-    @Override
-    public default void onMouseWheelMoved(int i) {
-        setScroll(getScroll() + i);
+    public default boolean onMouseWheelMoved(int x, int y, int i, boolean isEntered, boolean isFocused) {
+        if (isEntered) {
+            setScroll(getScroll() + i);
+            return true;
+        }
+        return false;
     }
 }

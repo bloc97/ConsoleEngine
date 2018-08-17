@@ -7,10 +7,15 @@ package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import spacesurvival.SpaceSurvival;
 import spacesurvival.engine.console.ConsoleJPanel;
-import static spacesurvival.engine.console.ConsoleJPanel.dayEndOverlay;
 import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleLayer;
+import spacesurvival.engine.console.StringWriter;
+import spacesurvival.gui.GameLayer;
+import spacesurvival.logic.Colony;
 import spacesurvival.logic.Event;
 import spacesurvival.logic.EventChoice;
 
@@ -18,7 +23,7 @@ import spacesurvival.logic.EventChoice;
  *
  * @author bowen
  */
-public class TextCutscene extends BufferedConsoleLayer {
+public class TextCutscene extends GameLayer {
     
     
     public final static String[] cutscene = new String[] {
@@ -52,8 +57,6 @@ public class TextCutscene extends BufferedConsoleLayer {
         "\"Hans. I know you are someone responsible. You make smart decisions, you are always eager to help others. I shall trust you with my passengers, and of course, my luxury cargo. People are going to count on you... Don't forget, I'm still counting on you for my chicken nuggets.\"",
             
         "* Objective Added: find some chicken nuggets for the captain *",
-        
-        
     };
     
     private int currentLine = 0;
@@ -96,32 +99,33 @@ public class TextCutscene extends BufferedConsoleLayer {
     };
     
     
-    
-    public TextCutscene(int width, int height, Color mainColor) {
-        super(0, 0, width, height);
-        genImage();
+    public TextCutscene(Color mainColor) {
+        super();
     }
 
-    @Override
-    public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
-        this.setCharacterImage(new CharacterImage(newWidth, newHeight));
-        genImage();
-    }
     
     
-    public void genImage() {
+    private void genImage() {
+        getCharacterImage().clear();
         getCharacterImage().fillBackgroundColor(0xFF302040);
         getCharacterImage().fillRectangleChar(0, getHeight() / 2, getWidth(), getHeight() - (getHeight() / 2), ' ');
         getCharacterImage().drawRectangle(0, getHeight() / 2, getWidth(), getHeight() - (getHeight() / 2));
         getCharacterImage().fillRectangleForegroundColor(0, getHeight() / 2, getWidth(), getHeight() - (getHeight() / 2), 0xFFEEEEEE);
         
         getCharacterImage().drawString(cutscenePerson[currentLine], 2, getHeight() / 2, 0xFFEEEEEE);
-        getCharacterImage().drawStringWrapWordPaddedStopAt(cutscene[currentLine], 3, getHeight() / 2 + 2, 3, 3, 0xFFEEEEEE, currentStop);
+        
+        final StringWriter stringWriter = getCharacterImage().createStringWriter();
+        
+        stringWriter.setBoundary(3, getHeight() / 2 + 2, getWidth() - 6, getHeight() - (getHeight() / 2) - 4);
+        stringWriter.setMaxCharsWritten(currentStop);
+        stringWriter.writeString(cutscene[currentLine], 0xFFEEEEEE);
+        //getCharacterImage().drawStringWrapWordPaddedStopAt(cutscene[currentLine], 3, getHeight() / 2 + 2, 3, 3, 0xFFEEEEEE, currentStop);
+        
+        
     }
     
-    public void addStop() {
+    public void tickHorizontalAnimation() {
         currentStop++;
-        genImage();
     }
     
     
@@ -131,7 +135,7 @@ public class TextCutscene extends BufferedConsoleLayer {
             return;
         }
         
-        if (currentStop <= cutscene[currentLine].length() + 10) {
+        if (currentStop < cutscene[currentLine].length() + 10) {
             currentStop = cutscene[currentLine].length() + 10;
             genImage();
             return;
@@ -153,7 +157,9 @@ public class TextCutscene extends BufferedConsoleLayer {
             Event thisEvent = new Event("Chicken Nuggets", "Look for chicken nuggets for our good captain?", -1, (t) -> {
             }, yes, no);
             thisEvent.setColor(0xFFEEEEEE, 0xFF302040);
-            ConsoleJPanel.eventPopup.show(thisEvent);
+            
+            SpaceSurvival.EVENTPOPUP.show(thisEvent);
+            
             return;
         }
         
@@ -168,26 +174,30 @@ public class TextCutscene extends BufferedConsoleLayer {
         if (currentLine >= cutscene.length - 1) {
             currentLine = 0;
             isDone = true;
+            
+            /** DISABLED TEMPORARILY
             dayEndOverlay.nextDay();
+            **/
+            Colony.INSTANCE.nextDay();
+            SpaceSurvival.BOTTOMBAR.maximize();
+            
             hide();
+            disable();
             return;
         }
         currentLine++;
         currentStop = 0;
-        genImage();
     }
     
-    public void hide() {
-        setX(-1000000);
-    }
 
     @Override
-    public void onMousePressed(int x, int y, boolean isLeftClick) {
+    public boolean onMousePressed(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
         nextLine();
+        return true;
     }
 
     @Override
-    public void onKeyPressed(KeyEvent e) {
+    public boolean onKeyPressed(KeyEvent e, boolean isEntered, boolean isFocused) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_SPACE:
             case KeyEvent.VK_ENTER:
@@ -196,7 +206,18 @@ public class TextCutscene extends BufferedConsoleLayer {
             default :
                 break;
         }
+        return true;
     }
+
+    @Override
+    public boolean onPrePaint(boolean isEntered, boolean isFocused) {
+        genImage();
+        return true;
+    }
+
+    
+    
+    
     
     
     

@@ -16,6 +16,9 @@ public class StringWriter {
     public enum WrapType {
         NONE, CHARACTER, WORD;
     }
+    public enum CenterType {
+        LEFT, CENTER, RIGHT;
+    }
     
     private final CharacterImage characterImage;
     private int startX, startY, width, height;
@@ -33,12 +36,6 @@ public class StringWriter {
         this.x = startX;
         this.y = startY;
         this.wrapType = WrapType.WORD;
-    }
-    
-    public void setCursor(int x, int y) {
-        this.x = x;
-        this.y = y;
-        validateCursor();
     }
     
     private void validateCursor() {
@@ -62,10 +59,29 @@ public class StringWriter {
         return y;
     }
     
+    public void setCursorX(int x) {
+        this.x = x;
+        validateCursor();
+    }
+    
+    public void setCursorY(int y) {
+        this.y = y;
+        validateCursor();
+    }
+    
+    public void setCursor(int x, int y) {
+        this.x = x;
+        this.y = y;
+        validateCursor();
+    }
+    
     public void setBoundary(Rectangle rectangle) {
         setBoundary(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
     }
     
+    public void setBoundary(int startX, int width) {
+        setBoundary(startX, Integer.MIN_VALUE/2, width, Integer.MAX_VALUE);
+    }
     public void setBoundary(int startX, int startY, int width, int height) {
         if (width < 1) {
             width = 1;
@@ -82,6 +98,14 @@ public class StringWriter {
     
     public Rectangle getBoundary() {
         return new Rectangle(startX, startY, width, height);
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
     }
 
     public WrapType getWrapType() {

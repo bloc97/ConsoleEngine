@@ -9,30 +9,29 @@ import java.awt.Color;
 import spacesurvival.SpaceSurvival;
 import spacesurvival.engine.console.CharacterImage;
 import spacesurvival.engine.console.BufferedConsoleLayer;
+import spacesurvival.gui.GameLayer;
 import spacesurvival.logic.Colony;
 
 /**
  *
  * @author bowen
  */
-public class TopBar extends BufferedConsoleLayer {
+public class TopBar extends GameLayer {
     
-    private String status = "Clear";
+    public static final int DEFAULT_HEIGHT = 1;
     
-    
-    
-    public TopBar(int consoleWidth, int consoleHeight) {
-        super(0, 0, consoleWidth, Background.TOP_PADDING);
-        genImage();
+    public TopBar() {
+        super();
     }
 
     @Override
-    public void onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
-        this.setCharacterImage(new CharacterImage(newWidth, Background.TOP_PADDING));
-        genImage();
+    public boolean onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
+        this.setCharacterImage(new CharacterImage(newWidth, DEFAULT_HEIGHT));
+        return true;
     }
-    
-    public void genImage() {
+
+    @Override
+    public boolean onPrePaint(boolean isEntered, boolean isFocused) {
         getCharacterImage().clear();
         final String daysString = "Day " + Colony.INSTANCE.getDay();
         
@@ -65,6 +64,10 @@ public class TopBar extends BufferedConsoleLayer {
         //getCharacterImage().fillForegroundColorRectangle(debrisStringPos, 0, debrisString.length(), 1, 0xFFEE2222);
         
         //getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), getHeight(), 0xFFF5EFD2);
+        return true;
     }
+    
+    
+    
     
 }

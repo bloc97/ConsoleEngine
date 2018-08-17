@@ -163,6 +163,10 @@ public class CharacterImage {
         }
     }
     
+    public void fillChar(char c) {
+        fill(c);
+    }
+    
     public void fillColor(int foregroundColor, int backgroundColor) {
         for (int i=0; i<length; i++) {
             this.foregroundColor[i] = foregroundColor;
@@ -204,6 +208,10 @@ public class CharacterImage {
                 set(x + i, y + j, c, foregroundColor, backgroundColor);
             }
         }
+    }
+    
+    public void fillRectangleChar(int x, int y, int width, int height, char c) {
+        fillRectangle(x, y, width, height, c);
     }
     
     public void fillRectangleColor(int x, int y, int width, int height, int foregroundColor, int backgroundColor) {
@@ -287,7 +295,7 @@ public class CharacterImage {
         drawRectangleColor(x, y, width, height, foregroundColor, backgroundColor);
     }
     
-    public void drawRectangleCustom(int x, int y, int width, int height, char c) {
+    public void drawRectangleChar(int x, int y, int width, int height, char c) {
         for (int i=0; i<width; i++) {
             setChar(x + i, y, c);
             setChar(x + i, y + height - 1, c);
@@ -297,13 +305,13 @@ public class CharacterImage {
             setChar(x + width - 1, y + i, c);
         }
     }
-    public void drawRectangleCustom(int x, int y, int width, int height, char c, int foregroundColor) {
-        drawRectangleCustom(x, y, width, height, c);
+    public void drawRectangleChar(int x, int y, int width, int height, char c, int foregroundColor) {
+        CharacterImage.this.drawRectangleChar(x, y, width, height, c);
         drawRectangleForegroundColor(x, y, width, height, foregroundColor);
     }
     
-    public void drawRectangleCustom(int x, int y, int width, int height, char c, int foregroundColor, int backgroundColor) {
-        drawRectangleCustom(x, y, width, height, c);
+    public void drawRectangleChar(int x, int y, int width, int height, char c, int foregroundColor, int backgroundColor) {
+        CharacterImage.this.drawRectangleChar(x, y, width, height, c);
         drawRectangleColor(x, y, width, height, foregroundColor, backgroundColor);
     }
     
