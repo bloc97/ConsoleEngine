@@ -48,48 +48,68 @@ public class SoundEngine {
     }
     
     public static void play(Clip clip) {
-        if (clip == null) {
-            return;
-        }
-        if (clip.isOpen() && !clip.isRunning()) {
-            clip.setFramePosition(0);
-            clip.start();
+        try {
+            if (clip == null) {
+                return;
+            }
+            if (clip.isOpen() && !clip.isRunning()) {
+                clip.setFramePosition(0);
+                clip.start();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
     
     public static void stop(Clip clip) {
-        if (clip == null) {
-            return;
+        try {
+            if (clip == null) {
+                return;
+            }
+            if (clip.isRunning()) {
+                clip.stop();
+            }
+            clip.setFramePosition(0);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        if (clip.isRunning()) {
-            clip.stop();
-        }
-        clip.setFramePosition(0);
     }
     
     public static void resume(Clip clip) {
-        if (clip == null) {
-            return;
-        }
-        if (clip.isOpen() && !clip.isRunning()) {
-            clip.start();
+        try {
+            if (clip == null) {
+                return;
+            }
+            if (clip.isOpen() && !clip.isRunning()) {
+                clip.start();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
     
     public static void pause(Clip clip) {
-        if (clip == null) {
-            return;
-        }
-        if (clip.isRunning()) {
-            clip.stop();
+        try {
+            if (clip == null) {
+                return;
+            }
+            if (clip.isRunning()) {
+                clip.stop();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
     
     public static void setLoop(Clip clip, int loop) {
-        if (clip == null) {
-            return;
+        try {
+            if (clip == null) {
+                return;
+            }
+            clip.loop(loop);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        clip.loop(loop);
     }
     
 }
