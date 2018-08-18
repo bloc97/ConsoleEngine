@@ -6,30 +6,16 @@
 package spacesurvival;
 
 import java.awt.Color;
-import java.awt.Frame;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.SourceDataLine;
 import javax.swing.ImageIcon;
 import spacesurvival.gui.GameScreen;
 import spacesurvival.engine.console.ConsoleJPanel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import spacesurvival.engine.console.ConsoleComponent;
 import spacesurvival.engine.sound.SoundEngine;
-import spacesurvival.engine.sound.PlayerStream;
-import spacesurvival.engine.sound.SoundEngine;
-import spacesurvival.engine.sound.SquareWaveSound;
 import spacesurvival.gui.layers.Background;
 import spacesurvival.gui.layers.BottomBar;
 import spacesurvival.gui.layers.DayEndPopupOverlay;
@@ -91,7 +77,7 @@ public class SpaceSurvival {
         }, 0, 200, TimeUnit.MILLISECONDS);
         
         Event.initAllEvents();
-        SoundEngine.init();
+        //SoundEngine.init();
     }
 
     private static void createAndShowGUI() {
