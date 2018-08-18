@@ -6,9 +6,15 @@
 package spacesurvival.characterpanels.sound;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  *
@@ -25,15 +31,40 @@ public class SoundEngine {
     
     public static Clip loadClip(String filename) {
         Clip in = null;
-
+        
+        
+        AudioInputStream audioIn = null;
         try {
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File(filename));
-            in = AudioSystem.getClip();
-            in.open(audioIn);
-        }
-
-        catch(Exception e) {
+            audioIn = AudioSystem.getAudioInputStream(new File(filename));
+        } catch (Exception e) {
             e.printStackTrace();
+        }
+        
+        if (audioIn == null) {
+            return in;
+        }
+        
+        try {
+            in = AudioSystem.getClip(null);
+            in.open(audioIn);
+        } catch (LineUnavailableException | IOException e) {
+            in = null;
+            try {
+                in = AudioSystem.getClip();
+                in.open(audioIn);
+            } catch (LineUnavailableException | IOException ex) {
+                in = null;
+                for (Mixer.Info mixerInfo : AudioSystem.getMixerInfo()) {
+                    try {
+                        in = AudioSystem.getClip(mixerInfo);
+                        in.open(audioIn);
+                        break;
+                    } catch(Exception ex2) {
+                        in = null;
+                    }
+                }
+            }
+            
         }
 
         return in;
