@@ -223,14 +223,16 @@ public class ReportPage extends GameLayer implements Scrollable {
     
     public void maximize() {
         if (isMinimized) {
-            SoundEngine.play(SoundEngine.OPENBOOK);
+            SoundEngine.add(SoundEngine.OPENBOOK);
+            SoundEngine.OPENBOOK.resetPosition();
             isMinimized = false;
             enable();
         }
     }
     public void minimize() {
         if (!isMinimized) {
-            SoundEngine.play(SoundEngine.CLOSEBOOK);
+            SoundEngine.add(SoundEngine.CLOSEBOOK);
+            SoundEngine.CLOSEBOOK.resetPosition();
             isMinimized = true;
             disable();
         }

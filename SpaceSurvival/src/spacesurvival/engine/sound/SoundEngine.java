@@ -8,108 +8,93 @@ package spacesurvival.engine.sound;
 import com.sun.media.sound.SoftMixingClip;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
+import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
- *
+ * TODO: Add complete sound engine that can play multiple sounds.
  * @author bowen
  */
 public class SoundEngine {
     
-    public static final Clip OPENBOOK = loadClip("resources/sounds/openjournal.wav");
-    public static final Clip CLOSEBOOK = loadClip("resources/sounds/closejournal.wav");
+    public static final float SAMPLE_RATE = 44100f;
     
-    public static final Clip BUILD = loadClip("resources/sounds/build.wav");
-    public static final Clip CANCEL = loadClip("resources/sounds/cancel.wav");
+    private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
+    private static final PlayerStream SOUNDPLAYER = new PlayerStream();
     
+    public static final Sound OPENBOOK = SampledSound.fromFile("resources/sounds/openjournal.wav");
+    public static final Sound CLOSEBOOK = SampledSound.fromFile("resources/sounds/closejournal.wav");
     
-    public static Clip loadClip(String filename) {
-        Clip in = null;
-
+    //public static final Sound BUILD = SampledSound.fromFile("resources/sounds/build.wav");
+    //public static final Sound CANCEL = SampledSound.fromFile("resources/sounds/cancel.wav");
+    
+    public static void init() {
+        AudioInputStream stream = SOUNDPLAYER.createAudioInputStream();
+        SourceDataLine line = null;
         try {
-            AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File(filename));
-            in = AudioSystem.getClip();
-            in.open(audioIn);
+            line = AudioSystem.getSourceDataLine(stream.getFormat());
+            line.open(stream.getFormat());
+            line.start();
+        } catch (LineUnavailableException ex) {
+            line = null;
+            try {
+                line = AudioSystem.getSourceDataLine(stream.getFormat(), null);
+                line.open(stream.getFormat());
+                line.start();
+            
+            } catch (LineUnavailableException ex2) {
+                line = null;
+                
+                for (Mixer.Info mixerInfo : AudioSystem.getMixerInfo()) {
+                    try {
+                        line = AudioSystem.getSourceDataLine(stream.getFormat(), mixerInfo);
+                        line.open(stream.getFormat());
+                        line.start();
+                        break;
+                    } catch (LineUnavailableException ex3) {
+                        line = null;
+                    }
+                }
+            }
         }
-
-        catch (IOException | UnsupportedAudioFileException e) {
-            e.printStackTrace();
-            System.out.println("Audio file not found! " + filename);
-        } catch (LineUnavailableException e) {
-            e.printStackTrace();
-            System.out.println("Audio device initialisation error!");
+        
+        final SourceDataLine finalLine = line;
+        
+        if (finalLine == null) {
+            System.out.println("Fatal error on sound engine initialisation!");
+            return;
         }
-
-        return in;
+        
+        EXECUTOR.submit(() -> {
+            byte[] b = new byte[2048];
+            while (true) {
+                try {
+                    stream.read(b);
+                    finalLine.write(b, 0, 2048);
+                } catch (IOException ex) {
+                }
+            }
+        });
     }
     
-    public static void play(Clip clip) {
-        try {
-            if (clip == null) {
-                return;
-            }
-            if (clip.isOpen() && !clip.isRunning()) {
-                clip.setFramePosition(0);
-                clip.start();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    
+    public static boolean add(Sound sound) {
+        return SOUNDPLAYER.addSound(sound);
     }
     
-    public static void stop(Clip clip) {
-        try {
-            if (clip == null) {
-                return;
-            }
-            if (clip.isRunning()) {
-                clip.stop();
-            }
-            clip.setFramePosition(0);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+    public static boolean remove(Sound sound) {
+        return SOUNDPLAYER.removeSound(sound);
     }
     
-    public static void resume(Clip clip) {
-        try {
-            if (clip == null) {
-                return;
-            }
-            if (clip.isOpen() && !clip.isRunning()) {
-                clip.start();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-    
-    public static void pause(Clip clip) {
-        try {
-            if (clip == null) {
-                return;
-            }
-            if (clip.isRunning()) {
-                clip.stop();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-    
-    public static void setLoop(Clip clip, int loop) {
-        try {
-            if (clip == null) {
-                return;
-            }
-            clip.loop(loop);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
     
 }
