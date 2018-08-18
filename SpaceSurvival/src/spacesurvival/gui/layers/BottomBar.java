@@ -51,7 +51,7 @@ public class BottomBar extends GameLayer {
 
     @Override
     public boolean onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
-        this.setCharacterImage(new CharacterImage(newWidth, newHeight - DEFAULT_HEIGHT));
+        this.setCharacterImage(new CharacterImage(newWidth, DEFAULT_HEIGHT + 1));
         setY(newHeight - DEFAULT_HEIGHT);
         return true;
     }

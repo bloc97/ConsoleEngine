@@ -297,6 +297,7 @@ public class ConsoleScreen {
     }
     
     public final boolean onTickEvent() {
+        
         if (!isMousePressed || (enteredLayer != null && !enteredLayer.isEnabled())) {
             updateEnter(lastMouseX, lastMouseY);
         }

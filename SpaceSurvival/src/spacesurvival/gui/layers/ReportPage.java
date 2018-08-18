@@ -51,7 +51,7 @@ public class ReportPage extends GameLayer implements Scrollable {
 
     @Override
     public boolean onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
-        this.setCharacterImage(new CharacterImage(newWidth, newHeight));
+        this.setCharacterImage(new CharacterImage(newWidth, newHeight - TopBar.DEFAULT_HEIGHT + 1));
         if (isMinimized) {
             setY(newHeight);
         }

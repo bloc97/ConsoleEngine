@@ -72,7 +72,7 @@ public class SpaceSurvival {
         }, 0, 8, TimeUnit.MILLISECONDS);
         ex.scheduleWithFixedDelay(() -> {
             REPORTPAGE.tickVerticalAnimation();
-        }, 0, 10, TimeUnit.MILLISECONDS);
+        }, 0, 5, TimeUnit.MILLISECONDS);
         ex.scheduleWithFixedDelay(() -> {
             BOTTOMBAR.tickHorizontalAnimation();
         }, 0, 200, TimeUnit.MILLISECONDS);
