@@ -40,12 +40,16 @@ public class SoundEngine {
     }
     
     public static void playClip(Clip clip) {
-        if (clip.isRunning()) {
-            return;
+        try {
+            if (clip.isRunning()) {
+                return;
+            }
+
+            clip.setFramePosition(0);
+            clip.start();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        
-        clip.setFramePosition(0);
-        clip.start();
     }
     
     
