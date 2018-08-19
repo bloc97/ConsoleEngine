@@ -6,25 +6,15 @@
 package spacesurvival;
 
 import java.awt.Color;
-import java.io.File;
-import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Application;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaPlayer;
-import javafx.stage.Stage;
 import javax.swing.ImageIcon;
 import spacesurvival.gui.GameScreen;
 import spacesurvival.engine.console.ConsoleJPanel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
-import spacesurvival.engine.sound.SoundEngine;
-import spacesurvival.engine.sound.AdvancedSoundEngine;
 import spacesurvival.gui.layers.Background;
 import spacesurvival.gui.layers.BottomBar;
 import spacesurvival.gui.layers.DayEndPopupOverlay;
@@ -86,8 +76,7 @@ public class SpaceSurvival {
         
         Event.initAllEvents();
         
-        AdvancedSoundEngine.init();
-        AdvancedSoundEngine.add(AdvancedSoundEngine.TEST);
+        GameSounds.TEST.stop();
         //AdvancedSoundEngine.add(AdvancedSoundEngine.CLOSEBOOK);
         //AdvancedSoundEngine.OPENBOOK.setVolume(0.5f);
         //AdvancedSoundEngine.OPENBOOK.fadeIn(0.5f);

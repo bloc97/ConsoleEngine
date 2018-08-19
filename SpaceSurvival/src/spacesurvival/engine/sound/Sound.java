@@ -10,25 +10,29 @@ package spacesurvival.engine.sound;
  * @author bowen
  */
 public interface Sound {
-    public default float getLeftSample() {
-        return getSample();
+    public boolean isPlaying();
+    public default boolean play() {
+        if (isPlaying()) {
+            stop();
+        }
+        boolean b = setPositionSeconds(0f);
+        boolean b2 = resume();
+        return b && b2;
     }
-    public default float getRightSample() {
-        return getSample();
+    public default boolean stop() {
+        boolean b = pause();
+        boolean b2 = setPositionSeconds(0f);
+        return b && b2;
     }
+    public boolean resume();
+    public boolean pause();
     
-    public float getSample();
-    public boolean nextSample();
-    public boolean hasNextSample();
+    public float getPositionSeconds();
+    public boolean setPositionSeconds(float seconds);
     
+    public float getVolume();
+    public boolean setVolume(float volume);
     
-    public int getPosition();
-    public boolean setPosition(int samplePosition);
-    public default boolean resetPosition() {
-        return setPosition(0);
-    }
-    
-    public Sound getCopy();
-    
-    
+    public int getLoopCount();
+    public boolean setLoopCount(int loop);
 }

@@ -9,7 +9,7 @@ package spacesurvival.engine.sound;
  *
  * @author bowen
  */
-public class SquareWaveSound implements Sound {
+public class SquareWaveSound implements SoundSamples {
 
     private volatile int position = 0;
     
@@ -63,8 +63,8 @@ public class SquareWaveSound implements Sound {
     
     @Override
     public float getSample() {
-        int samples = (int)(AdvancedSoundEngine.SAMPLE_RATE / frequency);
-        int dutySamples = (int)((AdvancedSoundEngine.SAMPLE_RATE / frequency) * duty);
+        int samples = (int)(PlayerStream.SAMPLE_RATE / frequency);
+        int dutySamples = (int)((PlayerStream.SAMPLE_RATE / frequency) * duty);
         if (position % samples < dutySamples) {
             return volume;
         } else {
@@ -84,20 +84,20 @@ public class SquareWaveSound implements Sound {
     }
 
     @Override
-    public int getPosition() {
+    public int getPositionSamples() {
         return position;
     }
 
     @Override
-    public boolean setPosition(int samplePosition) {
+    public boolean setPositionSamples(int samplePosition) {
         position = samplePosition;
         return true;
     }
 
     @Override
-    public Sound getCopy() {
-        Sound newSound = new SquareWaveSound(getVolume(), getFrequency(), getDuty());
-        newSound.setPosition(position);
+    public SoundSamples getCopy() {
+        SoundSamples newSound = new SquareWaveSound(getVolume(), getFrequency(), getDuty());
+        newSound.setPositionSamples(position);
         return newSound;
     }
 

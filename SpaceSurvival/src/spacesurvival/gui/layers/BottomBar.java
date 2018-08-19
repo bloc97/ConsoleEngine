@@ -7,19 +7,8 @@ package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import spacesurvival.engine.console.ConsoleJPanel;
 import spacesurvival.SpaceSurvival;
-import spacesurvival.engine.sound.SoundEngine;
 import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleComponent;
-import spacesurvival.engine.console.StringWriter;
 import spacesurvival.gui.GameLayer;
 import spacesurvival.logic.Colony;
 

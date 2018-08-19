@@ -20,9 +20,10 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  *
  * @author bowen
  */
-public class AdvancedSoundClip implements Sound {
+public class AdvancedSoundClip implements Sound, SoundSamples {
 
-    public static final int LOOP_FOREVER = -1;
+    
+    private static PlayerStream PLAYERSTREAM = null;
     
     private final float[] leftSamples;
     private final float[] rightSamples;
@@ -31,7 +32,7 @@ public class AdvancedSoundClip implements Sound {
     private int position;
     private float volume;
     
-    private float fadeVolume;
+    private float targetVolume;
     private float fadeVolumeDelta;
     
     private int loopCount;
@@ -44,21 +45,30 @@ public class AdvancedSoundClip implements Sound {
         this.length = leftSamples.length;
         this.position = position;
         this.volume = volume;
-        this.fadeVolume = volume;
+        this.targetVolume = volume;
         this.fadeVolumeDelta = 0f;
         this.loopCount = loopCount;
     }
 
-    public boolean isPlaying() {
-        return isPlaying;
+    @Override
+    public boolean hasNextSample() {
+        if (!isPlaying) {
+            return false;
+        }
+        if (position + 1 >= length) {
+            return false;
+        } else {
+            return true;
+        }
     }
+    
     
     @Override
     public float getLeftSample() {
         if (position >= length || !isPlaying) {
             return 0f;
         }
-        return leftSamples[position] * fadeVolume;
+        return leftSamples[position] * volume;
     }
 
     @Override
@@ -66,9 +76,8 @@ public class AdvancedSoundClip implements Sound {
         if (position >= length || !isPlaying) {
             return 0f;
         }
-        return rightSamples[position] * fadeVolume;
+        return rightSamples[position] * volume;
     }
-
     @Override
     public float getSample() {
         return (getLeftSample() + getRightSample()) / 2f;
@@ -80,12 +89,11 @@ public class AdvancedSoundClip implements Sound {
             return false;
         }
         position++;
-        fadeVolume += fadeVolumeDelta;
         
-        if (fadeVolume > volume) {
-            fadeVolume = volume;
-        } else if (fadeVolume < 0f) {
-            fadeVolume = 0f;
+        volume += fadeVolumeDelta;
+        
+        if ((fadeVolumeDelta > 0 && volume > targetVolume) || (fadeVolumeDelta < 0 && volume < targetVolume)) {
+            volume = targetVolume;
         }
         
         if (position >= length && (loopCount > 0 || loopCount < -1)) {
@@ -102,32 +110,40 @@ public class AdvancedSoundClip implements Sound {
     }
 
     @Override
-    public boolean hasNextSample() {
-        if (!isPlaying) {
-            return false;
-        }
-        if (position + 1 >= length) {
-            return false;
-        } else {
-            return true;
-        }
+    public boolean isPlaying() {
+        return isPlaying;
     }
 
+    @Override
+    public boolean resume() {
+        isPlaying = true;
+        return true;
+    }
+
+    @Override
+    public boolean pause() {
+        isPlaying = false;
+        return true;
+    }
+    
+    @Override
     public int getLoopCount() {
         return loopCount;
     }
 
-    public void setLoopCount(int loopCount) {
+    @Override
+    public boolean setLoopCount(int loopCount) {
         this.loopCount = loopCount;
+        return true;
     }
 
     @Override
-    public int getPosition() {
+    public int getPositionSamples() {
         return position;
     }
 
     @Override
-    public boolean setPosition(int samplePosition) {
+    public boolean setPositionSamples(int samplePosition) {
         if (samplePosition >= 0 && samplePosition < length) {
             position = samplePosition;
             return true;
@@ -136,40 +152,41 @@ public class AdvancedSoundClip implements Sound {
         }
     }
 
+    @Override
     public float getPositionSeconds() {
-        return getPosition() / AdvancedSoundEngine.SAMPLE_RATE;
+        return getPositionSamples() / PlayerStream.SAMPLE_RATE;
     }
     
+    @Override
     public boolean setPositionSeconds(float positionSeconds) {
-        return setPosition((int)(positionSeconds * AdvancedSoundEngine.SAMPLE_RATE));
+        return setPositionSamples((int)(positionSeconds * PlayerStream.SAMPLE_RATE));
     }
     
+    @Override
     public float getVolume() {
         return volume;
     }
     
-    public void setVolume(float volume) {
+    @Override
+    public boolean setVolume(float volume) {
         this.volume = volume;
+        this.targetVolume = volume;
+        this.fadeVolumeDelta = 0;
+        return true;
     }
     
-    public void fadeIn(float seconds) {
+    public void fadeTo(float newVolume, float seconds) {
+        targetVolume = newVolume;
         if (seconds == 0) {
-            fadeVolume = volume;
+            volume = newVolume;
+            fadeVolumeDelta = 0;
             return;
         }
-        this.fadeVolumeDelta = volume / (seconds * AdvancedSoundEngine.SAMPLE_RATE);
-    }
-    
-    public void fadeOut(float seconds) {
-        if (seconds == 0) {
-            fadeVolume = 0;
-            return;
-        }
-        fadeIn(-seconds);
+        this.fadeVolumeDelta = (newVolume - volume) / (seconds * PlayerStream.SAMPLE_RATE);
     }
 
     @Override
-    public Sound getCopy() {
+    public SoundSamples getCopy() {
         return new AdvancedSoundClip(leftSamples, rightSamples, position, volume, loopCount);
     }
     
@@ -181,16 +198,26 @@ public class AdvancedSoundClip implements Sound {
         return fromFile(filename, volume, 0);
     }
     public static AdvancedSoundClip fromFile(String filename, float volume, int loopCount) {
+        
+        if (PLAYERSTREAM == null) {
+            PLAYERSTREAM = new PlayerStream();
+            PLAYERSTREAM.init();
+        } else if (!PLAYERSTREAM.isInitialized()) {
+            PLAYERSTREAM.init();
+        }
+        
+        
         try {
             AudioInputStream stream = AudioSystem.getAudioInputStream(new File(filename));
             int channels = stream.getFormat().getChannels();
             int bytesPerSample = stream.getFormat().getSampleSizeInBits()/8;
             boolean isBigEndian = stream.getFormat().isBigEndian();
             
-            if (stream.getFormat().getSampleRate() == AdvancedSoundEngine.SAMPLE_RATE && bytesPerSample <= 2 && channels > 0) {
+            if (stream.getFormat().getSampleRate() == PlayerStream.SAMPLE_RATE && bytesPerSample <= 2 && channels > 0) {
                 
                 
                 byte[] bytes = stream.readAllBytes();
+                //System.out.println(Arrays.toString(bytes));
                 int samples = bytes.length / channels / bytesPerSample;
                 float[][] channelSamples = new float[channels][samples];
                 if (bytesPerSample == 2) {
@@ -215,11 +242,9 @@ public class AdvancedSoundClip implements Sound {
                 
                 //System.out.println(Arrays.toString(channelSamples[0]));
                 System.out.println("Loaded WAV file: " + filename + ", " + channels + " channels, " + bytesPerSample + " bytes/sample, " + (isBigEndian ? "Big" : "Small") + " Endian");
-                if (channels < 2) {
-                    return new AdvancedSoundClip(channelSamples[0], channelSamples[0], 0, volume, loopCount);
-                } else {
-                    return new AdvancedSoundClip(channelSamples[0], channelSamples[1], 0, volume, loopCount);
-                }
+                final AdvancedSoundClip soundClip = new AdvancedSoundClip(channelSamples[0], (channels < 2) ? channelSamples[0] : channelSamples[1], 0, volume, loopCount);
+                PLAYERSTREAM.addSound(soundClip);
+                return soundClip;
                 
                 
             } else {

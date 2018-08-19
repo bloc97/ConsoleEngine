@@ -7,20 +7,10 @@ package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import spacesurvival.engine.console.ConsoleJPanel;
+import spacesurvival.GameSounds;
 import spacesurvival.SpaceSurvival;
-import spacesurvival.engine.sound.SoundEngine;
 import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleComponent;
 import spacesurvival.engine.console.StringWriter;
-import spacesurvival.engine.sound.AdvancedSoundEngine;
 import spacesurvival.gui.GameLayer;
 import spacesurvival.logic.Colony;
 
@@ -224,14 +214,14 @@ public class ReportPage extends GameLayer implements Scrollable {
     
     public void maximize() {
         if (isMinimized) {
-            AdvancedSoundEngine.OPENBOOK.setPosition(0);
+            GameSounds.OPENBOOK.play();
             isMinimized = false;
             enable();
         }
     }
     public void minimize() {
         if (!isMinimized) {
-            AdvancedSoundEngine.CLOSEBOOK.setPosition(0);
+            GameSounds.CLOSEBOOK.play();
             isMinimized = true;
             disable();
         }

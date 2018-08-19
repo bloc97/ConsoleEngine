@@ -19,7 +19,7 @@ import javax.sound.sampled.LineUnavailableException;
  *
  * @author bowen
  */
-public class EmptyClip implements Clip {
+public class EmptySoundClip implements Clip {
 
     @Override
     public void open(AudioFormat format, byte[] data, int offset, int bufferSize) throws LineUnavailableException {
@@ -118,7 +118,7 @@ public class EmptyClip implements Clip {
 
     @Override
     public Info getLineInfo() {
-        return new Info(EmptyClip.class, getFormat());
+        return new Info(EmptySoundClip.class, getFormat());
     }
 
     @Override
