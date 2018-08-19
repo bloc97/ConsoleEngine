@@ -6,6 +6,7 @@
 package spacesurvival;
 
 import java.awt.Color;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -77,6 +78,10 @@ public class SpaceSurvival {
         }, 0, 200, TimeUnit.MILLISECONDS);
         
         Event.initAllEvents();
+        
+        SoundEngine.fadeTo(SoundEngine.OPENBOOK, 1f, 2f);
+        SoundEngine.play(SoundEngine.OPENBOOK);
+        SoundEngine.setVolume(SoundEngine.OPENBOOK, 0.8f);
         //SoundEngine.init();
     }
 

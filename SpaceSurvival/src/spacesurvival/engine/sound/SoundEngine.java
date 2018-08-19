@@ -29,6 +29,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  */
 public class SoundEngine {
     
+    
+    
     public static final Clip OPENBOOK = loadClip("resources/sounds/openjournal.wav");
     public static final Clip CLOSEBOOK = loadClip("resources/sounds/closejournal.wav");
     
@@ -152,8 +154,13 @@ public class SoundEngine {
             if (clip == null) {
                 return;
             }
-            FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.VOLUME);
-            control.setValue(newVolume);
+            try {
+                FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.VOLUME);
+                control.setValue(newVolume);
+            } catch (Exception ex2) {
+                FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
+                control.setValue((newVolume - 1) * 80);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -163,8 +170,13 @@ public class SoundEngine {
             if (clip == null) {
                 return;
             }
-            FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.VOLUME);
-            control.shift(control.getValue(), newVolume, (int)(seconds * 1000));
+            try {
+                FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.VOLUME);
+                control.shift(control.getValue(), newVolume, (int)(seconds * 1000));
+            } catch (Exception ex2) {
+                FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.MASTER_GAIN);
+                control.shift(control.getValue(), (newVolume - 1) * 80, (int)(seconds * 1000));
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
