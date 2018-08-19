@@ -24,6 +24,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import spacesurvival.engine.sound.SoundEngine;
+import spacesurvival.engine.sound.AdvancedSoundEngine;
 import spacesurvival.gui.layers.Background;
 import spacesurvival.gui.layers.BottomBar;
 import spacesurvival.gui.layers.DayEndPopupOverlay;
@@ -85,14 +86,9 @@ public class SpaceSurvival {
         
         Event.initAllEvents();
         
-        SoundEngine.SHIPRUMBLE.setVolume(0.5f);
-        SoundEngine.SHIPRUMBLE.play();
-        while(true) {
-            SoundEngine.SHIPRUMBLE.getClip().setFramePosition(0);
-            while (SoundEngine.SHIPRUMBLE.getClip().getFramePosition() < 200000) {
-                
-            }
-        }
+        AdvancedSoundEngine.init();
+        AdvancedSoundEngine.add(AdvancedSoundEngine.BUILD);
+        AdvancedSoundEngine.BUILD.fadeOut(0.5f);
         //SoundEngine.OPENBOOK.fadeTo(1f, 0.05f);
         //SoundEngine.init();
     }
