@@ -87,8 +87,10 @@ public class SpaceSurvival {
         Event.initAllEvents();
         
         AdvancedSoundEngine.init();
-        AdvancedSoundEngine.add(AdvancedSoundEngine.BUILD);
-        AdvancedSoundEngine.BUILD.fadeOut(0.5f);
+        AdvancedSoundEngine.add(AdvancedSoundEngine.TEST);
+        //AdvancedSoundEngine.add(AdvancedSoundEngine.CLOSEBOOK);
+        //AdvancedSoundEngine.OPENBOOK.setVolume(0.5f);
+        //AdvancedSoundEngine.OPENBOOK.fadeIn(0.5f);
         //SoundEngine.OPENBOOK.fadeTo(1f, 0.05f);
         //SoundEngine.init();
     }

@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -19,7 +21,7 @@ import javax.sound.sampled.AudioSystem;
  */
 public class PlayerStream extends InputStream {
     
-    private final List<Sound> sounds = new ArrayList<>();
+    private final Queue<Sound> sounds = new ConcurrentLinkedQueue<>();
     
     private int currentSampleIndex = 0;
     
@@ -40,6 +42,11 @@ public class PlayerStream extends InputStream {
         return 0;
     }*/
 
+    @Override
+    public int read(byte[] b, int off, int len) throws IOException {
+        return super.read(b, off, len); //To change body of generated methods, choose Tools | Templates.
+    }
+    
     @Override
     public int read() throws IOException {
         float sample = 0;
@@ -68,13 +75,14 @@ public class PlayerStream extends InputStream {
             sample = 1f;
         }
         
-        int shortSample = Math.round(sample * 0x7FFF);
+        short shortSample = (short)Math.round(sample * 0x7FFF);
         int byteSample = 0;
         if (currentSampleIndex%2 == 0) { //LSB
-            byteSample = (shortSample >> 0) & 0xFF;
-        } else { //LSB
+            byteSample = (shortSample     ) & 0xFF;
+        } else { //MSB
             byteSample = (shortSample >> 8) & 0xFF;
         }
+        
         currentSampleIndex++;
         if (currentSampleIndex > 3) {
             currentSampleIndex = 0;

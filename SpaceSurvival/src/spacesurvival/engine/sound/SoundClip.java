@@ -31,7 +31,7 @@ public class SoundClip {
         }
     }
     
-    public static SoundClip loadClip(String filename) {
+    public static SoundClip fromFile(String filename) {
         Clip in = null;
         
         

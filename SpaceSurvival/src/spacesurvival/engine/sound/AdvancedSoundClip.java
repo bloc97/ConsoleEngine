@@ -20,7 +20,7 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  *
  * @author bowen
  */
-public class SampledSound implements Sound {
+public class AdvancedSoundClip implements Sound {
 
     public static final int LOOP_FOREVER = -1;
     
@@ -29,27 +29,33 @@ public class SampledSound implements Sound {
     
     private final int length;
     private int position;
-    private float maxVolume;
+    private float volume;
     
     private float fadeVolume;
     private float fadeVolumeDelta;
     
     private int loopCount;
+    
+    private boolean isPlaying = false;
 
-    private SampledSound(float[] leftSamples, float[] rightSamples, int position, float maxVolume, int loopCount) {
+    private AdvancedSoundClip(float[] leftSamples, float[] rightSamples, int position, float volume, int loopCount) {
         this.leftSamples = leftSamples;
         this.rightSamples = rightSamples;
         this.length = leftSamples.length;
         this.position = position;
-        this.maxVolume = maxVolume;
-        this.fadeVolume = maxVolume;
+        this.volume = volume;
+        this.fadeVolume = volume;
         this.fadeVolumeDelta = 0f;
         this.loopCount = loopCount;
+    }
+
+    public boolean isPlaying() {
+        return isPlaying;
     }
     
     @Override
     public float getLeftSample() {
-        if (position >= length) {
+        if (position >= length || !isPlaying) {
             return 0f;
         }
         return leftSamples[position] * fadeVolume;
@@ -57,7 +63,7 @@ public class SampledSound implements Sound {
 
     @Override
     public float getRightSample() {
-        if (position >= length) {
+        if (position >= length || !isPlaying) {
             return 0f;
         }
         return rightSamples[position] * fadeVolume;
@@ -70,11 +76,14 @@ public class SampledSound implements Sound {
 
     @Override
     public boolean nextSample() {
+        if (!isPlaying) {
+            return false;
+        }
         position++;
         fadeVolume += fadeVolumeDelta;
         
-        if (fadeVolume > maxVolume) {
-            fadeVolume = maxVolume;
+        if (fadeVolume > volume) {
+            fadeVolume = volume;
         } else if (fadeVolume < 0f) {
             fadeVolume = 0f;
         }
@@ -94,6 +103,9 @@ public class SampledSound implements Sound {
 
     @Override
     public boolean hasNextSample() {
+        if (!isPlaying) {
+            return false;
+        }
         if (position + 1 >= length) {
             return false;
         } else {
@@ -133,19 +145,19 @@ public class SampledSound implements Sound {
     }
     
     public float getVolume() {
-        return maxVolume;
+        return volume;
     }
     
     public void setVolume(float volume) {
-        this.maxVolume = volume;
+        this.volume = volume;
     }
     
     public void fadeIn(float seconds) {
         if (seconds == 0) {
-            fadeVolume = maxVolume;
+            fadeVolume = volume;
             return;
         }
-        this.fadeVolumeDelta = maxVolume / (seconds * AdvancedSoundEngine.SAMPLE_RATE);
+        this.fadeVolumeDelta = volume / (seconds * AdvancedSoundEngine.SAMPLE_RATE);
     }
     
     public void fadeOut(float seconds) {
@@ -158,17 +170,17 @@ public class SampledSound implements Sound {
 
     @Override
     public Sound getCopy() {
-        return new SampledSound(leftSamples, rightSamples, position, maxVolume, loopCount);
+        return new AdvancedSoundClip(leftSamples, rightSamples, position, volume, loopCount);
     }
     
     
-    public static SampledSound fromFile(String filename) {
+    public static AdvancedSoundClip fromFile(String filename) {
         return fromFile(filename, 1f);
     }
-    public static SampledSound fromFile(String filename, float volume) {
+    public static AdvancedSoundClip fromFile(String filename, float volume) {
         return fromFile(filename, volume, 0);
     }
-    public static SampledSound fromFile(String filename, float volume, int loopCount) {
+    public static AdvancedSoundClip fromFile(String filename, float volume, int loopCount) {
         try {
             AudioInputStream stream = AudioSystem.getAudioInputStream(new File(filename));
             int channels = stream.getFormat().getChannels();
@@ -181,7 +193,6 @@ public class SampledSound implements Sound {
                 byte[] bytes = stream.readAllBytes();
                 int samples = bytes.length / channels / bytesPerSample;
                 float[][] channelSamples = new float[channels][samples];
-                
                 if (bytesPerSample == 2) {
                     ShortBuffer sbuf = ByteBuffer.wrap(bytes).order(isBigEndian ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN).asShortBuffer();
                     short[] shorts = new short[sbuf.capacity()];
@@ -205,22 +216,22 @@ public class SampledSound implements Sound {
                 //System.out.println(Arrays.toString(channelSamples[0]));
                 System.out.println("Loaded WAV file: " + filename + ", " + channels + " channels, " + bytesPerSample + " bytes/sample, " + (isBigEndian ? "Big" : "Small") + " Endian");
                 if (channels < 2) {
-                    return new SampledSound(channelSamples[0], channelSamples[0], 0, volume, loopCount);
+                    return new AdvancedSoundClip(channelSamples[0], channelSamples[0], 0, volume, loopCount);
                 } else {
-                    return new SampledSound(channelSamples[0], channelSamples[1], 0, volume, loopCount);
+                    return new AdvancedSoundClip(channelSamples[0], channelSamples[1], 0, volume, loopCount);
                 }
                 
                 
             } else {
-                System.out.println("Unsupported sample rate. " +  stream.getFormat().getSampleRate());
+                System.out.println("Failed to load WAV file: " + filename + ", file format unsupported.");
             }
             
         } catch (IOException | UnsupportedAudioFileException ex) {
-            System.out.println("File format unsupported.");
+            System.out.println("Failed to load WAV file: " + filename + ", error loading file.");
         } catch (Exception ex) {
-            System.out.println("Fatal exception!");
+            System.out.println("Failed to load WAV file: " + filename + ", fatal exception!");
         }
-        return null;
+        return new AdvancedSoundClip(new float[0], new float[0], 0, volume, loopCount);
         
     }
     

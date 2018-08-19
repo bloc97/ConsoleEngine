@@ -13,9 +13,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.DataLine;
+import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.Mixer;
 import javax.sound.sampled.SourceDataLine;
@@ -32,29 +35,29 @@ public class AdvancedSoundEngine {
     private static final ScheduledExecutorService EXECUTOR = Executors.newSingleThreadScheduledExecutor();
     private static final PlayerStream SOUNDPLAYER = new PlayerStream();
     
-    public static final SampledSound OPENBOOK = SampledSound.fromFile("resources/sounds/openjournal.wav");
-    public static final SampledSound CLOSEBOOK = SampledSound.fromFile("resources/sounds/closejournal.wav");
+    //public static final SampledSound OPENBOOK = SampledSound.fromFile("resources/sounds/openjournal.wav");
+    //public static final SampledSound CLOSEBOOK = SampledSound.fromFile("resources/sounds/closejournal.wav");
     
-    public static final SampledSound BUILD = SampledSound.fromFile("resources/sounds/build.wav");
-    public static final SampledSound CANCEL = SampledSound.fromFile("resources/sounds/cancel.wav");
+    //public static final SampledSound BUILD = SampledSound.fromFile("resources/sounds/build.wav");
+    //public static final SampledSound CANCEL = SampledSound.fromFile("resources/sounds/cancel.wav");
     
-    //public static final SampledSound TEST = SampledSound.fromFile("resources/sounds/tonetest.wav");
+    public static final AdvancedSoundClip TEST = AdvancedSoundClip.fromFile("resources/sounds/tonetest.wav");
     
-    private static final int LATENCY_MILLISECONDS = 100;
-    private static final int BUFFERSIZE = (int)(LATENCY_MILLISECONDS * SAMPLE_RATE / 1000) * 2 * 2;
+    private static final int LATENCY_MILLISECONDS = 50;
+    private static final int BUFFERSIZE = (int)(LATENCY_MILLISECONDS * SAMPLE_RATE / 1000f) * 2 * 2;
     //private static final int BUFFERSIZE = 2200 * 2 * 2;
     
     public static void init() {
         AudioInputStream stream = SOUNDPLAYER.createAudioInputStream();
         SourceDataLine line = null;
         try {
-            line = AudioSystem.getSourceDataLine(stream.getFormat());
+            line = AudioSystem.getSourceDataLine(stream.getFormat(), null);
             line.open(stream.getFormat(), BUFFERSIZE);
             line.start();
         } catch (LineUnavailableException ex) {
             line = null;
             try {
-                line = AudioSystem.getSourceDataLine(stream.getFormat(), null);
+                line = AudioSystem.getSourceDataLine(stream.getFormat());
                 line.open(stream.getFormat(), BUFFERSIZE);
                 line.start();
             
@@ -80,7 +83,7 @@ public class AdvancedSoundEngine {
             System.out.println("Fatal error on sound engine initialisation!");
             return;
         } else {
-            System.out.println("Sound Engine initialized, " + SAMPLE_RATE + " Hz sample rate, " + BUFFERSIZE + " bytes buffer");
+            System.out.println("Sound Engine initialized, " + SAMPLE_RATE + " Hz sample rate, " + BUFFERSIZE + " bytes buffer, " + (BUFFERSIZE / 2 / 2 * 1000f / SAMPLE_RATE) + " ms latency");
         }
         
         EXECUTOR.submit(() -> {
@@ -99,7 +102,24 @@ public class AdvancedSoundEngine {
             }
         });
     }
-    
+    private static Mixer.Info findMixer(final AudioFormat af) {
+        if(System.getProperty("javax.sound.sampled.SourceDataLine") != null)
+            return null;
+        
+        final Line.Info line = new DataLine.Info(SourceDataLine.class, af);
+        final Mixer.Info[] mixers = AudioSystem.getMixerInfo();
+        
+        for(final Mixer.Info mi : mixers)
+        {
+            final Mixer m = AudioSystem.getMixer(mi);
+            if(m.isLineSupported(line) 
+                    && !mi.getName().toLowerCase().startsWith("java sound"))
+            {
+                return mi;
+            }
+        }
+        return null;
+    }
     
     public static boolean add(Sound sound) {
         return SOUNDPLAYER.addSound(sound);

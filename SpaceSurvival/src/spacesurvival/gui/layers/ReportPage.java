@@ -20,6 +20,7 @@ import spacesurvival.engine.sound.SoundEngine;
 import spacesurvival.engine.console.CharacterImage;
 import spacesurvival.engine.console.BufferedConsoleComponent;
 import spacesurvival.engine.console.StringWriter;
+import spacesurvival.engine.sound.AdvancedSoundEngine;
 import spacesurvival.gui.GameLayer;
 import spacesurvival.logic.Colony;
 
@@ -223,14 +224,14 @@ public class ReportPage extends GameLayer implements Scrollable {
     
     public void maximize() {
         if (isMinimized) {
-            SoundEngine.play(SoundEngine.OPENBOOK);
+            AdvancedSoundEngine.OPENBOOK.setPosition(0);
             isMinimized = false;
             enable();
         }
     }
     public void minimize() {
         if (!isMinimized) {
-            SoundEngine.play(SoundEngine.CLOSEBOOK);
+            AdvancedSoundEngine.CLOSEBOOK.setPosition(0);
             isMinimized = true;
             disable();
         }

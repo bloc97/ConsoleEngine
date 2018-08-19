@@ -11,15 +11,15 @@ package spacesurvival.engine.sound;
  */
 public class SoundEngine {
     
-    public static final SoundClip OPENBOOK = SoundClip.loadClip("resources/sounds/openjournal.wav");
-    public static final SoundClip CLOSEBOOK = SoundClip.loadClip("resources/sounds/closejournal.wav");
+    public static final SoundClip OPENBOOK = SoundClip.fromFile("resources/sounds/openjournal.wav");
+    public static final SoundClip CLOSEBOOK = SoundClip.fromFile("resources/sounds/closejournal.wav");
     
-    public static final SoundClip BUILD = SoundClip.loadClip("resources/sounds/build.wav");
-    public static final SoundClip CANCEL = SoundClip.loadClip("resources/sounds/cancel.wav");
+    public static final SoundClip BUILD = SoundClip.fromFile("resources/sounds/build.wav");
+    public static final SoundClip CANCEL = SoundClip.fromFile("resources/sounds/cancel.wav");
     
     
-    public static final SoundClip REENTRY = SoundClip.loadClip("resources/sounds/reentry.wav");
+    public static final SoundClip REENTRY = SoundClip.fromFile("resources/sounds/reentry.wav");
     
-    public static final SoundClip SHIPRUMBLE = SoundClip.loadClip("resources/sounds/ship_deep_rumble.wav");
+    public static final SoundClip SHIPRUMBLE = SoundClip.fromFile("resources/sounds/ship_deep_rumble.wav");
     
 }
