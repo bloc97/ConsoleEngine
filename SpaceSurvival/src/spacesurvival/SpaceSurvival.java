@@ -6,10 +6,17 @@
 package spacesurvival;
 
 import java.awt.Color;
+import java.io.File;
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Application;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.stage.Stage;
 import javax.swing.ImageIcon;
 import spacesurvival.gui.GameScreen;
 import spacesurvival.engine.console.ConsoleJPanel;
@@ -52,7 +59,6 @@ public class SpaceSurvival {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        
         SwingUtilities.invokeLater(() -> {
             createAndShowGUI();
         });
@@ -79,9 +85,15 @@ public class SpaceSurvival {
         
         Event.initAllEvents();
         
-        SoundEngine.fadeTo(SoundEngine.OPENBOOK, 1f, 2f);
-        SoundEngine.play(SoundEngine.OPENBOOK);
-        SoundEngine.setVolume(SoundEngine.OPENBOOK, 0.8f);
+        SoundEngine.SHIPRUMBLE.setVolume(0.5f);
+        SoundEngine.SHIPRUMBLE.play();
+        while(true) {
+            SoundEngine.SHIPRUMBLE.getClip().setFramePosition(0);
+            while (SoundEngine.SHIPRUMBLE.getClip().getFramePosition() < 200000) {
+                
+            }
+        }
+        //SoundEngine.OPENBOOK.fadeTo(1f, 0.05f);
         //SoundEngine.init();
     }
 
@@ -105,4 +117,5 @@ public class SpaceSurvival {
         panel.setFocusTraversalKeysEnabled(false);*/
 
     }
+
 }

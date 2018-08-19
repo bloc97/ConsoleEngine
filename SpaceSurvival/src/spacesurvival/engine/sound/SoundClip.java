@@ -5,11 +5,18 @@
  */
 package spacesurvival.engine.sound;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.Mixer;
+import javax.sound.sampled.UnsupportedAudioFileException;
 
 /**
  *
@@ -18,10 +25,6 @@ import javax.sound.sampled.FloatControl;
 public class SoundClip implements Runnable {
 
     private final Clip clip;
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-    
-    private volatile float targetVolume = 1f;
-    private volatile float volumeDelta = 0f;
 
     private SoundClip(Clip clip) {
         if (clip == null) {
@@ -29,8 +32,61 @@ public class SoundClip implements Runnable {
         } else {
             this.clip = clip;
         }
-        executor.scheduleWithFixedDelay(this, 0, 1, TimeUnit.MILLISECONDS);
     }
+    
+    public static SoundClip loadClip(String filename) {
+        Clip in = null;
+        
+        
+        AudioInputStream audioIn = null;
+        try {
+            audioIn = AudioSystem.getAudioInputStream(new File(filename));
+        } catch (UnsupportedAudioFileException | IOException e) {
+            e.printStackTrace();
+            System.out.println("Audio file not found! " + filename);
+        }
+        
+        if (audioIn == null) {
+            return new SoundClip(in);
+        }
+        
+        try {
+            in = AudioSystem.getClip(null);
+            in.open(audioIn);
+        } catch (LineUnavailableException | IOException e) {
+            in = null;
+            try {
+                in = AudioSystem.getClip();
+                in.open(audioIn);
+            } catch (LineUnavailableException | IOException ex) {
+                in = null;
+                for (Mixer.Info mixerInfo : AudioSystem.getMixerInfo()) {
+                    try {
+                        in = AudioSystem.getClip(mixerInfo);
+                        in.open(audioIn);
+                        break;
+                    } catch(LineUnavailableException | IOException ex2) {
+                        in = null;
+                    }
+                }
+            }
+            
+        }
+        if (in == null) {
+            System.out.println("Audio device initialisation error!");
+        }
+
+        return new SoundClip(in);
+    }
+    
+    public boolean isPlaying() {
+        return clip.isRunning();
+    }
+
+    public Clip getClip() {
+        return clip;
+    }
+    
     
     
     public boolean play() {
@@ -61,22 +117,24 @@ public class SoundClip implements Runnable {
     
     public boolean resume() {
         try {
-            if (clip.isOpen() && !clip.isRunning()) {
-                clip.start();
-                return clip.isRunning();
-            }
+            //if (clip.isOpen() && !clip.isRunning()) {
+            clip.setFramePosition(clipPos);
+            clip.start();
+            return clip.isRunning();
+            //}
         } catch (Exception ex) {
             ex.printStackTrace();
         }
         return false;
     }
     
+    int clipPos = 0;
+    
     public boolean pause() {
         try {
-            if (clip.isRunning()) {
-                clip.stop();
-                return !clip.isRunning();
-            }
+            clipPos = clip.getFramePosition();
+            clip.stop();
+            return !clip.isRunning();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -94,8 +152,6 @@ public class SoundClip implements Runnable {
     }
     
     public boolean setVolume(float newVolume) {
-        targetVolume = newVolume;
-        volumeDelta = 0f;
         try {
             try {
                 FloatControl control = (FloatControl)clip.getControl(FloatControl.Type.VOLUME);
@@ -115,6 +171,7 @@ public class SoundClip implements Runnable {
                 } else if (newVolumeDecibels > max) {
                     newVolumeDecibels = max;
                 }
+                //System.out.println("setvalue " + newVolume);
                 control.setValue(newVolumeDecibels);
             }
             return true;
@@ -138,33 +195,4 @@ public class SoundClip implements Runnable {
         }
         return 0;
     }
-
-    public float getTargetVolume() {
-        return targetVolume;
-    }
-
-    public void setTargetVolume(float targetVolume) {
-        this.targetVolume = targetVolume;
-    }
-    
-    public void fadeTo(Clip clip, float newVolume, float seconds) {
-        volumeDelta = (newVolume - getVolume()) / (seconds * 1000f);
-        targetVolume = newVolume;
-    }
-    
-    @Override
-    public void run() {
-        final float currentVolume = getVolume();
-        if (currentVolume != targetVolume) {
-            float newVolume = currentVolume + volumeDelta;
-            if (volumeDelta < 0f && newVolume < targetVolume) {
-                newVolume = targetVolume;
-            } else if (volumeDelta > 0f && newVolume > targetVolume) {
-                newVolume = targetVolume;
-            }
-            setVolume(newVolume);
-        }
-    }
-    
-    
 }
