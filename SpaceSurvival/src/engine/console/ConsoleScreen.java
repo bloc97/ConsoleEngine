@@ -33,6 +33,7 @@ public class ConsoleScreen {
         this.height = height;
         this.consoleFont = consoleFont;
         this.componentMap = new TreeMap<>();
+        System.out.println("Console Emulator Engine initialised");
     }
 
     public ConsoleFont getConsoleFont() {

@@ -149,7 +149,6 @@ public final class ConsoleJPanel extends JPanel {
             repaint();
         }, 0, milisecondsPerFrame, TimeUnit.MILLISECONDS);
         
-        System.out.println("Graphics Engine initialised");
     }
 
     public ScheduledExecutorService getScheduledExecutorService() {
@@ -232,19 +231,22 @@ public final class ConsoleJPanel extends JPanel {
             if (customScale <= 0) {
                 customScale = 1;
                 
-                String error = "Resolution too small.";
+                String error = "Resolution too small";
                 
-                while ((customScale + 1) * screen.getConsoleFont().getWidth() * error.length() < getWidth()) {
+                while ((customScale + 1) * screen.getConsoleFont().getWidth() * (error.length() + 2) <= screenPixelWidth) {
                     customScale++;
                 }
                 
                 consoleWidth = screenPixelWidth / screen.getConsoleFont().getWidth() / customScale;
-                consoleHeight = screenPixelHeight / screen.getConsoleFont().getHeight() / customScale;
+                consoleHeight = 1;
                 
                 
                 final int eX = consoleWidth / 2 - error.length() / 2;
                 final int eY = consoleHeight / 2;
                 
+                final int xPad = (screenPixelWidth - (consoleWidth * customScale * screen.getConsoleFont().getWidth())) / 2;
+                final int yPad = (screenPixelHeight - (consoleHeight * customScale * screen.getConsoleFont().getHeight())) / 2;
+                g2.translate(xPad, yPad);
                 g2.scale(customScale, customScale);
                 
                 for (int i=0; i<error.length(); i++) {
