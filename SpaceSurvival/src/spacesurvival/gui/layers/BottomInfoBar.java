@@ -6,8 +6,8 @@
 package spacesurvival.gui.layers;
 
 import java.awt.Color;
-import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleComponent;
+import engine.console.CharacterImage;
+import engine.console.BufferedConsoleComponent;
 
 /**
  *

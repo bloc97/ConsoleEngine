@@ -7,10 +7,11 @@ package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import spacesurvival.GameSounds;
-import spacesurvival.SpaceSurvival;
-import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.StringWriter;
+import spacesurvival.GameDisplay;
+import engine.console.CharacterImage;
+import engine.console.StringWriter;
+import engine.sound.Sound;
+import spacesurvival.GameSound;
 import spacesurvival.gui.GameLayer;
 import spacesurvival.logic.Colony;
 
@@ -20,6 +21,9 @@ import spacesurvival.logic.Colony;
  */
 public class ReportPage extends GameLayer implements Scrollable {
 
+    private static Sound openSound = GameSound.INSTANCE.loadSound("openjournal");
+    private static Sound closeSound = GameSound.INSTANCE.loadSound("closejournal");
+    
     
     private Color mainColor;
     
@@ -214,14 +218,14 @@ public class ReportPage extends GameLayer implements Scrollable {
     
     public void maximize() {
         if (isMinimized) {
-            GameSounds.OPENBOOK.play();
+            openSound.play();
             isMinimized = false;
             enable();
         }
     }
     public void minimize() {
         if (!isMinimized) {
-            GameSounds.CLOSEBOOK.play();
+            closeSound.play();
             isMinimized = true;
             disable();
         }
@@ -361,7 +365,7 @@ public class ReportPage extends GameLayer implements Scrollable {
     
     @Override
     public boolean onKeyPressed(KeyEvent e, boolean isEntered, boolean isFocused) {
-        if (SpaceSurvival.EVENTPOPUP.isVisible() || SpaceSurvival.TEXTCUTSCENE.isVisible() /*|| SpaceSurvival.dayEndOverlay.isVisible()*/) {
+        if (GameDisplay.INSTANCE.EVENTPOPUP.isVisible() || GameDisplay.INSTANCE.TEXTCUTSCENE.isVisible() /*|| SpaceSurvival.dayEndOverlay.isVisible()*/) {
             return false;
         }
         switch (e.getKeyCode()) {

@@ -7,8 +7,8 @@ package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import spacesurvival.SpaceSurvival;
-import spacesurvival.engine.console.CharacterImage;
+import spacesurvival.GameDisplay;
+import engine.console.CharacterImage;
 import spacesurvival.gui.GameLayer;
 import spacesurvival.logic.Colony;
 
@@ -62,7 +62,7 @@ public class BottomBar extends GameLayer {
     }
     
     public void tickHorizontalAnimation() {
-        if (SpaceSurvival.REPORTPAGE.isFullyMinimized() && isEnabled()) {
+        if (GameDisplay.INSTANCE.REPORTPAGE.isFullyMinimized() && isEnabled()) {
             barScrollPos--;
             if (Colony.INSTANCE.getNews().length() + barScrollPos <= 0) {
                 barScrollPos = 0;
@@ -88,7 +88,7 @@ public class BottomBar extends GameLayer {
     @Override
     public boolean onMouseReleased(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
         if (isEntered && isFocused) {
-            SpaceSurvival.REPORTPAGE.maximize();
+            GameDisplay.INSTANCE.REPORTPAGE.maximize();
             return true;
         }
         return false;
@@ -97,14 +97,14 @@ public class BottomBar extends GameLayer {
     
     @Override
     public boolean onKeyReleased(KeyEvent e, boolean isEntered, boolean isFocused) {
-        if (SpaceSurvival.EVENTPOPUP.isVisible() || SpaceSurvival.TEXTCUTSCENE.isVisible() /*|| SpaceSurvival.dayEndOverlay.isVisible()*/) {
+        if (GameDisplay.INSTANCE.EVENTPOPUP.isVisible() || GameDisplay.INSTANCE.TEXTCUTSCENE.isVisible() /*|| SpaceSurvival.dayEndOverlay.isVisible()*/) {
             return false;
         }
         if (e.getKeyCode() == KeyEvent.VK_Q) {
-            SpaceSurvival.REPORTPAGE.toggleMinimized();
+            GameDisplay.INSTANCE.REPORTPAGE.toggleMinimized();
             return true;
-        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !SpaceSurvival.REPORTPAGE.isMinimized()) {
-            SpaceSurvival.REPORTPAGE.minimize();
+        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !GameDisplay.INSTANCE.REPORTPAGE.isMinimized()) {
+            GameDisplay.INSTANCE.REPORTPAGE.minimize();
             return true;
         }
         return false;

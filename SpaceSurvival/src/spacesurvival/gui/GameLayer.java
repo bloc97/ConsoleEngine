@@ -5,7 +5,8 @@
  */
 package spacesurvival.gui;
 
-import spacesurvival.engine.console.*;
+import engine.console.CharacterImage;
+import engine.console.BufferedConsoleComponent;
 
 /**
  *

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.engine.console;
+package engine.console;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -24,8 +24,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import spacesurvival.engine.console.ConsoleScreen;
-import spacesurvival.engine.console.utils.Graphics2DUtils;
+import engine.console.ConsoleScreen;
+import engine.console.utils.Graphics2DUtils;
 
 /**
  *
@@ -148,6 +148,8 @@ public final class ConsoleJPanel extends JPanel {
             screen.onTickEvent();
             repaint();
         }, 0, milisecondsPerFrame, TimeUnit.MILLISECONDS);
+        
+        System.out.println("Graphics Engine initialised");
     }
 
     public ScheduledExecutorService getScheduledExecutorService() {

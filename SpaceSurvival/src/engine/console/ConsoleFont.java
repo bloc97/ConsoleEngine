@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.engine.console;
+package engine.console;
 
-import spacesurvival.engine.console.utils.Graphics2DUtils;
+import engine.console.utils.Graphics2DUtils;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;

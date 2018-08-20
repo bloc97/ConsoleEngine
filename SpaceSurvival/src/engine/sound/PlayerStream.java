@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.engine.sound;
+package engine.sound;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +24,7 @@ import javax.sound.sampled.SourceDataLine;
  *
  * @author bowen
  */
-class PlayerStream extends InputStream {
+public class PlayerStream extends InputStream {
     
     public static final float SAMPLE_RATE = 44100f;
     
@@ -160,7 +160,7 @@ class PlayerStream extends InputStream {
             System.out.println("Fatal error on sound engine initialisation!");
             return false;
         } else {
-            System.out.println("Sound Engine initialized, " + SAMPLE_RATE + " Hz sample rate, " + BUFFERSIZE + " bytes buffer, " + (BUFFERSIZE / 2 / 2 * 1000f / SAMPLE_RATE) + " ms latency");
+            System.out.println("Sound Engine initialised, " + SAMPLE_RATE + " Hz sample rate, " + BUFFERSIZE + " bytes buffer, " + (BUFFERSIZE / 2 / 2 * 1000f / SAMPLE_RATE) + " ms latency");
         }
         
         isInitialized = true;

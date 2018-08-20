@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.engine.console;
+package engine.console;
 
-import spacesurvival.engine.console.utils.BoundingBoxUtils;
+import engine.console.utils.BoundingBoxUtils;
 import java.awt.image.BufferedImage;
 
 /**

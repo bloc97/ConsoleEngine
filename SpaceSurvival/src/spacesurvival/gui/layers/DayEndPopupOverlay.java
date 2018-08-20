@@ -9,10 +9,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.util.List;
-import spacesurvival.engine.console.ConsoleJPanel;
-import spacesurvival.SpaceSurvival;
-import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleComponent;
+import engine.console.ConsoleJPanel;
+import spacesurvival.GameDisplay;
+import engine.console.CharacterImage;
+import engine.console.BufferedConsoleComponent;
 import spacesurvival.gui.GameLayer;
 import spacesurvival.logic.Colony;
 import spacesurvival.logic.Event;
@@ -346,8 +346,8 @@ public class DayEndPopupOverlay extends GameLayer {
     
     public void nextDay() {
         Colony.INSTANCE.nextDay();
-        SpaceSurvival.REPORTPAGE.setScroll(0);
-        SpaceSurvival.REPORTPAGE.maximize();
+        GameDisplay.INSTANCE.REPORTPAGE.setScroll(0);
+        GameDisplay.INSTANCE.REPORTPAGE.maximize();
         /*
         ConsoleJPanel.topBar.genImage();
         ConsoleJPanel.bottomBar.setScroll(0);

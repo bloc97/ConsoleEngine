@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package spacesurvival.engine.sound;
+package engine.sound;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,8 +22,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  */
 public class AdvancedSoundClip implements Sound, SoundSamples {
 
-    
-    private static PlayerStream PLAYERSTREAM = null;
     
     private final float[] leftSamples;
     private final float[] rightSamples;
@@ -88,7 +86,9 @@ public class AdvancedSoundClip implements Sound, SoundSamples {
         if (!isPlaying) {
             return false;
         }
-        position++;
+        if (position <= length) {
+            position++;
+        }
         
         volume += fadeVolumeDelta;
         
@@ -191,21 +191,7 @@ public class AdvancedSoundClip implements Sound, SoundSamples {
     }
     
     
-    public static AdvancedSoundClip fromFile(String filename) {
-        return fromFile(filename, 1f);
-    }
-    public static AdvancedSoundClip fromFile(String filename, float volume) {
-        return fromFile(filename, volume, 0);
-    }
-    public static AdvancedSoundClip fromFile(String filename, float volume, int loopCount) {
-        
-        if (PLAYERSTREAM == null) {
-            PLAYERSTREAM = new PlayerStream();
-            PLAYERSTREAM.init();
-        } else if (!PLAYERSTREAM.isInitialized()) {
-            PLAYERSTREAM.init();
-        }
-        
+    public static AdvancedSoundClip fromFile(String filename, PlayerStream playerStream) {
         
         try {
             AudioInputStream stream = AudioSystem.getAudioInputStream(new File(filename));
@@ -241,9 +227,9 @@ public class AdvancedSoundClip implements Sound, SoundSamples {
                 }
                 
                 //System.out.println(Arrays.toString(channelSamples[0]));
+                final AdvancedSoundClip soundClip = new AdvancedSoundClip(channelSamples[0], (channels < 2) ? channelSamples[0] : channelSamples[1], 0, 1f, 0);
+                playerStream.addSound(soundClip);
                 System.out.println("Loaded WAV file: " + filename + ", " + channels + " channels, " + bytesPerSample + " bytes/sample, " + (isBigEndian ? "Big" : "Small") + " Endian");
-                final AdvancedSoundClip soundClip = new AdvancedSoundClip(channelSamples[0], (channels < 2) ? channelSamples[0] : channelSamples[1], 0, volume, loopCount);
-                PLAYERSTREAM.addSound(soundClip);
                 return soundClip;
                 
                 
@@ -256,7 +242,7 @@ public class AdvancedSoundClip implements Sound, SoundSamples {
         } catch (Exception ex) {
             System.out.println("Failed to load WAV file: " + filename + ", fatal exception!");
         }
-        return new AdvancedSoundClip(new float[0], new float[0], 0, volume, loopCount);
+        return new AdvancedSoundClip(new float[0], new float[0], 0, 0f, 0);
         
     }
     

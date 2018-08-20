@@ -7,8 +7,8 @@ package spacesurvival.gui;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
-import spacesurvival.engine.console.ConsoleFont;
-import spacesurvival.engine.console.ConsoleScreen;
+import engine.console.ConsoleFont;
+import engine.console.ConsoleScreen;
 
 /**
  *

@@ -9,10 +9,10 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.Random;
-import spacesurvival.engine.console.ConsoleJPanel;
+import engine.console.ConsoleJPanel;
 import spacesurvival.engine.sound.SoundEngine;
-import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleComponent;
+import engine.console.CharacterImage;
+import engine.console.BufferedConsoleComponent;
 import spacesurvival.logic.Building;
 import spacesurvival.logic.Colony;
 

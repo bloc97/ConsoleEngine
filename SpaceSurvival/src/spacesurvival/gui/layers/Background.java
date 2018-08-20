@@ -6,7 +6,7 @@
 package spacesurvival.gui.layers;
 
 import java.awt.Color;
-import spacesurvival.SpaceSurvival;
+import spacesurvival.GameDisplay;
 import spacesurvival.gui.GameLayer;
 
 /**
@@ -30,7 +30,7 @@ public class Background extends GameLayer {
         
         final int heightPad = getHeight() - (TOP_PADDING + BOTTOM_PADDING);
         
-        final int xline = SpaceSurvival.GAMESCREEN.getConsoleFont().getHeightWidthRatio() > 1 ? 38 : 19;
+        final int xline = GameDisplay.INSTANCE.gameScreen.getConsoleFont().getHeightWidthRatio() > 1 ? 38 : 19;
         
         getCharacterImage().drawRectangle(0, TOP_PADDING, xline, heightPad);
         getCharacterImage().drawRectangle(xline, TOP_PADDING, getWidth() - xline, heightPad);

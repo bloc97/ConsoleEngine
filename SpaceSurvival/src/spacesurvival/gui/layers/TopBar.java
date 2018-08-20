@@ -6,9 +6,9 @@
 package spacesurvival.gui.layers;
 
 import java.awt.Color;
-import spacesurvival.SpaceSurvival;
-import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleComponent;
+import spacesurvival.GameDisplay;
+import engine.console.CharacterImage;
+import engine.console.BufferedConsoleComponent;
 import spacesurvival.gui.GameLayer;
 import spacesurvival.logic.Colony;
 

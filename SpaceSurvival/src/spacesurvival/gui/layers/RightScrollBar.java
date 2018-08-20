@@ -6,7 +6,7 @@
 package spacesurvival.gui.layers;
 
 import java.awt.Color;
-import spacesurvival.engine.console.CharacterImage;
+import engine.console.CharacterImage;
 
 /**
  *

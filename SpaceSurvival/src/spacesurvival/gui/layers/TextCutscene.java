@@ -10,10 +10,10 @@ import java.awt.event.KeyEvent;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import spacesurvival.SpaceSurvival;
-import spacesurvival.engine.console.ConsoleJPanel;
-import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.StringWriter;
+import spacesurvival.GameDisplay;
+import engine.console.ConsoleJPanel;
+import engine.console.CharacterImage;
+import engine.console.StringWriter;
 import spacesurvival.gui.GameLayer;
 import spacesurvival.logic.Colony;
 import spacesurvival.logic.Event;
@@ -158,7 +158,7 @@ public class TextCutscene extends GameLayer {
             }, yes, no);
             thisEvent.setColor(0xFFEEEEEE, 0xFF302040);
             
-            SpaceSurvival.EVENTPOPUP.show(thisEvent);
+            GameDisplay.INSTANCE.EVENTPOPUP.show(thisEvent);
             
             return;
         }
@@ -179,7 +179,7 @@ public class TextCutscene extends GameLayer {
             dayEndOverlay.nextDay();
             **/
             Colony.INSTANCE.nextDay();
-            SpaceSurvival.REPORTPAGE.maximize();
+            GameDisplay.INSTANCE.REPORTPAGE.maximize();
             
             hide();
             disable();

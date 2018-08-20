@@ -7,11 +7,11 @@ package spacesurvival.gui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import spacesurvival.SpaceSurvival;
+import spacesurvival.GameDisplay;
 import static spacesurvival.gui.layers.ColonyBuildings.CARD_WIDTH;
-import spacesurvival.engine.console.CharacterImage;
-import spacesurvival.engine.console.BufferedConsoleComponent;
-import spacesurvival.engine.console.StringWriter;
+import engine.console.CharacterImage;
+import engine.console.BufferedConsoleComponent;
+import engine.console.StringWriter;
 import spacesurvival.gui.GameLayer;
 import static spacesurvival.gui.layers.TextCutscene.cutscene;
 import spacesurvival.logic.Colony;
@@ -56,7 +56,7 @@ public class EventPopupOverlay extends GameLayer {
         int xPad = (getWidth() - width) / 2;
         int yPad = (getHeight() - height) / 2;
         
-        final int cardWidth = SpaceSurvival.GAMESCREEN.getConsoleFont().getHeightWidthRatio() > 1 ? 24 : 12;
+        final int cardWidth = GameDisplay.INSTANCE.gameScreen.getConsoleFont().getHeightWidthRatio() > 1 ? 24 : 12;
         
         getCharacterImage().fillRectangleChar(xPad, yPad, width, height, ' ');
         //getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, new Color(eventColor).brighter().brighter().getRGB());
@@ -134,7 +134,7 @@ public class EventPopupOverlay extends GameLayer {
         int xPad = (getWidth() - width) / 2;
         int yPad = (getHeight() - height) / 2;
         
-        final int cardWidth = SpaceSurvival.GAMESCREEN.getConsoleFont().getHeightWidthRatio() > 1 ? 24 : 12;
+        final int cardWidth = GameDisplay.INSTANCE.gameScreen.getConsoleFont().getHeightWidthRatio() > 1 ? 24 : 12;
         
         if (choices.length > 0) {
         
