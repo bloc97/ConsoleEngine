@@ -78,6 +78,7 @@ public final class ConsoleJPanel extends JPanel {
                         frame.setUndecorated(true);
                         frame.setExtendedState(Frame.MAXIMIZED_BOTH);
                         frame.setVisible(true);
+                        frame.toFront();
                     } else {
                         frame.dispose();
                         frame.setUndecorated(false);

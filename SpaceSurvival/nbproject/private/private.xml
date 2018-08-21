@@ -3,10 +3,12 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/gui/layers/ReportPage.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/SpaceSurvival.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/engine/console/ConsoleJPanel.java</file>
-            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/spacesurvival/engine/sound/SoundEngine.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/engine/console/ConsoleJPanel.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/hans/GameSound.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/hans/SpaceSurvival.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/hans/GameDisplay.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/hans/gui/GameScreen.java</file>
+            <file>file:/C:/Users/bowen/Documents/GitHub/ConsoleSpaceSurvival/SpaceSurvival/src/engine/console/ConsoleScreen.java</file>
         </group>
     </open-files>
 </project-private>
