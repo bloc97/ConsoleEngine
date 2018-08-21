@@ -3,20 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hans.gui.layers;
+package hans.ui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import hans.GameDisplay;
+import hans.ui.HansGameWindow;
 import engine.console.CharacterImage;
-import hans.gui.GameLayer;
+import hans.ui.HansGameLayer;
 import hans.game.Colony;
 
 /**
  *
  * @author bowen
  */
-public class BottomBar extends GameLayer {
+public class BottomBar extends HansGameLayer {
 
     public static final int DEFAULT_HEIGHT = 1;
     
@@ -62,7 +62,7 @@ public class BottomBar extends GameLayer {
     }
     
     public void tickHorizontalAnimation() {
-        if (GameDisplay.INSTANCE.REPORTPAGE.isFullyMinimized() && isEnabled()) {
+        if (HansGameWindow.INSTANCE.REPORTPAGE.isFullyMinimized() && isEnabled()) {
             barScrollPos--;
             if (Colony.INSTANCE.getNews().length() + barScrollPos <= 0) {
                 barScrollPos = 0;
@@ -88,7 +88,7 @@ public class BottomBar extends GameLayer {
     @Override
     public boolean onMouseReleased(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
         if (isEntered && isFocused) {
-            GameDisplay.INSTANCE.REPORTPAGE.maximize();
+            HansGameWindow.INSTANCE.REPORTPAGE.maximize();
             return true;
         }
         return false;
@@ -97,14 +97,14 @@ public class BottomBar extends GameLayer {
     
     @Override
     public boolean onKeyReleased(KeyEvent e, boolean isEntered, boolean isFocused) {
-        if (GameDisplay.INSTANCE.EVENTPOPUP.isVisible() || GameDisplay.INSTANCE.TEXTCUTSCENE.isVisible() /*|| SpaceSurvival.dayEndOverlay.isVisible()*/) {
+        if (HansGameWindow.INSTANCE.EVENTPOPUP.isVisible() || HansGameWindow.INSTANCE.TEXTCUTSCENE.isVisible() /*|| SpaceSurvival.dayEndOverlay.isVisible()*/) {
             return false;
         }
         if (e.getKeyCode() == KeyEvent.VK_Q) {
-            GameDisplay.INSTANCE.REPORTPAGE.toggleMinimized();
+            HansGameWindow.INSTANCE.REPORTPAGE.toggleMinimized();
             return true;
-        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !GameDisplay.INSTANCE.REPORTPAGE.isMinimized()) {
-            GameDisplay.INSTANCE.REPORTPAGE.minimize();
+        } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !HansGameWindow.INSTANCE.REPORTPAGE.isMinimized()) {
+            HansGameWindow.INSTANCE.REPORTPAGE.minimize();
             return true;
         }
         return false;

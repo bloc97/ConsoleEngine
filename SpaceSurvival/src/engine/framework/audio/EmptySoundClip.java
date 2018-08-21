@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package engine.sound;
+package engine.framework.audio;
 
 import java.io.IOException;
 import javax.sound.sampled.AudioFormat;

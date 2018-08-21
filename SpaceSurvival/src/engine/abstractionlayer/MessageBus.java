@@ -46,6 +46,14 @@ public class MessageBus {
         });
     }
     
+    public boolean addReceiver(MessageReceiver receiver) {
+        if (receivers.contains(receiver)) {
+            return false;
+        } else {
+            return receivers.add(receiver);
+        }
+    }
+    
     public final boolean broadcastImmediately(Message message) {
         if (message == null) {
             return false;

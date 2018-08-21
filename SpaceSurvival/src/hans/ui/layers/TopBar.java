@@ -3,20 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hans.gui.layers;
+package hans.ui.layers;
 
 import java.awt.Color;
-import hans.GameDisplay;
+import hans.ui.HansGameWindow;
 import engine.console.CharacterImage;
 import engine.console.BufferedConsoleComponent;
-import hans.gui.GameLayer;
+import hans.ui.HansGameLayer;
 import hans.game.Colony;
 
 /**
  *
  * @author bowen
  */
-public class TopBar extends GameLayer {
+public class TopBar extends HansGameLayer {
     
     public static final int DEFAULT_HEIGHT = 1;
     

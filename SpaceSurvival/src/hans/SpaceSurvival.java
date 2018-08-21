@@ -5,12 +5,19 @@
  */
 package hans;
 
-import engine.console.ConsoleJPanel;
+import hans.ui.HansGameHandler;
+import engine.abstractionlayer.Message;
+import engine.abstractionlayer.MessageBus;
+import engine.console.ConsoleFont;
+import engine.console.ConsoleHandler;
+import engine.framework.swing.SwingGameWindow;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import hans.game.Event;
+import hans.ui.HansGameWindow;
+import hans.ui.layers.Background;
+import java.awt.Color;
+import java.awt.event.MouseEvent;
+import javax.swing.JFrame;
 /**
  *
  * @author bowen
@@ -23,39 +30,23 @@ public class SpaceSurvival {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        MessageBus messageBus = new MessageBus();
         
-        SwingUtilities.invokeLater(() -> {
-            createAndShowGUI();
-        });
+        HansGameWindow window = new HansGameWindow();
+        
+        ConsoleHandler consoleHandler = new HansGameHandler(messageBus);
+        consoleHandler.addComponent(0, new Background(new Color(120, 146, 190), consoleHandler));
+        
+        window.attachRenderHandler(consoleHandler);
+        window.attachInputHandler(consoleHandler);
+        window.show();
+        
+        messageBus.addReceiver(window);
+        
         Event.initAllEvents();
         
         
-        //AdvancedSoundEngine.add(AdvancedSoundEngine.CLOSEBOOK);
-        //AdvancedSoundEngine.OPENBOOK.setVolume(0.5f);
-        //AdvancedSoundEngine.OPENBOOK.fadeIn(0.5f);
-        //SoundEngine.OPENBOOK.fadeTo(1f, 0.05f);
-        //SoundEngine.init();
     }
 
-    private static void createAndShowGUI() {
-        //System.out.println("Created GUI on EDT? "+
-        //SwingUtilities.isEventDispatchThread());
-        JFrame frame = new JFrame("The Unfortunate Story of Hans");
-        JPanel panel = new ConsoleJPanel(frame, GameDisplay.INSTANCE.gameScreen, 60, 30, 10);
-
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(panel);
-        frame.pack();
-        frame.setVisible(true);
-        frame.setIconImage(new ImageIcon("resources/icon.png").getImage());
-        
-        
-        /*
-        panel.setFocusable(true);
-        panel.requestFocus();
-        panel.requestFocusInWindow();
-        panel.setFocusTraversalKeysEnabled(false);*/
-
-    }
 
 }

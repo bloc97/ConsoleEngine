@@ -14,9 +14,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.ComponentEvent;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +43,12 @@ public abstract class ConsoleHandler implements RenderHandler, InputHandler {
     private int xPad = 0;
     private int yPad = 0;
     
+    private MouseEvent lastMouseEvent;
+    private boolean isMousePressed = false;
+    
+    private MouseEvent lastRawMouseEvent;
+    private int lastRenderWidthPixels = 1, lastRenderHeightPixels = 1;
+    
     public ConsoleHandler(int minimumWidth, int minimumHeight, ConsoleFont consoleFont) {
         this.minimumWidth = (minimumWidth < 1) ? 1 : minimumWidth;
         this.minimumHeight = (minimumHeight < 1) ? 1 : minimumHeight;
@@ -47,15 +56,70 @@ public abstract class ConsoleHandler implements RenderHandler, InputHandler {
         this.height = this.minimumHeight;
         this.consoleFont = consoleFont;
         this.componentMap = new TreeMap<>();
-        System.out.println("Console Emulator Engine initialised");
     }
 
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getMinimumHeight() {
+        return minimumHeight;
+    }
+
+    public int getMinimumWidth() {
+        return minimumWidth;
+    }
+
+    public int getCustomScale() {
+        return customScale;
+    }
+
+    public int getxPad() {
+        return xPad;
+    }
+
+    public int getyPad() {
+        return yPad;
+    }
+
+    public int getLastRenderWidthPixels() {
+        return lastRenderWidthPixels;
+    }
+
+    public int getLastRenderHeightPixels() {
+        return lastRenderHeightPixels;
+    }
+
+    public MouseEvent getLastMouseEvent() {
+        return lastMouseEvent;
+    }
+
+    public boolean isIsMousePressed() {
+        return isMousePressed;
+    }
+
+    public MouseEvent getLastRawMouseEvent() {
+        return lastRawMouseEvent;
+    }
+    
     public ConsoleFont getConsoleFont() {
         return consoleFont;
     }
 
-    public void setConsoleFont(ConsoleFont consoleFont) {
+    public final void setConsoleFont(ConsoleFont consoleFont) {
         this.consoleFont = consoleFont;
+        if (lastRawMouseEvent != null) {
+            setDimensionPixels(lastRenderWidthPixels, lastRenderHeightPixels);
+            if (!isMousePressed) {
+                mouseMoved(lastRawMouseEvent);
+            } else {
+                mouseDragged(lastRawMouseEvent);
+            }
+        }
     }
 
     public Set<Integer> getComponentLayers() {
@@ -64,6 +128,10 @@ public abstract class ConsoleHandler implements RenderHandler, InputHandler {
     
     public List<ConsoleComponent> getComponents() {
         return Collections.unmodifiableList(new ArrayList<>(componentMap.values()));
+    }
+    
+    public List<ConsoleComponent> getDescendingComponents() {
+        return Collections.unmodifiableList(new ArrayList<>(componentMap.descendingMap().values()));
     }
     
     public boolean addComponent(int layer, ConsoleComponent panel) {
@@ -87,8 +155,8 @@ public abstract class ConsoleHandler implements RenderHandler, InputHandler {
         return componentMap.remove(layer);
     }
     
-    private boolean paintPos(final Graphics2D g2, final int x, final int y) {
-        final Collection<ConsoleComponent> panels = componentMap.values();
+    public boolean paintPos(final Graphics2D g2, final int x, final int y) {
+        final Collection<ConsoleComponent> panels = getComponents();
         
         List<Character> characterList = new ArrayList<>();
         List<Integer> foregroundColorList = new ArrayList<>();
@@ -134,16 +202,15 @@ public abstract class ConsoleHandler implements RenderHandler, InputHandler {
         return !characterList.isEmpty();
     }
     
-    public BufferedImage getImage() {
-        if (width <= 0 || height <= 0) {
+    public final BufferedImage getImage() {
+        if (getWidth() <= 0 || getHeight() <= 0) {
             return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         }
-        final BufferedImage image = new BufferedImage(width * consoleFont.getWidth(), height * consoleFont.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage image = new BufferedImage(getWidth() * getConsoleFont().getWidth(), getHeight() * getConsoleFont().getHeight(), BufferedImage.TYPE_INT_ARGB);
         
         final Graphics2D g2 = image.createGraphics();
-        onPaintEvent();
-        for (int j=0; j<height; j++) {
-            for (int i=0; i<width; i++) {
+        for (int j=0; j<getHeight(); j++) {
+            for (int i=0; i<getWidth(); i++) {
                 paintPos(g2, i, j);
             }
         }
@@ -151,334 +218,411 @@ public abstract class ConsoleHandler implements RenderHandler, InputHandler {
         return image;
     }
     
-    public ConsoleComponent getEnabledLayerAt(int x, int y) {
-        for (ConsoleComponent p : componentMap.descendingMap().values()) {
-            if (p.isEnabled() && x >= p.getX() && x < (p.getX() + p.getWidth()) && y >= p.getY() && y < (p.getY() + p.getHeight())) {
+    public final ConsoleComponent getEnabledLayerAt(MouseEvent e) {
+        if (e == null) {
+            return null;
+        }
+        for (ConsoleComponent p : getDescendingComponents()) {
+            if (p.isEnabled() && e.getX() >= p.getX() && e.getX() < (p.getX() + p.getWidth()) && e.getY() >= p.getY() && e.getY() < (p.getY() + p.getHeight())) {
                 return p;
             }
         }
         return null;
     }
     
-    protected ConsoleComponent focusedLayer = null;
-    protected ConsoleComponent enteredLayer = null;
+    protected ConsoleComponent getFocusedComponent() {
+        return focusedComponent;
+    }
     
-    private void updateFocus(int x, int y) {
-        final ConsoleComponent lastFocusedLayer = focusedLayer;
-        focusedLayer = getEnabledLayerAt(x, y);
+    protected ConsoleComponent getEnteredComponent() {
+        return enteredComponent;
+    }
+    
+    private ConsoleComponent focusedComponent = null;
+    private ConsoleComponent enteredComponent = null;
+    
+    private void updateFocus(MouseEvent e) {
+        final ConsoleComponent lastFocusedLayer = focusedComponent;
+        focusedComponent = getEnabledLayerAt(e);
         
-        if (focusedLayer != lastFocusedLayer) {
+        if (focusedComponent != lastFocusedLayer) {
             if (lastFocusedLayer != null) {
-                lastFocusedLayer.onUnfocus(lastFocusedLayer == enteredLayer);
+                lastFocusedLayer.onUnfocus();
             }
-            if (focusedLayer != null) {
-                focusedLayer.onFocus(focusedLayer == enteredLayer);
+            if (focusedComponent != null) {
+                focusedComponent.onFocus();
             }
         }
     }
-    private void updateEnter(int x, int y) {
-        final ConsoleComponent lastEnteredLayer = enteredLayer;
-        final ConsoleComponent newEnteredLayer = getEnabledLayerAt(x, y);
+    private void updateEnter(MouseEvent e) {
+        final ConsoleComponent lastEnteredLayer = enteredComponent;
+        final ConsoleComponent newEnteredLayer = getEnabledLayerAt(e);
         
         if (newEnteredLayer != lastEnteredLayer) {
             if (lastEnteredLayer != null) {
-                lastEnteredLayer.onMouseExited(x, y, lastEnteredLayer == focusedLayer);
+                lastEnteredLayer.onMouseExited(e);
             }
             if (newEnteredLayer != null && newEnteredLayer.isEnabled()) {
-                newEnteredLayer.onMouseEntered(x, y, newEnteredLayer == focusedLayer);
-                enteredLayer = newEnteredLayer;
+                newEnteredLayer.onMouseEntered(e);
+                enteredComponent = newEnteredLayer;
             } else {
-                enteredLayer = null;
+                enteredComponent = null;
             }
-        } else if (enteredLayer != null && !enteredLayer.isEnabled()) {
-            enteredLayer = null;
+        } else if (lastEnteredLayer != null && !lastEnteredLayer.isEnabled()) {
+            lastEnteredLayer.onMouseExited(e);
+            enteredComponent = null;
         }
     }
     
-    private int lastMouseX, lastMouseY;
-    private boolean isMousePressed = false;
-    
-    public final boolean onMouseMovedEvent(int x, int y) {
-        lastMouseX = x;
-        lastMouseY = y;
-        if (onMouseMoved(x, y)) {
-            return true;
+    private void onMouseMovedEvent(MouseEvent e) {
+        lastMouseEvent = e;
+        onMouseMoved(e);
+        updateEnter(e);
+        if (enteredComponent != null) {
+            e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX() - enteredComponent.getX(), e.getY() - enteredComponent.getY(), e.getX(), e.getY(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+            enteredComponent.onMouseMoved(e);
         }
-        updateEnter(x, y);
-        componentMap.descendingMap().values().stream().filter((layer) -> (layer.isEnabled())).forEachOrdered((layer) -> {layer.onMouseMoved(x - layer.getX(), y - layer.getY(), layer == enteredLayer, layer == focusedLayer);});
-        return true;
     }
-    public final boolean onMouseDraggedEvent(int x, int y, boolean isLeftClick) {
-        lastMouseX = x;
-        lastMouseY = y;
-        if (onMouseDragged(x, y, isLeftClick)) {
-            return true;
-        }
+    private void onMouseDraggedEvent(MouseEvent e) {
+        lastMouseEvent = e;
+        onMouseDragged(e);
         
-        //updateEnter(x, y);
-        
-        componentMap.descendingMap().values().stream().filter((layer) -> (layer.isEnabled())).forEachOrdered((layer) -> {layer.onMouseDragged(x - layer.getX(), y - layer.getY(), isLeftClick, layer == enteredLayer, layer == focusedLayer);});
-        return true;
-    }
-    public final boolean onMouseClickedEvent(int x, int y, boolean isLeftClick) {
-        lastMouseX = x;
-        lastMouseY = y;
-        if (onMouseClicked(x, y, isLeftClick)) {
-            return true;
+        if (enteredComponent != null) {
+            e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX() - enteredComponent.getX(), e.getY() - enteredComponent.getY(), e.getX(), e.getY(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+            enteredComponent.onMouseDragged(e);
         }
-        componentMap.descendingMap().values().stream().filter((layer) -> (layer.isEnabled())).forEachOrdered((layer) -> {layer.onMouseClicked(x - layer.getX(), y - layer.getY(), isLeftClick, layer == enteredLayer, layer == focusedLayer);});
-        return true;
     }
-    public final boolean onMousePressedEvent(int x, int y, boolean isLeftClick) {
-        lastMouseX = x;
-        lastMouseY = y;
+    private void onMouseClickedEvent(MouseEvent e) {
+        lastMouseEvent = e;
+        onMouseClicked(e);
+        if (focusedComponent != null) {
+            e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX() - enteredComponent.getX(), e.getY() - enteredComponent.getY(), e.getX(), e.getY(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+            focusedComponent.onMouseClicked(e);
+        }
+    }
+    private void onMousePressedEvent(MouseEvent e) {
+        lastMouseEvent = e;
         isMousePressed = true;
-        if (onMousePressed(x, y, isLeftClick)) {
-            return true;
+        onMousePressed(e);
+        updateFocus(e);
+        updateEnter(e);
+        if (focusedComponent != null) {
+            e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX() - enteredComponent.getX(), e.getY() - enteredComponent.getY(), e.getX(), e.getY(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+            focusedComponent.onMousePressed(e);
         }
-        updateFocus(x, y);
-        updateEnter(x, y);
-        componentMap.descendingMap().values().stream().filter((layer) -> (layer.isEnabled())).forEachOrdered((layer) -> {layer.onMousePressed(x - layer.getX(), y - layer.getY(), isLeftClick, layer == enteredLayer, layer == focusedLayer);});
-        return true;
     }
-    public final boolean onMouseReleasedEvent(int x, int y, boolean isLeftClick) {
-        lastMouseX = x;
-        lastMouseY = y;
+    private void onMouseReleasedEvent(MouseEvent e) {
+        lastMouseEvent = e;
         isMousePressed = false;
-        if (onMouseReleased(x, y, isLeftClick)) {
-            return true;
+        onMouseReleased(e);
+        updateEnter(e);
+        if (enteredComponent != null) {
+            e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX() - enteredComponent.getX(), e.getY() - enteredComponent.getY(), e.getX(), e.getY(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+            enteredComponent.onMouseReleased(e);
         }
-        updateEnter(x, y);
-        componentMap.descendingMap().values().stream().filter((layer) -> (layer.isEnabled())).forEachOrdered((layer) -> {layer.onMouseReleased(x - layer.getX(), y - layer.getY(), isLeftClick, layer == enteredLayer, layer == focusedLayer);});
-        return true;
     }
-    public final boolean onMouseWheelMovedEvent(int x, int y, int i) {
-        lastMouseX = x;
-        lastMouseY = y;
-        if (onMouseWheelMoved(x, y, i)) {
-            return true;
+    private void onMouseWheelMovedEvent(MouseWheelEvent e) {
+        lastMouseEvent = e;
+        onMouseWheelMoved(e);
+        updateEnter(e);
+        if (enteredComponent != null) {
+            e = new MouseWheelEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(),  e.getX() - enteredComponent.getX(), e.getY() - enteredComponent.getY(), e.getX(), e.getY(),
+                    e.getClickCount(), e.isPopupTrigger(), e.getScrollType(), e.getScrollAmount(), e.getWheelRotation(), e.getPreciseWheelRotation());
+            enteredComponent.onMouseWheelMoved(e);
         }
-        updateEnter(x, y);
-        componentMap.descendingMap().values().stream().filter((layer) -> (layer.isEnabled())).forEachOrdered((layer) -> {layer.onMouseWheelMoved(x - layer.getX(), y - layer.getY(), i, layer == enteredLayer, layer == focusedLayer);});
-        return true;
     }
     
-    public final boolean onKeyPressedEvent(KeyEvent e) {
-        if (onKeyPressed(e)) {
-            return true;
+    private void onKeyPressedEvent(KeyEvent e) {
+        onKeyPressed(e);
+        if (focusedComponent != null) {
+            focusedComponent.onKeyPressed(e);
         }
-        componentMap.descendingMap().values().stream().filter((layer) -> (layer.isEnabled())).forEachOrdered((layer) -> {layer.onKeyPressed(e, layer == enteredLayer, layer == focusedLayer);});
-        return true;
     }
-    public final boolean onKeyReleasedEvent(KeyEvent e) {
-        if (onKeyReleased(e)) {
-            return true;
+    private void onKeyReleasedEvent(KeyEvent e) {
+        onKeyReleased(e);
+        if (focusedComponent != null) {
+            focusedComponent.onKeyReleased(e);
         }
-        componentMap.descendingMap().values().stream().filter((layer) -> (layer.isEnabled())).forEachOrdered((layer) -> {layer.onKeyReleased(e, layer == enteredLayer, layer == focusedLayer);});
-        return true;
     }
-    public final boolean onKeyTypedEvent(KeyEvent e) {
-        if (onKeyTyped(e)) {
-            return true;
+    private void onKeyTypedEvent(KeyEvent e) {
+        onKeyTyped(e);
+        if (focusedComponent != null) {
+            focusedComponent.onKeyTyped(e);
         }
-        componentMap.descendingMap().values().stream().filter((layer) -> (layer.isEnabled())).forEachOrdered((layer) -> {layer.onKeyTyped(e, layer == enteredLayer, layer == focusedLayer);});
-        return true;
     }
     
-    public final boolean onTickEvent() {
-        
-        if (!isMousePressed || (enteredLayer != null && !enteredLayer.isEnabled())) {
-            updateEnter(lastMouseX, lastMouseY);
+    private void onTickEvent() {
+        if (!isMousePressed || (enteredComponent != null && !enteredComponent.isEnabled())) { //If mouse is not pressed or current component gets disabled
+            updateEnter(lastMouseEvent);
         }
-        boolean isTrue = false;
-        isTrue |= onTick();
-        for (ConsoleComponent layer : componentMap.values()) {
-            if (layer.isEnabled()) {
-                isTrue |= layer.onTick(lastMouseX, lastMouseY, layer == enteredLayer, layer == focusedLayer);
-            }
-        }
-        return isTrue;
+        onTick();
+        componentMap.values().forEach((t) -> {
+            t.onTick();
+        });
     }
-    public final boolean onPrePaintEvent() {
-        if (!isMousePressed || (enteredLayer != null && !enteredLayer.isEnabled())) {
-            updateEnter(lastMouseX, lastMouseY);
+    private void onPrePaintEvent() {
+        if (!isMousePressed || (enteredComponent != null && !enteredComponent.isEnabled())) {
+            updateEnter(lastMouseEvent);
         }
-        boolean isTrue = false;
-        isTrue |= onPrePaint();
-        for (ConsoleComponent layer : componentMap.values()) {
-            if (layer.isEnabled() && layer.isVisible()) {
-                isTrue |= layer.onPrePaintTick(lastMouseX, lastMouseY, layer == enteredLayer, layer == focusedLayer);
-            }
-        }
-        return isTrue;
-    }
-    public final boolean onPaintEvent() {
-        boolean isTrue = false;
-        isTrue |= onPaint();
-        for (ConsoleComponent layer : componentMap.values()) {
-            if (layer.isEnabled() && layer.isVisible()) {
-                isTrue |= layer.onPaintTick(lastMouseX, lastMouseY, layer == enteredLayer, layer == focusedLayer);
-            }
-        }
-        return isTrue;
-    }
-    public final boolean onPostPaintEvent() {
-        boolean isTrue = false;
-        isTrue |= onPostPaint();
-        for (ConsoleComponent layer : componentMap.values()) {
-            if (layer.isEnabled() && layer.isVisible()) {
-                isTrue |= layer.onPostPaintTick(lastMouseX, lastMouseY, layer == enteredLayer, layer == focusedLayer);
-            }
-        }
-        return isTrue;
+        onPrePaint();
+        componentMap.values().forEach((t) -> {
+            t.onPrePaint();
+        });
     }
     
-    public boolean onMouseMoved(int x, int y) {
-        return false;
+    private void onPaintEvent() {
+        onPaint();
+        componentMap.values().forEach((t) -> {
+            t.onPaint();
+        });
     }
-    public boolean onMouseDragged(int x, int y, boolean isLeftClick) {
-        return false;
-    }
-    public boolean onMouseClicked(int x, int y, boolean isLeftClick) {
-        return false;
-    }
-    public boolean onMousePressed(int x, int y, boolean isLeftClick) {
-        return false;
-    }
-    public boolean onMouseReleased(int x, int y, boolean isLeftClick) {
-        return false;
-    }
-    public boolean onMouseWheelMoved(int x, int y, int i) {
-        return false;
+    private void onPostPaintEvent() {
+        onPostPaint();
+        componentMap.values().forEach((t) -> {
+            t.onPostPaint();
+        });
     }
     
-    public boolean onKeyPressed(KeyEvent e) {
-        return false;
+    public void onFocus() {
     }
-    public boolean onKeyReleased(KeyEvent e) {
-        return false;
-    }
-    public boolean onKeyTyped(KeyEvent e) {
-        return false;
+    public void onUnfocus() {
     }
     
-    public boolean onTick() {
-        return false;
+    public void onMouseEntered(MouseEvent e) {
     }
-    public boolean onPrePaint() {
-        return false;
+    public void onMouseExited(MouseEvent e) {
     }
-    public boolean onPaint() {
-        return false;
+    
+    public void onMouseMoved(MouseEvent e) {
     }
-    public boolean onPostPaint() {
-        return false;
+    public void onMouseDragged(MouseEvent e) {
     }
-
-    public int getWidth() {
-        return width;
+    public void onMouseClicked(MouseEvent e) {
     }
-
-    public int getHeight() {
-        return height;
+    public void onMousePressed(MouseEvent e) {
+    }
+    public void onMouseReleased(MouseEvent e) {
+    }
+    public void onMouseWheelMoved(MouseWheelEvent e) {
+    }
+    
+    public void onKeyPressed(KeyEvent e) {
+    }
+    public void onKeyReleased(KeyEvent e) {
+    }
+    public void onKeyTyped(KeyEvent e) {
+    }
+    
+    public void onTick() {
+    }
+    public void onPrePaint() {
+    }
+    public void onPaint() {
+    }
+    public void onPostPaint() {
     }
     
     @Override
-    public void setDimensionPixels(int renderWidthPixels, int renderHeightPixels) {
-        
-        final int customScaleWidth = renderWidthPixels / getConsoleFont().getWidth() / minimumWidth;
-        final int customScaleHeight = renderHeightPixels / getConsoleFont().getHeight() / minimumHeight;
+    public final void setDimensionPixels(int renderWidthPixels, int renderHeightPixels) {
+        this.lastRenderWidthPixels = renderWidthPixels;
+        this.lastRenderHeightPixels = renderHeightPixels;
+        final int customScaleWidth = renderWidthPixels / getConsoleFont().getWidth() / getMinimumWidth();
+        final int customScaleHeight = renderHeightPixels / getConsoleFont().getHeight() / getMinimumHeight();
         
         customScale = Math.min(customScaleWidth, customScaleHeight);
         
+        if (customScale < 1) {
+            customScale = 1;
+        }
+        
         final int lastWidth = width;
         final int lastHeight = height;
-        
+
         width = renderWidthPixels / getConsoleFont().getWidth() / customScale;
         height = renderHeightPixels / getConsoleFont().getHeight() / customScale;
-        
+
         xPad = (renderWidthPixels - (width * customScale * getConsoleFont().getWidth())) / 2;
         yPad = (renderHeightPixels - (height * customScale * getConsoleFont().getHeight())) / 2;
-        
-        
+
+
         if (width != lastWidth || height != lastHeight) {
             componentMap.values().forEach((t) -> {
                 t.onScreenDimensionChange(width, height);
             });
         }
+        
     }
 
-    private Point getMouseConsolePosition(int mouseX, int mouseY) {
-        return new Point((mouseX - xPad) / width, (mouseY - yPad) / height);
+    public final Point getMouseConsolePosition(int mouseX, int mouseY) {
+        return new Point((mouseX - xPad) / getConsoleFont().getWidth() / customScale, (mouseY - yPad) / getConsoleFont().getHeight() / customScale);
     }
     
     @Override
-    public void render(Object graphics) {
+    public final void paint(Object graphics) {
         if (graphics instanceof Graphics2D) {
+            
             Graphics2D g2 = (Graphics2D) graphics;
             //Sets the RenderingHints
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
             
             //Paints everything
-            onPrePaintEvent();
-
-            final BufferedImage image = getImage();
-            g2.drawImage(image, xPad, yPad, image.getWidth() * customScale, image.getHeight() * customScale, null);
-
-            onPostPaintEvent();
             
-            
+            if (getWidth() >= getMinimumWidth() && getHeight() >= getMinimumHeight()) {
+                onPaintEvent();
+                final BufferedImage image = getImage();
+                g2.drawImage(image, xPad, yPad, image.getWidth() * customScale, image.getHeight() * customScale, null);
+            } else {
+                failedPaint(g2);
+            }
+        }
+    }
+    
+    public void failedPaint(Graphics2D g2) {
+        
+        final String error = "Resolution too small";
+
+        int textWidth = error.length() + 2;
+        int textHeight = 1;
+
+        final int customScaleWidth = lastRenderWidthPixels / getConsoleFont().getWidth() / textWidth;
+        final int customScaleHeight = lastRenderHeightPixels / getConsoleFont().getHeight() / textHeight;
+
+        int tempCustomScale = Math.min(customScaleWidth, customScaleHeight);
+        if (tempCustomScale < 1) {
+            tempCustomScale = 1;
+        }
+
+        int tempXPad = (lastRenderWidthPixels - (textWidth * tempCustomScale * getConsoleFont().getWidth())) / 2;
+        int tempYPad = (lastRenderHeightPixels - (textHeight * tempCustomScale * getConsoleFont().getHeight())) / 2;
+
+        g2.translate(tempXPad, tempYPad);
+        g2.scale(tempCustomScale, tempCustomScale);
+
+        for (int i=0; i<error.length(); i++) {
+            Graphics2DUtils.drawConsoleChar(g2, 1 + i, 0, error.charAt(i), Color.WHITE, Color.BLACK, getConsoleFont());
         }
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public final void displayTick() {
+        onTickEvent();
+    }
+
+    @Override
+    public final void afterPaint() {
+        onPrePaintEvent();
+    }
+
+    @Override
+    public final void beforePaint() {
+        onPostPaintEvent();
+    }
+
+    @Override
+    public final void keyTyped(KeyEvent e) {
         onKeyTypedEvent(e);
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public final void keyPressed(KeyEvent e) {
         onKeyPressedEvent(e);
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public final void keyReleased(KeyEvent e) {
         onKeyReleasedEvent(e);
     }
-
+    
     @Override
-    public void mouseMoved(MouseEvent e) {
+    public final void mouseMoved(MouseEvent e) {
+        lastRawMouseEvent = e;
         final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
-        onMouseMovedEvent(mouseConsolePoint.x, mouseConsolePoint.y);
+        final Point mouseConsoleAbsPoint = getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
+        onMouseMovedEvent(e);
     }
 
     @Override
-    public void mouseDragged(MouseEvent e) {
+    public final void mouseDragged(MouseEvent e) {
+        lastRawMouseEvent = e;
         final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
-        onMouseDraggedEvent(mouseConsolePoint.x, mouseConsolePoint.y, e.getButton() == 1);
+        final Point mouseConsoleAbsPoint = getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
+        onMouseDraggedEvent(e);
     }
 
     @Override
-    public void mouseClicked(MouseEvent e) {
+    public final void mouseClicked(MouseEvent e) {
+        lastRawMouseEvent = e;
         final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
-        onMouseClickedEvent(mouseConsolePoint.x, mouseConsolePoint.y, e.getButton() == 1);
+        final Point mouseConsoleAbsPoint = getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
+        onMouseClickedEvent(e);
     }
 
     @Override
-    public void mousePressed(MouseEvent e) {
+    public final void mousePressed(MouseEvent e) {
+        lastRawMouseEvent = e;
         final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
-        onMousePressedEvent(mouseConsolePoint.x, mouseConsolePoint.y, e.getButton() == 1);
+        final Point mouseConsoleAbsPoint = getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
+        onMousePressedEvent(e);
     }
 
     @Override
-    public void mouseReleased(MouseEvent e) {
+    public final void mouseReleased(MouseEvent e) {
+        lastRawMouseEvent = e;
         final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
-        onMouseReleasedEvent(mouseConsolePoint.x, mouseConsolePoint.y, e.getButton() == 1);
+        final Point mouseConsoleAbsPoint = getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
+        onMouseReleasedEvent(e);
     }
 
     @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
+    public final void mouseWheelMoved(MouseWheelEvent e) {
+        lastRawMouseEvent = e;
         final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
-        onMouseWheelMovedEvent(mouseConsolePoint.x, mouseConsolePoint.y, e.getWheelRotation() * e.getScrollAmount());
+        final Point mouseConsoleAbsPoint = getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        e = new MouseWheelEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getScrollType(), e.getScrollAmount(), e.getWheelRotation(), e.getPreciseWheelRotation());
+        onMouseWheelMovedEvent(e);
     }
+
+    @Override
+    public final void mouseEntered(MouseEvent e) {
+        lastRawMouseEvent = e;
+        final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+        final Point mouseConsoleAbsPoint = getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
+        onMouseEntered(e);
+    }
+
+    @Override
+    public final void mouseExited(MouseEvent e) {
+        lastRawMouseEvent = e;
+        final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+        final Point mouseConsoleAbsPoint = getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
+        onMouseExited(e);
+    }
+
+    @Override
+    public final void focusGained(FocusEvent e) {
+        onFocus();
+    }
+
+    @Override
+    public final void focusLost(FocusEvent e) {
+        onUnfocus();
+    }
+
+    @Override
+    public final void componentResized(ComponentEvent e) {
+        final AffineTransform defaultTransform = e.getComponent().getGraphicsConfiguration().getDefaultTransform();
+        //System.out.println((int)(e.getComponent().getWidth() * defaultTransform.getScaleX()) + " " + (int)(e.getComponent().getHeight() * defaultTransform.getScaleY()));
+        setDimensionPixels((int)(e.getComponent().getWidth() * defaultTransform.getScaleX()), (int)(e.getComponent().getHeight() * defaultTransform.getScaleY()));
+    }
+    
+    
+    
+    
 }

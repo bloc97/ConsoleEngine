@@ -3,42 +3,43 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hans;
+package hans.ui;
 
-import engine.console.ConsoleJPanel;
-import java.awt.Color;
-import engine.sound.AdvancedSoundClip;
-import engine.sound.PlayerStream;
-import engine.sound.Sound;
-import engine.sound.SoundClip;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import engine.abstractionlayer.Message;
+import engine.framework.swing.SwingGameWindow;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import hans.gui.GameScreen;
-import hans.gui.layers.Background;
-import hans.gui.layers.BottomBar;
-import hans.gui.layers.DayEndPopupOverlay;
-import hans.gui.layers.EventPopupOverlay;
-import hans.gui.layers.ReportPage;
-import hans.gui.layers.TextCutscene;
-import hans.gui.layers.TopBar;
 
 /**
  *
  * @author bowen
  */
-public enum GameDisplay {
-    INSTANCE;
+public class HansGameWindow extends SwingGameWindow {
+
+    public HansGameWindow() {
+        super("The Unfortunate Story of Hans");
+        setIconImages(new ImageIcon("resources/icon.png").getImage());
+    }
+    
+    @Override
+    public void receiveImmediately(Message message) {
+        if (message.checkName("toggle_fullscreen")) {
+            if (isVisible()) {
+                if (isFullscreen()) {
+                    setWindowed();
+                } else if (isWindowed()) {
+                    setFullscreen();
+                }
+            }
+        }
+    }
     
     
+    
+    /*
     private final ScheduledExecutorService ex = Executors.newSingleThreadScheduledExecutor();
     
     public final Color mainColor = new Color(120, 146, 190);
-    public final GameScreen gameScreen = new GameScreen();
+    public final GameConsoleHandler gameScreen = new GameConsoleHandler();
     
     public final Background BACKGROUNDLAYER = new Background(mainColor);
     public final TopBar TOPBAR = new TopBar();
@@ -71,6 +72,6 @@ public enum GameDisplay {
         ex.scheduleWithFixedDelay(() -> {
             BOTTOMBAR.tickHorizontalAnimation();
         }, 0, 200, TimeUnit.MILLISECONDS);
-    }
+    }*/
     
 }

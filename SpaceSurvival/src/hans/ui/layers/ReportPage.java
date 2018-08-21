@@ -3,23 +3,23 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hans.gui.layers;
+package hans.ui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import hans.GameDisplay;
+import hans.ui.HansGameWindow;
 import engine.console.CharacterImage;
 import engine.console.StringWriter;
-import engine.sound.Sound;
-import hans.GameSound;
-import hans.gui.GameLayer;
+import engine.framework.audio.Sound;
+import hans.ui.GameSound;
+import hans.ui.HansGameLayer;
 import hans.game.Colony;
 
 /**
  *
  * @author bowen
  */
-public class ReportPage extends GameLayer implements Scrollable {
+public class ReportPage extends HansGameLayer implements Scrollable {
 
     private static Sound openSound = GameSound.INSTANCE.loadSound("openjournal");
     private static Sound closeSound = GameSound.INSTANCE.loadSound("closejournal");
@@ -365,7 +365,7 @@ public class ReportPage extends GameLayer implements Scrollable {
     
     @Override
     public boolean onKeyPressed(KeyEvent e, boolean isEntered, boolean isFocused) {
-        if (GameDisplay.INSTANCE.EVENTPOPUP.isVisible() || GameDisplay.INSTANCE.TEXTCUTSCENE.isVisible() /*|| SpaceSurvival.dayEndOverlay.isVisible()*/) {
+        if (HansGameWindow.INSTANCE.EVENTPOPUP.isVisible() || HansGameWindow.INSTANCE.TEXTCUTSCENE.isVisible() /*|| SpaceSurvival.dayEndOverlay.isVisible()*/) {
             return false;
         }
         switch (e.getKeyCode()) {

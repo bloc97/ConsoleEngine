@@ -9,22 +9,44 @@ package engine.abstractionlayer;
  *
  * @author bowen
  */
-public abstract class AbstractMessage implements Message {
+public class AbstractMessage implements Message {
 
     private final long time;
+    private final String name;
+    private final int typeId;
 
     public AbstractMessage() {
         this.time = System.currentTimeMillis();
+        this.name = "";
+        this.typeId = -1;
+    }
+    
+    public AbstractMessage(String name) {
+        this.time = System.currentTimeMillis();
+        this.name = name;
+        this.typeId = -1;
+    }
+    
+    public AbstractMessage(int typeId) {
+        this.time = System.currentTimeMillis();
+        this.name = "";
+        this.typeId = typeId;
+    }
+    
+    public AbstractMessage(String name, int typeId) {
+        this.time = System.currentTimeMillis();
+        this.name = name;
+        this.typeId = typeId;
     }
     
     @Override
     public String getName() {
-        return "";
+        return name;
     }
 
     @Override
     public int getTypeId() {
-        return -1;
+        return typeId;
     }
 
     @Override

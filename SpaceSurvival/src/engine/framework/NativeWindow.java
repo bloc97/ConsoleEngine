@@ -8,7 +8,7 @@ package engine.framework;
 import engine.abstractionlayer.InputHandler;
 import engine.abstractionlayer.MessageReceiver;
 import engine.abstractionlayer.RenderHandler;
-import engine.abstractionlayer.SoundHandler;
+import engine.abstractionlayer.AudioHandler;
 
 /**
  *
@@ -18,15 +18,22 @@ public interface NativeWindow extends MessageReceiver {
     public String getTitle(); 
     public void setTitle(String title);
     
+    public boolean isVisible();
+    public void show();
+    public void hide();
+    
+    public boolean isMinimized();
+    public boolean isWindowed();
     public boolean isFullscreen();
     public void setFullscreen();
     public void setWindowed();
+    public void setMinimized();
     
     public RenderHandler getRenderHandler();
     public InputHandler getInputHandler();
-    public SoundHandler getSoundHandler();
+    public AudioHandler getSoundHandler();
     
     public void attachRenderHandler(RenderHandler renderHandler);
     public void attachInputHandler(InputHandler inputHandler);
-    public void attachSoundHandler(SoundHandler soundHandler);
+    public void attachSoundHandler(AudioHandler soundHandler);
 }

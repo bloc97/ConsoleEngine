@@ -9,6 +9,6 @@ package engine.abstractionlayer;
  *
  * @author bowen
  */
-public interface SoundHandler extends MessageReceiver {
+public interface AudioHandler extends MessageReceiver {
     
 }

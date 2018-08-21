@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hans.gui.layers;
+package hans.ui.layers;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import engine.console.ConsoleJPanel;
-import hans.GameDisplay;
+import hans.ui.HansGameWindow;
 import engine.console.CharacterImage;
 import engine.console.BufferedConsoleComponent;
-import hans.gui.GameLayer;
+import hans.ui.HansGameLayer;
 import hans.game.Colony;
 import hans.game.Event;
 
@@ -21,7 +21,7 @@ import hans.game.Event;
  *
  * @author bowen
  */
-public class DayEndPopupOverlay extends GameLayer {
+public class DayEndPopupOverlay extends HansGameLayer {
     
     private Color mainColor;
     
@@ -346,8 +346,8 @@ public class DayEndPopupOverlay extends GameLayer {
     
     public void nextDay() {
         Colony.INSTANCE.nextDay();
-        GameDisplay.INSTANCE.REPORTPAGE.setScroll(0);
-        GameDisplay.INSTANCE.REPORTPAGE.maximize();
+        HansGameWindow.INSTANCE.REPORTPAGE.setScroll(0);
+        HansGameWindow.INSTANCE.REPORTPAGE.maximize();
         /*
         ConsoleJPanel.topBar.genImage();
         ConsoleJPanel.bottomBar.setScroll(0);

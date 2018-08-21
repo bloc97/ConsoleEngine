@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hans.gui.layers;
+package hans.ui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import hans.gui.GameLayer;
+import hans.ui.HansGameLayer;
 
 /**
  *
  * @author bowen
  */
-public abstract class ScrollBar extends GameLayer {
+public abstract class ScrollBar extends HansGameLayer {
     
     private Color mainColor;
     private int scroll, maxScroll;

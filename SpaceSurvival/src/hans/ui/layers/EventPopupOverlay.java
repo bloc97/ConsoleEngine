@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hans.gui.layers;
+package hans.ui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import hans.GameDisplay;
-import static hans.gui.layers.ColonyBuildings.CARD_WIDTH;
+import hans.ui.HansGameWindow;
+import static hans.ui.layers.ColonyBuildings.CARD_WIDTH;
 import engine.console.CharacterImage;
 import engine.console.BufferedConsoleComponent;
 import engine.console.StringWriter;
-import hans.gui.GameLayer;
-import static hans.gui.layers.TextCutscene.cutscene;
+import hans.ui.HansGameLayer;
+import static hans.ui.layers.TextCutscene.cutscene;
 import hans.game.Colony;
 import hans.game.Event;
 import hans.game.EventChoice;
@@ -22,7 +22,7 @@ import hans.game.EventChoice;
  *
  * @author bowen
  */
-public class EventPopupOverlay extends GameLayer {
+public class EventPopupOverlay extends HansGameLayer {
     
     private Color mainColor;
     
@@ -56,7 +56,7 @@ public class EventPopupOverlay extends GameLayer {
         int xPad = (getWidth() - width) / 2;
         int yPad = (getHeight() - height) / 2;
         
-        final int cardWidth = GameDisplay.INSTANCE.gameScreen.getConsoleFont().getHeightWidthRatio() > 1 ? 24 : 12;
+        final int cardWidth = HansGameWindow.INSTANCE.gameScreen.getConsoleFont().getHeightWidthRatio() > 1 ? 24 : 12;
         
         getCharacterImage().fillRectangleChar(xPad, yPad, width, height, ' ');
         //getCharacterImage().fillForegroundColorRectangle(xPad, yPad, width, height, new Color(eventColor).brighter().brighter().getRGB());
@@ -134,7 +134,7 @@ public class EventPopupOverlay extends GameLayer {
         int xPad = (getWidth() - width) / 2;
         int yPad = (getHeight() - height) / 2;
         
-        final int cardWidth = GameDisplay.INSTANCE.gameScreen.getConsoleFont().getHeightWidthRatio() > 1 ? 24 : 12;
+        final int cardWidth = HansGameWindow.INSTANCE.gameScreen.getConsoleFont().getHeightWidthRatio() > 1 ? 24 : 12;
         
         if (choices.length > 0) {
         

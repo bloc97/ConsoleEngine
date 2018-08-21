@@ -3,18 +3,18 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hans.gui.layers;
+package hans.ui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import hans.GameDisplay;
+import hans.ui.HansGameWindow;
 import engine.console.ConsoleJPanel;
 import engine.console.CharacterImage;
 import engine.console.StringWriter;
-import hans.gui.GameLayer;
+import hans.ui.HansGameLayer;
 import hans.game.Colony;
 import hans.game.Event;
 import hans.game.EventChoice;
@@ -23,7 +23,7 @@ import hans.game.EventChoice;
  *
  * @author bowen
  */
-public class TextCutscene extends GameLayer {
+public class TextCutscene extends HansGameLayer {
     
     
     public final static String[] cutscene = new String[] {
@@ -158,7 +158,7 @@ public class TextCutscene extends GameLayer {
             }, yes, no);
             thisEvent.setColor(0xFFEEEEEE, 0xFF302040);
             
-            GameDisplay.INSTANCE.EVENTPOPUP.show(thisEvent);
+            HansGameWindow.INSTANCE.EVENTPOPUP.show(thisEvent);
             
             return;
         }
@@ -179,7 +179,7 @@ public class TextCutscene extends GameLayer {
             dayEndOverlay.nextDay();
             **/
             Colony.INSTANCE.nextDay();
-            GameDisplay.INSTANCE.REPORTPAGE.maximize();
+            HansGameWindow.INSTANCE.REPORTPAGE.maximize();
             
             hide();
             disable();

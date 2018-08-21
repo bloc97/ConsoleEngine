@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hans;
+package hans.ui;
 
-import engine.sound.AdvancedSoundClip;
-import engine.sound.PlayerStream;
+import engine.framework.audio.AdvancedSoundClip;
+import engine.framework.audio.PlayerStream;
 
 /**
  *

@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hans.gui.layers;
+package hans.ui.layers;
 
 import java.awt.Color;
 import java.util.List;
 import java.util.Random;
 import engine.console.ConsoleJPanel;
-import static hans.gui.layers.ColonyBuildings.CARD_HEIGHT;
-import static hans.gui.layers.ColonyBuildings.CARD_WIDTH;
+import static hans.ui.layers.ColonyBuildings.CARD_HEIGHT;
+import static hans.ui.layers.ColonyBuildings.CARD_WIDTH;
 import spacesurvival.engine.sound.SoundEngine;
 import engine.console.CharacterImage;
 import engine.console.BufferedConsoleComponent;

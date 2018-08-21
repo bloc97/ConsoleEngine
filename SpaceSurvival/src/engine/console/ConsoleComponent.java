@@ -6,6 +6,7 @@
 package engine.console;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 
 /**
  *
@@ -123,60 +124,43 @@ public abstract class ConsoleComponent {
     }
     
     
-    public boolean onFocus(boolean isEntered) {
-        return false;
+    public void onFocus() {
     }
-    public boolean onUnfocus(boolean isEntered) {
-        return false;
+    public void onUnfocus() {
     }
     
-    public boolean onMouseEntered(int x, int y, boolean isFocused) {
-        return false;
+    public void onMouseEntered(MouseEvent e) {
     }
-    public boolean onMouseExited(int x, int y, boolean isFocused) {
-        return false;
+    public void onMouseExited(MouseEvent e) {
     }
     
-    public boolean onMouseMoved(int x, int y, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onMouseMoved(MouseEvent e) {
     }
-    public boolean onMouseDragged(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onMouseDragged(MouseEvent e) {
     }
-    public boolean onMouseClicked(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onMouseClicked(MouseEvent e) {
     }
-    public boolean onMousePressed(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onMousePressed(MouseEvent e) {
     }
-    public boolean onMouseReleased(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onMouseReleased(MouseEvent e) {
     }
-    public boolean onMouseWheelMoved(int x, int y, int i, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onMouseWheelMoved(MouseEvent e) {
     }
     
-    public boolean onKeyPressed(KeyEvent e, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onKeyPressed(KeyEvent e) {
     }
-    public boolean onKeyReleased(KeyEvent e, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onKeyReleased(KeyEvent e) {
     }
-    public boolean onKeyTyped(KeyEvent e, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onKeyTyped(KeyEvent e) {
     }
     
-    public boolean onTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onTick() {
     }
-    public boolean onPrePaintTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onPrePaint() {
     }
-    public boolean onPaintTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onPaint() {
     }
-    public boolean onPostPaintTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
-        return false;
+    public void onPostPaint() {
     }
     
 }

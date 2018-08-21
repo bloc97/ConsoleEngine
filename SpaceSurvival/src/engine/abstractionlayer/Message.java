@@ -16,6 +16,12 @@ public interface Message {
     public default boolean checkIsType(String name, int typeId) {
         return (name == null ? getName() == null : name.equals(getName())) && typeId == getTypeId();
     }
+    public default boolean checkName(String name) {
+        return (name == null ? getName() == null : name.equals(getName()));
+    }
+    public default boolean checkId(int typeId) {
+        return typeId == getTypeId();
+    }
     
     public long getTime();
     

@@ -3,34 +3,40 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package hans.gui.layers;
+package hans.ui.layers;
 
+import engine.console.ConsoleHandler;
 import java.awt.Color;
-import hans.GameDisplay;
-import hans.gui.GameLayer;
+import hans.ui.HansGameWindow;
+import hans.ui.HansGameLayer;
+import java.awt.event.MouseEvent;
 
 /**
  *
  * @author bowen
  */
-public class Background extends GameLayer {
+public class Background extends HansGameLayer {
     
     public static final int TOP_PADDING = 1;
     public static final int BOTTOM_PADDING = 1;
     
     private Color mainColor;
-
-    public Background(Color mainColor) {
+    private final ConsoleHandler consoleHandler;
+    
+    public Background(Color mainColor, ConsoleHandler consoleHandler) {
         this.mainColor = mainColor;
+        this.consoleHandler = consoleHandler;
     }
     
     @Override
-    public boolean onPrePaintTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
+    public void onPaint() {
         final Color colorPalette = mainColor;
         
         final int heightPad = getHeight() - (TOP_PADDING + BOTTOM_PADDING);
         
-        final int xline = GameDisplay.INSTANCE.gameScreen.getConsoleFont().getHeightWidthRatio() > 1 ? 38 : 19;
+        final int xline = consoleHandler.getConsoleFont().getHeightWidthRatio() > 1 ? 38 : 19;
+        
+        getCharacterImage().clear();
         
         getCharacterImage().drawRectangle(0, TOP_PADDING, xline, heightPad);
         getCharacterImage().drawRectangle(xline, TOP_PADDING, getWidth() - xline, heightPad);
@@ -44,7 +50,15 @@ public class Background extends GameLayer {
         getCharacterImage().fillRectangleBackgroundColor(0, 0, getWidth(), TOP_PADDING, colorPalette.getRGB());
         getCharacterImage().fillRectangleBackgroundColor(0, getHeight()-BOTTOM_PADDING, getWidth(), BOTTOM_PADDING, colorPalette.getRGB());
         
-        return true;
+        
+    }
+
+    private int lastMouseX = 0, lastMouseY = 0;
+    
+    @Override
+    public void onMouseMoved(MouseEvent e) {
+        lastMouseX = e.getX();
+        lastMouseY = e.getY();
     }
     
     
