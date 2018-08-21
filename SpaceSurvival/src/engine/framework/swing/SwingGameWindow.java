@@ -75,7 +75,7 @@ public abstract class SwingGameWindow implements NativeWindow {
                 g2.setTransform(t);
                 
                 if (renderHandler != null) {
-                    renderHandler.setDimensions(screenPixelWidth, screenPixelHeight);
+                    renderHandler.setDimensionPixels(screenPixelWidth, screenPixelHeight);
                     renderHandler.render(g2);
                 }
                 
@@ -138,6 +138,9 @@ public abstract class SwingGameWindow implements NativeWindow {
             @Override
             public void mouseMoved(MouseEvent e) {
                 if (inputHandler != null) {
+                    int diffX = (int)((scaleX * e.getX()) - e.getX());
+                    int diffY = (int)((scaleY * e.getY()) - e.getY());
+                    e.translatePoint(diffX, diffY);
                     inputHandler.mouseMoved(e);
                 }
             }
@@ -145,6 +148,9 @@ public abstract class SwingGameWindow implements NativeWindow {
             @Override
             public void mouseDragged(MouseEvent e) {
                 if (inputHandler != null) {
+                    int diffX = (int)((scaleX * e.getX()) - e.getX());
+                    int diffY = (int)((scaleY * e.getY()) - e.getY());
+                    e.translatePoint(diffX, diffY);
                     inputHandler.mouseDragged(e);
                 }
             }
@@ -152,6 +158,9 @@ public abstract class SwingGameWindow implements NativeWindow {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (inputHandler != null) {
+                    int diffX = (int)((scaleX * e.getX()) - e.getX());
+                    int diffY = (int)((scaleY * e.getY()) - e.getY());
+                    e.translatePoint(diffX, diffY);
                     inputHandler.mouseClicked(e);
                 }
             }
@@ -159,6 +168,9 @@ public abstract class SwingGameWindow implements NativeWindow {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (inputHandler != null) {
+                    int diffX = (int)((scaleX * e.getX()) - e.getX());
+                    int diffY = (int)((scaleY * e.getY()) - e.getY());
+                    e.translatePoint(diffX, diffY);
                     inputHandler.mousePressed(e);
                 }
             }
@@ -166,6 +178,9 @@ public abstract class SwingGameWindow implements NativeWindow {
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (inputHandler != null) {
+                    int diffX = (int)((scaleX * e.getX()) - e.getX());
+                    int diffY = (int)((scaleY * e.getY()) - e.getY());
+                    e.translatePoint(diffX, diffY);
                     inputHandler.mouseReleased(e);
                 }
             }
@@ -173,6 +188,9 @@ public abstract class SwingGameWindow implements NativeWindow {
             @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
                 if (inputHandler != null) {
+                    int diffX = (int)((scaleX * e.getX()) - e.getX());
+                    int diffY = (int)((scaleY * e.getY()) - e.getY());
+                    e.translatePoint(diffX, diffY);
                     inputHandler.mouseWheelMoved(e);
                 }
             }

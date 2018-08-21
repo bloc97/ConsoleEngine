@@ -12,6 +12,8 @@ import engine.console.utils.Graphics2DUtils;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
@@ -28,14 +30,21 @@ import java.util.TreeMap;
  *
  * @author bowen
  */
-public class ConsoleHandler implements RenderHandler, InputHandler {
+public abstract class ConsoleHandler implements RenderHandler, InputHandler {
     private final TreeMap<Integer, ConsoleComponent> componentMap;
     private ConsoleFont consoleFont;
+    private int minimumWidth, minimumHeight;
     private int width, height;
     
-    public ConsoleHandler(int width, int height, ConsoleFont consoleFont) {
-        this.width = width;
-        this.height = height;
+    private int customScale = 1;
+    private int xPad = 0;
+    private int yPad = 0;
+    
+    public ConsoleHandler(int minimumWidth, int minimumHeight, ConsoleFont consoleFont) {
+        this.minimumWidth = (minimumWidth < 1) ? 1 : minimumWidth;
+        this.minimumHeight = (minimumHeight < 1) ? 1 : minimumHeight;
+        this.width = this.minimumWidth;
+        this.height = this.minimumHeight;
         this.consoleFont = consoleFont;
         this.componentMap = new TreeMap<>();
         System.out.println("Console Emulator Engine initialised");
@@ -370,100 +379,106 @@ public class ConsoleHandler implements RenderHandler, InputHandler {
         return width;
     }
 
-    public boolean setWidth(int width) {
-        boolean isTrue = false;
-        for (ConsoleComponent layer : componentMap.values()) {
-            isTrue |= layer.onScreenDimensionChange(width, height, this.width, this.height);
-        }
-        this.width = width;
-        return isTrue;
-    }
-
     public int getHeight() {
         return height;
     }
-
-    public boolean setHeight(int height) {
-        boolean isTrue = false;
-        for (ConsoleComponent layer : componentMap.values()) {
-            isTrue |= layer.onScreenDimensionChange(width, height, this.width, this.height);
+    
+    @Override
+    public void setDimensionPixels(int renderWidthPixels, int renderHeightPixels) {
+        
+        final int customScaleWidth = renderWidthPixels / getConsoleFont().getWidth() / minimumWidth;
+        final int customScaleHeight = renderHeightPixels / getConsoleFont().getHeight() / minimumHeight;
+        
+        customScale = Math.min(customScaleWidth, customScaleHeight);
+        
+        final int lastWidth = width;
+        final int lastHeight = height;
+        
+        width = renderWidthPixels / getConsoleFont().getWidth() / customScale;
+        height = renderHeightPixels / getConsoleFont().getHeight() / customScale;
+        
+        xPad = (renderWidthPixels - (width * customScale * getConsoleFont().getWidth())) / 2;
+        yPad = (renderHeightPixels - (height * customScale * getConsoleFont().getHeight())) / 2;
+        
+        
+        if (width != lastWidth || height != lastHeight) {
+            componentMap.values().forEach((t) -> {
+                t.onScreenDimensionChange(width, height);
+            });
         }
-        this.height = height;
-        return isTrue;
+    }
+
+    private Point getMouseConsolePosition(int mouseX, int mouseY) {
+        return new Point((mouseX - xPad) / width, (mouseY - yPad) / height);
     }
     
     @Override
-    public void setDimensions(int width, int height) {
-        this.width = width;
-        this.height = height;
-        componentMap.values().forEach((t) -> {
-            t.onScreenDimensionChange(width, height);
-        });
-    }
-
-    @Override
     public void render(Object graphics) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        if (graphics instanceof Graphics2D) {
+            Graphics2D g2 = (Graphics2D) graphics;
+            //Sets the RenderingHints
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+            
+            //Paints everything
+            onPrePaintEvent();
 
-    @Override
-    public void receiveImmediately(Message message) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            final BufferedImage image = getImage();
+            g2.drawImage(image, xPad, yPad, image.getWidth() * customScale, image.getHeight() * customScale, null);
+
+            onPostPaintEvent();
+            
+            
+        }
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        onKeyTypedEvent(e);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        onKeyPressedEvent(e);
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mouseDragged(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        onKeyReleasedEvent(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+        onMouseMovedEvent(mouseConsolePoint.x, mouseConsolePoint.y);
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+        onMouseDraggedEvent(mouseConsolePoint.x, mouseConsolePoint.y, e.getButton() == 1);
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+        onMouseClickedEvent(mouseConsolePoint.x, mouseConsolePoint.y, e.getButton() == 1);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+        onMousePressedEvent(mouseConsolePoint.x, mouseConsolePoint.y, e.getButton() == 1);
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+        onMouseReleasedEvent(mouseConsolePoint.x, mouseConsolePoint.y, e.getButton() == 1);
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final Point mouseConsolePoint = getMouseConsolePosition(e.getX(), e.getY());
+        onMouseWheelMovedEvent(mouseConsolePoint.x, mouseConsolePoint.y, e.getWheelRotation() * e.getScrollAmount());
     }
-    
 }

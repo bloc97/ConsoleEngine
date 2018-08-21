@@ -10,7 +10,7 @@ package engine.abstractionlayer;
  * @author bowen
  */
 public interface RenderHandler extends MessageReceiver {
-    public void setDimensions(int width, int height);
+    public void setDimensionPixels(int renderWidthPixels, int renderHeightPixels);
     public void render(Object graphics);
     
     public default void displayTick() {

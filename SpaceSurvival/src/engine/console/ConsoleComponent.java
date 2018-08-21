@@ -119,8 +119,7 @@ public abstract class ConsoleComponent {
         return false;
     }
     
-    public boolean onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
-        return false;
+    public void onScreenDimensionChange(int newWidth, int newHeight) {
     }
     
     
