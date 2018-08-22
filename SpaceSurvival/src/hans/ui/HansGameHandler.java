@@ -31,10 +31,12 @@ public class HansGameHandler extends ConsoleHandler implements AudioHandler {
     private ConsoleFont selectedConsoleFont;
     
     private final MessageBus messageBus;
+    private final HansGameWindow window;
     
-    public HansGameHandler(MessageBus messageBus) {
+    public HansGameHandler(MessageBus messageBus, HansGameWindow window) {
         super(60, 30, ConsoleFont.getDefaultCourier());
         this.messageBus = messageBus;
+        this.window = window;
         
         this.fonts = new File("resources/fonts").listFiles((pathname) -> {
             return pathname.getName().toLowerCase().endsWith(".ttf");
@@ -61,7 +63,13 @@ public class HansGameHandler extends ConsoleHandler implements AudioHandler {
             setConsoleFont(ConsoleFont.fromFile(fonts[fontIndex]));
             //selectedConsoleFont = ConsoleFont.fromFile(fonts[fontIndex]);
         } else if (e.getKeyCode() == KeyEvent.VK_F11 || (e.getKeyCode() == KeyEvent.VK_ENTER && e.isAltDown())) {
-            messageBus.broadcast(new AbstractMessage("toggle_fullscreen"));
+            if (window.isVisible()) {
+                if (window.isFullscreen()) {
+                    window.setWindowed();
+                } else if (window.isWindowed()) {
+                    window.setFullscreen();
+                }
+            }
         }
     }
 

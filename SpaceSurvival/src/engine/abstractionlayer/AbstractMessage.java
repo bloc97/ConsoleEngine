@@ -5,6 +5,8 @@
  */
 package engine.abstractionlayer;
 
+import java.util.Objects;
+
 /**
  *
  * @author bowen
@@ -66,7 +68,11 @@ public class AbstractMessage implements Message {
 
     @Override
     public boolean checkIsTarget(MessageReceiver receiver) {
-        return true;
+        if (getUniqueTarget() == null) {
+            return true;
+        } else {
+            return Objects.equals(getUniqueTarget(), receiver);
+        }
     }
     
 }

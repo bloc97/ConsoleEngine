@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package engine.framework.swing;
+package engine.framework;
 
 import engine.abstractionlayer.InputHandler;
 import engine.abstractionlayer.RenderHandler;
@@ -42,7 +42,7 @@ import engine.abstractionlayer.Message;
  *
  * @author bowen
  */
-public abstract class SwingGameWindow implements NativeWindow {
+public abstract class SwingWindow implements NativeWindow {
     
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
     
@@ -58,11 +58,11 @@ public abstract class SwingGameWindow implements NativeWindow {
     
     private int lastX, lastY, lastWidth, lastHeight;
     
-    public SwingGameWindow(String title) {
+    public SwingWindow(String title) {
         this(title, 10, true);
     }
     
-    public SwingGameWindow(String title, int milisecondsPerFrame, boolean useDoubleBuffer) {
+    public SwingWindow(String title, int milisecondsPerFrame, boolean useDoubleBuffer) {
         panel = new JPanel(useDoubleBuffer) {
             @Override
             protected void paintComponent(Graphics g) {

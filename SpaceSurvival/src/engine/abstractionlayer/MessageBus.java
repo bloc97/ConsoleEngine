@@ -54,6 +54,23 @@ public class MessageBus {
         }
     }
     
+    public final Response askImmediately(Message message) {
+        if (message == null) {
+            return null;
+        } else if (message.getUniqueTarget() != null) {
+            return message.getUniqueTarget().respondImmediately(message);
+        } else {
+            for (MessageReceiver receiver : receivers) {
+                if (message.checkIsTarget(receiver)) {
+                    Response response = receiver.respondImmediately(message);
+                    if (response != null) {
+                        return response;
+                    }
+                }
+            }
+            return null;
+        }
+    }
     public final boolean broadcastImmediately(Message message) {
         if (message == null) {
             return false;
@@ -100,6 +117,16 @@ public class MessageBus {
         }
         queue.add(message);
         return true;
+    }
+    
+    public final boolean broadcastImmediately(String message) {
+        return broadcastImmediately(new AbstractMessage(message));
+    }
+    public final boolean broadcastAsynchronous(String message) {
+        return broadcastAsynchronous(new AbstractMessage(message));
+    }
+    public final boolean broadcast(String message) {
+        return broadcast(new AbstractMessage(message));
     }
     
 }

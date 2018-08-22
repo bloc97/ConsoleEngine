@@ -10,7 +10,7 @@ import engine.abstractionlayer.Message;
 import engine.abstractionlayer.MessageBus;
 import engine.console.ConsoleFont;
 import engine.console.ConsoleHandler;
-import engine.framework.swing.SwingGameWindow;
+import engine.framework.SwingWindow;
 import javax.swing.ImageIcon;
 import hans.game.Event;
 import hans.ui.HansGameWindow;
@@ -31,17 +31,17 @@ public class SpaceSurvival {
      */
     public static void main(String[] args) {
         MessageBus messageBus = new MessageBus();
-        
         HansGameWindow window = new HansGameWindow();
         
-        ConsoleHandler consoleHandler = new HansGameHandler(messageBus);
+        ConsoleHandler consoleHandler = new HansGameHandler(messageBus, window);
         consoleHandler.addComponent(0, new Background(new Color(120, 146, 190), consoleHandler));
+        
+        messageBus.addReceiver(window);
         
         window.attachRenderHandler(consoleHandler);
         window.attachInputHandler(consoleHandler);
         window.show();
         
-        messageBus.addReceiver(window);
         
         Event.initAllEvents();
         

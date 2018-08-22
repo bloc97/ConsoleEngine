@@ -373,7 +373,9 @@ public abstract class ConsoleHandler implements RenderHandler, InputHandler {
     private void onPaintEvent() {
         onPaint();
         componentMap.values().forEach((t) -> {
-            t.onPaint();
+            if (t.isVisible()) {
+                t.onPaint();
+            }
         });
     }
     private void onPostPaintEvent() {

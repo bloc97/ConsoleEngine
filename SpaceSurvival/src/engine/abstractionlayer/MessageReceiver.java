@@ -10,6 +10,18 @@ package engine.abstractionlayer;
  * @author bowen
  */
 public interface MessageReceiver {
+    public default Response respondImmediately(Message message) {
+        return new Response() {
+            @Override
+            public MessageReceiver getSender() {
+                if (message != null) {
+                    return message.getUniqueTarget();
+                } else {
+                    return null;
+                }
+            }
+        };
+    }
     public void receiveImmediately(Message message);
     public default void receiveAsynchronous(Message message) {
         receiveImmediately(message);

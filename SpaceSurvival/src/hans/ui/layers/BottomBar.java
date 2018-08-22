@@ -11,6 +11,7 @@ import hans.ui.HansGameWindow;
 import engine.console.CharacterImage;
 import hans.ui.HansGameLayer;
 import hans.game.Colony;
+import java.awt.event.MouseEvent;
 
 /**
  *
@@ -30,6 +31,7 @@ public class BottomBar extends HansGameLayer {
     
     
     private int barScrollPos = 0;
+    private boolean isScrolling = true;
     
     private boolean isMouseOver = false;
     
@@ -39,13 +41,13 @@ public class BottomBar extends HansGameLayer {
     }
 
     @Override
-    public boolean onScreenDimensionChange(int newWidth, int newHeight, int oldWidth, int oldHeight) {
+    public void onScreenDimensionChange(int newWidth, int newHeight) {
         this.setCharacterImage(new CharacterImage(newWidth, DEFAULT_HEIGHT + 1));
         setY(newHeight - DEFAULT_HEIGHT);
-        return true;
     }
     
-    private void genImage() {
+    @Override
+    public void onPaint() {
         String scrollingText = Colony.INSTANCE.getNews();
         getCharacterImage().clear();
         if (scrollingText.length() <= getWidth()) {
@@ -62,7 +64,7 @@ public class BottomBar extends HansGameLayer {
     }
     
     public void tickHorizontalAnimation() {
-        if (HansGameWindow.INSTANCE.REPORTPAGE.isFullyMinimized() && isEnabled()) {
+        if (isScrolling) {
             barScrollPos--;
             if (Colony.INSTANCE.getNews().length() + barScrollPos <= 0) {
                 barScrollPos = 0;
@@ -72,21 +74,19 @@ public class BottomBar extends HansGameLayer {
     }
 
     @Override
-    public boolean onMouseEntered(int x, int y, boolean isFocused) {
+    public void onMouseEntered(MouseEvent e) {
         isMouseOver = true;
-        return true;
     }
 
     @Override
-    public boolean onMouseExited(int x, int y, boolean isFocused) {
+    public void onMouseExited(MouseEvent e) {
         isMouseOver = false;
-        return true;
     }
     
     
     
     @Override
-    public boolean onMouseReleased(int x, int y, boolean isLeftClick, boolean isEntered, boolean isFocused) {
+    public void onMouseReleased(MouseEvent e) {
         if (isEntered && isFocused) {
             HansGameWindow.INSTANCE.REPORTPAGE.maximize();
             return true;
@@ -96,28 +96,19 @@ public class BottomBar extends HansGameLayer {
     
     
     @Override
-    public boolean onKeyReleased(KeyEvent e, boolean isEntered, boolean isFocused) {
+    public void onKeyReleased(KeyEvent e) {
         if (HansGameWindow.INSTANCE.EVENTPOPUP.isVisible() || HansGameWindow.INSTANCE.TEXTCUTSCENE.isVisible() /*|| SpaceSurvival.dayEndOverlay.isVisible()*/) {
-            return false;
+            return;
         }
         if (e.getKeyCode() == KeyEvent.VK_Q) {
             HansGameWindow.INSTANCE.REPORTPAGE.toggleMinimized();
-            return true;
+            return;
         } else if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !HansGameWindow.INSTANCE.REPORTPAGE.isMinimized()) {
             HansGameWindow.INSTANCE.REPORTPAGE.minimize();
-            return true;
+            return;
         }
-        return false;
     }
     
-    @Override
-    public boolean onPrePaintTick(int mouseX, int mouseY, boolean isEntered, boolean isFocused) {
-        if (isVisible()) {
-            genImage();
-            return true;
-        }
-        return false;
-    }
     
     
     

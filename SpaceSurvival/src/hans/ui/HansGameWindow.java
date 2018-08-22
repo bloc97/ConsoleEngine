@@ -6,14 +6,14 @@
 package hans.ui;
 
 import engine.abstractionlayer.Message;
-import engine.framework.swing.SwingGameWindow;
+import engine.framework.SwingWindow;
 import javax.swing.ImageIcon;
 
 /**
  *
  * @author bowen
  */
-public class HansGameWindow extends SwingGameWindow {
+public class HansGameWindow extends SwingWindow {
 
     public HansGameWindow() {
         super("The Unfortunate Story of Hans");
@@ -22,15 +22,6 @@ public class HansGameWindow extends SwingGameWindow {
     
     @Override
     public void receiveImmediately(Message message) {
-        if (message.checkName("toggle_fullscreen")) {
-            if (isVisible()) {
-                if (isFullscreen()) {
-                    setWindowed();
-                } else if (isWindowed()) {
-                    setFullscreen();
-                }
-            }
-        }
     }
     
     
