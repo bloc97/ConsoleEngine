@@ -460,7 +460,7 @@ public abstract class ConsoleHandler implements RenderHandler, InputHandler {
     }
     
     @Override
-    public final void paint(Object graphics) {
+    public void paint(Object graphics) {
         if (graphics instanceof Graphics2D) {
             
             Graphics2D g2 = (Graphics2D) graphics;
@@ -509,16 +509,17 @@ public abstract class ConsoleHandler implements RenderHandler, InputHandler {
     public final void displayTick() {
         onTickEvent();
     }
-
+    
     @Override
-    public final void afterPaint() {
+    public final void beforePaint() {
         onPrePaintEvent();
     }
 
     @Override
-    public final void beforePaint() {
+    public final void afterPaint() {
         onPostPaintEvent();
     }
+
 
     @Override
     public final void keyTyped(KeyEvent e) {

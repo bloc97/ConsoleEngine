@@ -16,7 +16,7 @@ import javax.swing.ImageIcon;
 public class HansGameWindow extends SwingWindow {
 
     public HansGameWindow() {
-        super("The Unfortunate Story of Hans");
+        super("The Unfortunate Story of Hans", 0, true);
         setIconImages(new ImageIcon("resources/icon.png").getImage());
     }
     

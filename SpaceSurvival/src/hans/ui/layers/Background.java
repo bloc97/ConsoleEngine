@@ -30,6 +30,7 @@ public class Background extends HansGameLayer {
     
     @Override
     public void onPaint() {
+        
         final Color colorPalette = mainColor;
         
         final int heightPad = getHeight() - (TOP_PADDING + BOTTOM_PADDING);

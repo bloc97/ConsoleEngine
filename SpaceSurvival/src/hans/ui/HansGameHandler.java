@@ -16,6 +16,10 @@ import engine.console.ConsoleHandler;
 import engine.console.utils.Graphics2DUtils;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  *
@@ -70,11 +74,77 @@ public class HansGameHandler extends ConsoleHandler implements AudioHandler {
                     window.setFullscreen();
                 }
             }
+        } else if (e.getKeyCode() == KeyEvent.VK_F3) {
+            paintDebug = !paintDebug;
         }
     }
 
     @Override
     public void receiveImmediately(Message message) {
+        
+    }
+
+    private boolean paintDebug = false;
+    private long lastFrameTimeMillis = -1;
+    private Queue<Integer> frameQueue = new ConcurrentLinkedQueue<>();
+
+
+    @Override
+    public void onPaint() {
+        
+        if (lastFrameTimeMillis < 0) {
+            lastFrameTimeMillis = System.currentTimeMillis();
+        } else {
+            final long newFrameTimeMillis = System.currentTimeMillis();
+            final int lastFrameDuration = (int)(newFrameTimeMillis - lastFrameTimeMillis);
+            
+            if (lastFrameDuration >= 0) {
+                frameQueue.add(lastFrameDuration);
+            }
+            
+            lastFrameTimeMillis = newFrameTimeMillis;
+            
+        }
+        
+
+        while (frameQueue.size() > 5000) {
+            frameQueue.poll();
+        }
+    }
+    
+    
+    
+    @Override
+    public void paint(Object graphics) {
+        super.paint(graphics);
+        
+        if (paintDebug) {
+            if (graphics instanceof Graphics2D) {
+                Graphics2D g2 = (Graphics2D) graphics;
+
+                int xPosPad = getLastRenderWidthPixels() - (frameQueue.size() * getCustomScale());
+                int yPosPad = getLastRenderHeightPixels();
+
+                int i = 0;
+                for (Integer frameTime : frameQueue) {
+
+                    float normFrameTime = (frameTime - 20f) / 40f;
+                    if (normFrameTime < 0) {
+                        normFrameTime = 0;
+                    } else if (normFrameTime > 1) {
+                        normFrameTime = 1;
+                    }
+
+                    float hue = 1f/3f * (1f - normFrameTime);
+
+                    g2.setColor(Color.getHSBColor(hue, 1, 1));
+
+                    g2.fillRect(xPosPad + (i * getCustomScale()), yPosPad - (frameTime * getCustomScale()),  getCustomScale(), yPosPad * getCustomScale());
+                    i++;
+                }
+
+            }
+        }
         
     }
     

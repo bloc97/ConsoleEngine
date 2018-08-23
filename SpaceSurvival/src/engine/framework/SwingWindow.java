@@ -49,9 +49,9 @@ public abstract class SwingWindow implements NativeWindow {
     private final JFrame frame;
     private final JPanel panel;
     
-    private RenderHandler renderHandler = null;
-    private InputHandler inputHandler = null;
-    private AudioHandler soundHandler = null;
+    private volatile RenderHandler renderHandler = null;
+    private volatile InputHandler inputHandler = null;
+    private volatile AudioHandler soundHandler = null;
     
     private double scaleX = 1d;
     private double scaleY = 1d;
@@ -234,16 +234,31 @@ public abstract class SwingWindow implements NativeWindow {
         panel.addMouseMotionListener(mouseAdapter);
         panel.addMouseWheelListener(mouseAdapter);
         
-        executor.scheduleWithFixedDelay(() -> {
-            try {
-                if (renderHandler != null) {
-                    renderHandler.displayTick();
-                    panel.repaint();
+        if (milisecondsPerFrame > 0) {
+            executor.scheduleWithFixedDelay(() -> {
+                try {
+                    if (renderHandler != null) {
+                        renderHandler.displayTick();
+                        panel.repaint();
+                    }
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }, 0, milisecondsPerFrame, TimeUnit.MILLISECONDS);
+            }, 0, milisecondsPerFrame, TimeUnit.MILLISECONDS);
+        } else {
+            executor.submit(() -> {
+                while (true) {
+                    try {
+                        if (renderHandler != null) {
+                            renderHandler.displayTick();
+                            panel.repaint();
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+        }
         
     }
 
