@@ -6,14 +6,14 @@
 package hans.ui;
 
 import engine.abstractionlayer.AbstractMessage;
-import engine.abstractionlayer.handlers.AudioHandler;
+import engine.event.handler.AudioHandler;
 import engine.abstractionlayer.Message;
 import engine.abstractionlayer.MessageBus;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import engine.console.ConsoleFont;
-import engine.console.ConsoleHandler;
-import engine.console.utils.Graphics2DUtils;
+import console.ConsoleFont;
+import console.ConsoleHandler;
+import console.utils.Graphics2DUtils;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;

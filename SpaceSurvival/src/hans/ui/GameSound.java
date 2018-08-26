@@ -5,8 +5,8 @@
  */
 package hans.ui;
 
-import engine.framework.audio.AdvancedSoundClip;
-import engine.framework.audio.PlayerStream;
+import engine.audio.AdvancedSoundClip;
+import engine.audio.PlayerStream;
 
 /**
  *

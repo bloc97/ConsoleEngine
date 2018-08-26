@@ -1,0 +1,29 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package engine.event.handler;
+
+import engine.NativeWindow;
+import engine.NativeWindowHandler;
+
+/**
+ *
+ * @author bowen
+ */
+public abstract class TickHandler implements NativeWindowHandler {
+    
+    private NativeWindow nativeWindow = null;
+    
+    @Override
+    public NativeWindow getNativeWindow() {
+        return nativeWindow;
+    }
+
+    @Override
+    public void setNativeWindow(NativeWindow nativeWindow) {
+        this.nativeWindow = nativeWindow;
+    }
+    
+}

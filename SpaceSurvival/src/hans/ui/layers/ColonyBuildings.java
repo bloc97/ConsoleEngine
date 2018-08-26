@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Random;
 import engine.console.ConsoleJPanel;
 import spacesurvival.engine.sound.SoundEngine;
-import engine.console.CharacterImage;
-import engine.console.BufferedConsoleComponent;
+import console.CharacterImage;
+import console.BufferedConsoleComponent;
 import hans.game.Building;
 import hans.game.Colony;
 

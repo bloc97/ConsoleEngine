@@ -8,7 +8,7 @@ package hans.ui.layers;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import hans.ui.HansGameWindow;
-import engine.console.CharacterImage;
+import console.CharacterImage;
 import hans.ui.HansGameLayer;
 import hans.game.Colony;
 import java.awt.event.MouseEvent;

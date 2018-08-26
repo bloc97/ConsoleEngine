@@ -5,8 +5,8 @@
  */
 package hans.ui;
 
-import engine.console.CharacterImage;
-import engine.console.BufferedConsoleComponent;
+import console.CharacterImage;
+import console.BufferedConsoleComponent;
 
 /**
  *

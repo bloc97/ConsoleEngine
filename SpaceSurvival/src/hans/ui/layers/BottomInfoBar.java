@@ -6,8 +6,8 @@
 package hans.ui.layers;
 
 import java.awt.Color;
-import engine.console.CharacterImage;
-import engine.console.BufferedConsoleComponent;
+import console.CharacterImage;
+import console.BufferedConsoleComponent;
 
 /**
  *

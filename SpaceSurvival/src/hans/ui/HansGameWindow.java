@@ -6,7 +6,7 @@
 package hans.ui;
 
 import engine.abstractionlayer.Message;
-import engine.framework.SwingWindow;
+import engine.SwingWindow;
 import javax.swing.ImageIcon;
 
 /**

@@ -5,7 +5,7 @@
  */
 package hans.ui.layers;
 
-import engine.console.ConsoleHandler;
+import console.ConsoleHandler;
 import java.awt.Color;
 import hans.ui.HansGameWindow;
 import hans.ui.HansGameLayer;
