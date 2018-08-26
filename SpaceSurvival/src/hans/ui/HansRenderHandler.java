@@ -122,16 +122,16 @@ public class HansRenderHandler extends ConsoleRenderHandler {
         int textWidth = Math.max(error.length(), error2.length()) + 2;
         int textHeight = 5;
 
-        final int customScaleWidth = getLastRenderWidthPixels() / getConsoleFont().getWidth() / textWidth;
-        final int customScaleHeight = getLastRenderHeightPixels() / getConsoleFont().getHeight() / textHeight;
+        final int customScaleWidth = getRequestedRenderWidthPixels()/ getConsoleFont().getWidth() / textWidth;
+        final int customScaleHeight = getRequestedRenderHeightPixels()/ getConsoleFont().getHeight() / textHeight;
 
         int tempCustomScale = Math.min(customScaleWidth, customScaleHeight);
         if (tempCustomScale < 1) {
             tempCustomScale = 1;
         }
 
-        int tempXPad = (getLastRenderWidthPixels() - (textWidth * tempCustomScale * getConsoleFont().getWidth())) / 2;
-        int tempYPad = (getLastRenderHeightPixels() - (textHeight * tempCustomScale * getConsoleFont().getHeight())) / 2;
+        int tempXPad = (getRequestedRenderWidthPixels() - (textWidth * tempCustomScale * getConsoleFont().getWidth())) / 2;
+        int tempYPad = (getRequestedRenderHeightPixels() - (textHeight * tempCustomScale * getConsoleFont().getHeight())) / 2;
 
         g2.translate(tempXPad, tempYPad);
         g2.scale(tempCustomScale, tempCustomScale);

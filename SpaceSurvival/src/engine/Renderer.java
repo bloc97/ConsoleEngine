@@ -23,6 +23,8 @@ public interface Renderer {
     
     public void setColor(Color color);
     
+    public void drawRectangle(int x, int y, int width, int height);
+    
     public void drawImage(Image image, int x, int y, int width, int height);
     
     public default void drawBufferedImage(BufferedImage image, int x, int y, int scale) {

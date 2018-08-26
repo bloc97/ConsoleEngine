@@ -32,12 +32,6 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleHandler 
     
     @Override
     public ConsoleWindow getConsoleWindow() {
-        if (consoleWindow == null) {
-            if (emptyConsoleWindow == null) {
-                emptyConsoleWindow = new ConsoleWindow(0, 0, ConsoleFont.getDefaultCourier());
-            }
-            return emptyConsoleWindow;
-        }
         return consoleWindow;
     }
 
@@ -59,7 +53,7 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleHandler 
     
     
     public final ConsoleComponent getEnabledLayerAt(MouseEvent e) {
-        if (e == null) {
+        if (e == null || getConsoleWindow() == null) {
             return null;
         }
         for (ConsoleComponent p : getConsoleWindow().getDescendingComponents()) {
@@ -263,8 +257,11 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleHandler 
     public void mouseEntered(MouseEvent e) {
         super.mouseEntered(e);
         lastRawMouseEvent = e;
-        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getX(), e.getY());
-        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        if (getConsoleWindow() == null) {
+            return;
+        }
+        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getX(), e.getY());
+        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getXOnScreen(), e.getYOnScreen());
         e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
         onMouseEntered(e);
     }
@@ -273,8 +270,11 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleHandler 
     public void mouseExited(MouseEvent e) {
         super.mouseExited(e);
         lastRawMouseEvent = e;
-        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getX(), e.getY());
-        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        if (getConsoleWindow() == null) {
+            return;
+        }
+        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getX(), e.getY());
+        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getXOnScreen(), e.getYOnScreen());
         e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
         onMouseExited(e);
     }
@@ -283,8 +283,11 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleHandler 
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
         lastRawMouseEvent = e;
-        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getX(), e.getY());
-        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        if (getConsoleWindow() == null) {
+            return;
+        }
+        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getX(), e.getY());
+        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getXOnScreen(), e.getYOnScreen());
         e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
         onMouseClickedEvent(e);
     }
@@ -293,8 +296,11 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleHandler 
     public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
         lastRawMouseEvent = e;
-        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getX(), e.getY());
-        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        if (getConsoleWindow() == null) {
+            return;
+        }
+        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getX(), e.getY());
+        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getXOnScreen(), e.getYOnScreen());
         e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
         onMousePressedEvent(e);
     }
@@ -303,8 +309,11 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleHandler 
     public void mouseReleased(MouseEvent e) {
         super.mouseReleased(e);
         lastRawMouseEvent = e;
-        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getX(), e.getY());
-        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        if (getConsoleWindow() == null) {
+            return;
+        }
+        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getX(), e.getY());
+        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getXOnScreen(), e.getYOnScreen());
         e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
         onMouseReleasedEvent(e);
     }
@@ -313,8 +322,11 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleHandler 
     public void mouseDragged(MouseEvent e) {
         super.mouseDragged(e);
         lastRawMouseEvent = e;
-        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getX(), e.getY());
-        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        if (getConsoleWindow() == null) {
+            return;
+        }
+        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getX(), e.getY());
+        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getXOnScreen(), e.getYOnScreen());
         e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
         onMouseDraggedEvent(e);
     }
@@ -323,8 +335,11 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleHandler 
     public void mouseMoved(MouseEvent e) {
         super.mouseMoved(e);
         lastRawMouseEvent = e;
-        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getX(), e.getY());
-        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        if (getConsoleWindow() == null) {
+            return;
+        }
+        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getX(), e.getY());
+        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getXOnScreen(), e.getYOnScreen());
         e = new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getButton());
         onMouseMovedEvent(e);
     }
@@ -333,8 +348,11 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleHandler 
     public void mouseWheelMoved(MouseWheelEvent e) {
         super.mouseWheelMoved(e);
         lastRawMouseEvent = e;
-        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getX(), e.getY());
-        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getMouseConsolePosition(e.getXOnScreen(), e.getYOnScreen());
+        if (getConsoleWindow() == null) {
+            return;
+        }
+        final Point mouseConsolePoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getX(), e.getY());
+        final Point mouseConsoleAbsPoint = getConsoleWindow().getConsoleRenderHandler().getConsolePosition(e.getXOnScreen(), e.getYOnScreen());
         e = new MouseWheelEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), mouseConsolePoint.x, mouseConsolePoint.y, mouseConsoleAbsPoint.x, mouseConsoleAbsPoint.y, e.getClickCount(), e.isPopupTrigger(), e.getScrollType(), e.getScrollAmount(), e.getWheelRotation(), e.getPreciseWheelRotation());
         onMouseWheelMovedEvent(e);
     }
@@ -352,6 +370,9 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleHandler 
     @Override
     public void componentResized(ComponentEvent e) {
         super.componentResized(e);
+        if (getConsoleWindow() == null) {
+            return;
+        }
         final AffineTransform defaultTransform = e.getComponent().getGraphicsConfiguration().getDefaultTransform();
         //System.out.println((int)(e.getComponent().getWidth() * defaultTransform.getScaleX()) + " " + (int)(e.getComponent().getHeight() * defaultTransform.getScaleY()));
         getConsoleWindow().getConsoleRenderHandler().setRequestedRenderDimensionPixels((int)(e.getComponent().getWidth() * defaultTransform.getScaleX()), (int)(e.getComponent().getHeight() * defaultTransform.getScaleY()));

@@ -26,20 +26,7 @@ public class SpaceSurvival {
      */
     public static void main(String[] args) {
         HansGameWindow window = new HansGameWindow();
-        
-        HansConsoleWindow hansConsoleWindow = new HansConsoleWindow();
-        hansConsoleWindow.addComponent(0, new Background(new Color(120, 146, 190), hansConsoleWindow));
-        
-        
-        window.attachRenderHandler(hansConsoleWindow.getConsoleRenderHandler());
-        window.attachInputHandler(hansConsoleWindow.getConsoleInputHandler());
         window.show();
-        
-        
-        
-        RunnerUtils.runAt(() -> {
-            window.requestPaint();
-        }, Executors.newSingleThreadExecutor(), 60);
         
         Event.initAllEvents();
         

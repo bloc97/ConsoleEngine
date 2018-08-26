@@ -12,14 +12,14 @@ import console.CharacterImage;
 import console.StringWriter;
 import engine.audio.Sound;
 import hans.ui.GameSound;
-import hans.ui.HansGameLayer;
+import hans.ui.HansConsoleComponent;
 import hans.game.Colony;
 
 /**
  *
  * @author bowen
  */
-public class ReportPage extends HansGameLayer implements Scrollable {
+public class ReportPage extends HansConsoleComponent implements Scrollable {
 
     private static Sound openSound = GameSound.INSTANCE.loadSound("openjournal");
     private static Sound closeSound = GameSound.INSTANCE.loadSound("closejournal");

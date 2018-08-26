@@ -14,7 +14,7 @@ import hans.ui.HansGameWindow;
 import engine.console.ConsoleJPanel;
 import console.CharacterImage;
 import console.StringWriter;
-import hans.ui.HansGameLayer;
+import hans.ui.HansConsoleComponent;
 import hans.game.Colony;
 import hans.game.Event;
 import hans.game.EventChoice;
@@ -23,7 +23,7 @@ import hans.game.EventChoice;
  *
  * @author bowen
  */
-public class TextCutscene extends HansGameLayer {
+public class TextCutscene extends HansConsoleComponent {
     
     
     public final static String[] cutscene = new String[] {

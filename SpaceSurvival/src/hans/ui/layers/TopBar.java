@@ -9,14 +9,14 @@ import java.awt.Color;
 import hans.ui.HansGameWindow;
 import console.CharacterImage;
 import console.BufferedConsoleComponent;
-import hans.ui.HansGameLayer;
+import hans.ui.HansConsoleComponent;
 import hans.game.Colony;
 
 /**
  *
  * @author bowen
  */
-public class TopBar extends HansGameLayer {
+public class TopBar extends HansConsoleComponent {
     
     public static final int DEFAULT_HEIGHT = 1;
     

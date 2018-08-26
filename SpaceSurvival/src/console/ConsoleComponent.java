@@ -14,6 +14,8 @@ import java.awt.event.MouseEvent;
  */
 public abstract class ConsoleComponent {
     
+    private ConsoleWindow window;
+    
     private int x, y;
     private boolean overrideMode;
     private boolean isVisible, isEnabled;
@@ -35,6 +37,14 @@ public abstract class ConsoleComponent {
         this.isEnabled = isEnabled;
     }
 
+    public ConsoleWindow getConsoleWindow() {
+        return window;
+    }
+    
+    void setConsoleWindow(ConsoleWindow window) {
+        this.window = window;
+    }
+    
     public abstract int getWidth();
     public abstract int getHeight();
     
@@ -123,6 +133,10 @@ public abstract class ConsoleComponent {
     public void onScreenDimensionChange(int newWidth, int newHeight) {
     }
     
+    public void onAttach() {
+    }
+    public void onDetach() {
+    }
     
     public void onFocus() {
     }

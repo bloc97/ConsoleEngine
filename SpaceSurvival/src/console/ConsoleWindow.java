@@ -6,28 +6,10 @@
 package console;
 
 import console.*;
-import engine.event.handler.InputHandler;
-import engine.event.handler.RenderHandler;
-import console.utils.Graphics2DUtils;
-import engine.NativeWindow;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.event.ComponentEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
-import java.awt.geom.AffineTransform;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
@@ -109,12 +91,21 @@ public class ConsoleWindow {
             return false;
         } else {
             componentMap.put(layer, panel);
+            panel.setConsoleWindow(this);
+            panel.onAttach();
             return true;
         }
     }
     
     public ConsoleComponent setComponent(int layer, ConsoleComponent panel) {
-        return componentMap.put(layer, panel);
+        panel.setConsoleWindow(this);
+        panel.onAttach();
+        final ConsoleComponent lastComponent = componentMap.put(layer, panel);
+        if (lastComponent != null) {
+            lastComponent.onDetach();
+            lastComponent.setConsoleWindow(null);
+        }
+        return lastComponent;
     }
     
     public ConsoleComponent getComponent(int layer) {
@@ -122,7 +113,12 @@ public class ConsoleWindow {
     }
     
     public ConsoleComponent removeComponent(int layer) {
-        return componentMap.remove(layer);
+        final ConsoleComponent lastComponent = componentMap.remove(layer);
+        if (lastComponent != null) {
+            lastComponent.onDetach();
+            lastComponent.setConsoleWindow(null);
+        }
+        return lastComponent;
     }
     
     

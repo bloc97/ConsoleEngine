@@ -65,23 +65,25 @@ public abstract class RenderHandler implements EventGenerator<RenderEvent>, Nati
         this.heightScale = heightScale;
     }
     
-    public final void render(Renderer renderer) {
+    public void render(Renderer renderer) {
+        final long timeBefore = System.currentTimeMillis();
         getBeforePaint().forEach((t, u) -> {
-            u.accept(new RenderEvent());
+            u.accept(new RenderEvent(timeBefore, this, renderer));
         });
         
+        final long time = System.currentTimeMillis();
         getOnPaint().forEach((t, u) -> {
-            u.accept(new RenderEvent());
+            u.accept(new RenderEvent(time, this, renderer));
         });
         onPaint(renderer);
         
+        final long timeAfter = System.currentTimeMillis();
         getAfterPaint().forEach((t, u) -> {
-            u.accept(new RenderEvent());
+            u.accept(new RenderEvent(timeAfter, this, renderer));
         });
     }
     
-    protected void onPaint(Renderer renderer) {
-    }
+    protected abstract void onPaint(Renderer renderer);
 
     @Override
     public boolean attachListener(Object listener, Consumer<RenderEvent> onEvent) {

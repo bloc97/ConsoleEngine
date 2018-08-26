@@ -5,10 +5,35 @@
  */
 package engine.event;
 
+import engine.Renderer;
+import engine.event.handler.RenderHandler;
+
 /**
  *
  * @author bowen
  */
 public class RenderEvent {
+    
+    private final long time;
+    private final RenderHandler renderHandler;
+    private final Renderer renderer;
+
+    public RenderEvent(long time, RenderHandler renderHandler, Renderer renderer) {
+        this.time = time;
+        this.renderHandler = renderHandler;
+        this.renderer = renderer;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public RenderHandler getRenderHandler() {
+        return renderHandler;
+    }
+
+    public Renderer getRenderer() {
+        return renderer;
+    }
     
 }

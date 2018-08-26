@@ -13,7 +13,7 @@ import engine.console.ConsoleJPanel;
 import hans.ui.HansGameWindow;
 import console.CharacterImage;
 import console.BufferedConsoleComponent;
-import hans.ui.HansGameLayer;
+import hans.ui.HansConsoleComponent;
 import hans.game.Colony;
 import hans.game.Event;
 
@@ -21,7 +21,7 @@ import hans.game.Event;
  *
  * @author bowen
  */
-public class DayEndPopupOverlay extends HansGameLayer {
+public class DayEndPopupOverlay extends HansConsoleComponent {
     
     private Color mainColor;
     

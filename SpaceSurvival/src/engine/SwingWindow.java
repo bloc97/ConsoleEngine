@@ -316,7 +316,7 @@ public class SwingWindow implements NativeWindow {
             lastHeight = (frame.getHeight());
             lastX = frame.getX();
             lastY = frame.getY();
-            System.out.println(lastX + " " + lastY + " " + lastWidth + " " + lastHeight);
+            //System.out.println(lastX + " " + lastY + " " + lastWidth + " " + lastHeight);
             SwingUtilities.invokeLater(() -> {
                 frame.dispose();
                 frame.setUndecorated(true);

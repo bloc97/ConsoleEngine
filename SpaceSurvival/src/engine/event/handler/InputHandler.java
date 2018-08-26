@@ -27,7 +27,7 @@ import engine.NativeHandler;
  *
  * @author bowen
  */
-public abstract class InputHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener, FocusListener, ComponentListener, EventGenerator<KeyEvent>, NativeHandler {
+public class InputHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener, FocusListener, ComponentListener, EventGenerator<KeyEvent>, NativeHandler {
     
     private final ConcurrentMap<Object, Consumer<KeyEvent>> keyTyped = new ConcurrentHashMap<>();
     private final ConcurrentMap<Object, Consumer<KeyEvent>> keyPressed = new ConcurrentHashMap<>();

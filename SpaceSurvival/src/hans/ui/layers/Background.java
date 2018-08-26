@@ -9,35 +9,39 @@ import console.ConsoleHandler;
 import console.ConsoleWindow;
 import java.awt.Color;
 import hans.ui.HansGameWindow;
-import hans.ui.HansGameLayer;
+import hans.ui.HansConsoleComponent;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 
 /**
  *
  * @author bowen
  */
-public class Background extends HansGameLayer {
+public class Background extends HansConsoleComponent {
     
     public static final int TOP_PADDING = 1;
     public static final int BOTTOM_PADDING = 1;
     
-    private Color mainColor;
-    private final ConsoleWindow consoleWindow;
-    
-    public Background(Color mainColor, ConsoleWindow consoleWindow) {
-        this.mainColor = mainColor;
-        this.consoleWindow = consoleWindow;
+
+    @Override
+    public void onAttach() {
+        getConsoleWindow().getConsoleRenderHandler().attachAfterPaintListener(this, (e) -> {
+            Point p = getConsoleWindow().getConsoleRenderHandler().getPixelPosition(3, 3);
+            Point p2 = getConsoleWindow().getConsoleRenderHandler().getPixelPosition(5, 5);
+            e.getRenderer().drawRectangle(p.x, p.y, p2.x - p.x, p2.y - p.y);
+        });
     }
+    
+    
     
     @Override
     public void onPaint() {
         
-        
-        final Color colorPalette = mainColor;
+        final Color mainColor = getHansConsoleWindow().getMainColor();
         
         final int heightPad = getHeight() - (TOP_PADDING + BOTTOM_PADDING);
         
-        final int xline = consoleWindow.getConsoleRenderHandler().getConsoleFont().getHeightWidthRatio() > 1 ? 38 : 19;
+        final int xline = getConsoleWindow().getConsoleRenderHandler().getConsoleFont().getHeightWidthRatio() > 1 ? 38 : 19;
         
         getCharacterImage().clear();
         
@@ -47,12 +51,11 @@ public class Background extends HansGameLayer {
         getCharacterImage().drawString("Settlement", xline + ((getWidth() - xline)/2 - 5), TOP_PADDING);
         //getCharacterImage().drawRectangle(xLine, yLine, getWidth()-xLine, getHeight()-yLine-1);
         //getCharacterImage().drawRectangle(getWidth() - 1, topPadding + 1, 1, heightPad - 2, '░');
-        getCharacterImage().fillRectangleForegroundColor(0, 0, getWidth(), getHeight(), colorPalette.brighter().brighter().getRGB());
+        getCharacterImage().fillRectangleForegroundColor(0, 0, getWidth(), getHeight(), mainColor.brighter().brighter().getRGB());
         //getCharacterImage().fillBackgroundColorRectangle(0, 0, getWidth(), getHeight(), 0xFFF5EFD2);
-        getCharacterImage().fillRectangleBackgroundColor(0, 0, getWidth(), getHeight(), colorPalette.darker().getRGB());
-        getCharacterImage().fillRectangleBackgroundColor(0, 0, getWidth(), TOP_PADDING, colorPalette.getRGB());
-        getCharacterImage().fillRectangleBackgroundColor(0, getHeight()-BOTTOM_PADDING, getWidth(), BOTTOM_PADDING, colorPalette.getRGB());
-        
+        getCharacterImage().fillRectangleBackgroundColor(0, 0, getWidth(), getHeight(), mainColor.darker().getRGB());
+        getCharacterImage().fillRectangleBackgroundColor(0, 0, getWidth(), TOP_PADDING, mainColor.getRGB());
+        getCharacterImage().fillRectangleBackgroundColor(0, getHeight()-BOTTOM_PADDING, getWidth(), BOTTOM_PADDING, mainColor.getRGB());
         
     }
 

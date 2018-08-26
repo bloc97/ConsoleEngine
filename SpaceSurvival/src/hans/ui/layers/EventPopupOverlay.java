@@ -12,7 +12,7 @@ import static hans.ui.layers.ColonyBuildings.CARD_WIDTH;
 import console.CharacterImage;
 import console.BufferedConsoleComponent;
 import console.StringWriter;
-import hans.ui.HansGameLayer;
+import hans.ui.HansConsoleComponent;
 import static hans.ui.layers.TextCutscene.cutscene;
 import hans.game.Colony;
 import hans.game.Event;
@@ -22,7 +22,7 @@ import hans.game.EventChoice;
  *
  * @author bowen
  */
-public class EventPopupOverlay extends HansGameLayer {
+public class EventPopupOverlay extends HansConsoleComponent {
     
     private Color mainColor;
     

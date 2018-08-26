@@ -5,9 +5,10 @@
  */
 package hans.ui;
 
-import java.awt.event.KeyEvent;
-import console.ConsoleInputHandler;
 import console.ConsoleWindow;
+import hans.ui.layers.Background;
+import hans.ui.layers.BottomBar;
+import java.awt.Color;
 
 /**
  *
@@ -15,31 +16,19 @@ import console.ConsoleWindow;
  */
 public class HansConsoleWindow extends ConsoleWindow {
     
-    public static final int DEFAULT_SIZE = 10;
+    private Color mainColor;
     
     public HansConsoleWindow() {
-        super(60, 30, new HansRenderHandler(), new ConsoleInputHandler(){
-            
-            @Override
-            public void onKeyReleased(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_F) {
-                    ((HansRenderHandler)getConsoleWindow().getConsoleRenderHandler()).nextFont();
-                } else if (e.getKeyCode() == KeyEvent.VK_F11 || (e.getKeyCode() == KeyEvent.VK_ENTER && e.isAltDown())) {
-                    if (getNativeWindow() != null && getNativeWindow().isVisible()) {
-                        if (getNativeWindow().isFullscreen()) {
-                            getNativeWindow().setWindowed();
-                        } else if (getNativeWindow().isWindowed()) {
-                            getNativeWindow().setFullscreen();
-                        }
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_F3) {
-                    ((HansRenderHandler)getConsoleWindow().getConsoleRenderHandler()).toggleDebug();
-                }
-            }
-
-        });
+        super(60, 30, new HansRenderHandler(), new HansInputHandler());
+        mainColor = new Color(120, 146, 190);
+        addComponent(0, new Background());
+        addComponent(10, new BottomBar());
     }
 
+    public Color getMainColor() {
+        return mainColor;
+    }
+    
     @Override
     public int getMinimumWidth() {
         return super.getMinimumWidth() * getConsoleRenderHandler().getConsoleFont().getHeightWidthRatio();

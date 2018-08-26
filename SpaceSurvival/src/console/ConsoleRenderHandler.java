@@ -26,16 +26,13 @@ import java.util.List;
  */
 public class ConsoleRenderHandler extends RenderHandler implements ConsoleHandler {
 
-    private ConsoleWindow emptyConsoleWindow;
-    
-    private volatile ConsoleWindow consoleWindow;
+    private ConsoleWindow consoleWindow;
     private ConsoleFont consoleFont;
     
     private int customScale = 1;
     private int xPad = 0;
     private int yPad = 0;
     
-    private int lastRenderWidthPixels = 1, lastRenderHeightPixels = 1;
 
     public ConsoleRenderHandler(ConsoleFont consoleFont) {
         this.consoleFont = consoleFont;
@@ -43,12 +40,6 @@ public class ConsoleRenderHandler extends RenderHandler implements ConsoleHandle
     
     @Override
     public ConsoleWindow getConsoleWindow() {
-        if (consoleWindow == null) {
-            if (emptyConsoleWindow == null) {
-                emptyConsoleWindow = new ConsoleWindow(0, 0, ConsoleFont.getDefaultCourier());
-            }
-            return emptyConsoleWindow;
-        }
         return consoleWindow;
     }
 
@@ -71,23 +62,21 @@ public class ConsoleRenderHandler extends RenderHandler implements ConsoleHandle
     public int getYPad() {
         return yPad;
     }
-
-    public int getLastRenderWidthPixels() {
-        return lastRenderWidthPixels;
-    }
-
-    public int getLastRenderHeightPixels() {
-        return lastRenderHeightPixels;
-    }
     
 
-    public final void setConsoleFont(ConsoleFont consoleFont) {
+    public void setConsoleFont(ConsoleFont consoleFont) {
         this.consoleFont = consoleFont;
-        setRequestedRenderDimensionPixels(lastRenderWidthPixels, lastRenderHeightPixels);
+        setRequestedRenderDimensionPixels(getRequestedRenderWidthPixels(), getRequestedRenderHeightPixels());
+        if (getConsoleWindow() == null) {
+            return;
+        }
         getConsoleWindow().getConsoleInputHandler().fontChanged();
     }
     @Override
     protected void onPaint(Renderer renderer) {
+        if (getConsoleWindow() == null) {
+            return;
+        }
         getConsoleWindow().getComponents().forEach((t) -> {
             t.onPrePaint();
         });
@@ -104,6 +93,9 @@ public class ConsoleRenderHandler extends RenderHandler implements ConsoleHandle
             final BufferedImage image = getImage();
             renderer.drawBufferedImage(image, getXPad(), getYPad(), getCustomScale());
         } else {
+            final BufferedImage image = new BufferedImage(getRequestedRenderWidthPixels(), getRequestedRenderHeightPixels(), BufferedImage.TYPE_INT_ARGB);
+            failedPaint(image.createGraphics());
+            renderer.drawBufferedImage(image, 0, 0, 1);
             //failedPaint(g2);
         }
         
@@ -119,16 +111,16 @@ public class ConsoleRenderHandler extends RenderHandler implements ConsoleHandle
         int textWidth = error.length() + 2;
         int textHeight = 1;
 
-        final int customScaleWidth = lastRenderWidthPixels / getConsoleFont().getWidth() / textWidth;
-        final int customScaleHeight = lastRenderHeightPixels / getConsoleFont().getHeight() / textHeight;
+        final int customScaleWidth = getRequestedRenderWidthPixels() / getConsoleFont().getWidth() / textWidth;
+        final int customScaleHeight = getRequestedRenderHeightPixels() / getConsoleFont().getHeight() / textHeight;
 
         int tempCustomScale = Math.min(customScaleWidth, customScaleHeight);
         if (tempCustomScale < 1) {
             tempCustomScale = 1;
         }
 
-        int tempXPad = (lastRenderWidthPixels - (textWidth * tempCustomScale * getConsoleFont().getWidth())) / 2;
-        int tempYPad = (lastRenderHeightPixels - (textHeight * tempCustomScale * getConsoleFont().getHeight())) / 2;
+        int tempXPad = (getRequestedRenderWidthPixels() - (textWidth * tempCustomScale * getConsoleFont().getWidth())) / 2;
+        int tempYPad = (getRequestedRenderHeightPixels() - (textHeight * tempCustomScale * getConsoleFont().getHeight())) / 2;
 
         g2.translate(tempXPad, tempYPad);
         g2.scale(tempCustomScale, tempCustomScale);
@@ -139,9 +131,11 @@ public class ConsoleRenderHandler extends RenderHandler implements ConsoleHandle
     }
     
     @Override
-    public final void setRequestedRenderDimensionPixels(int renderWidthPixels, int renderHeightPixels) {
-        this.lastRenderWidthPixels = renderWidthPixels;
-        this.lastRenderHeightPixels = renderHeightPixels;
+    public void setRequestedRenderDimensionPixels(int renderWidthPixels, int renderHeightPixels) {
+        super.setRequestedRenderDimensionPixels(renderWidthPixels, renderHeightPixels);
+        if (getConsoleWindow() == null) {
+            return;
+        }
         final int customScaleWidth = renderWidthPixels / getConsoleFont().getWidth() / getConsoleWindow().getMinimumWidth();
         final int customScaleHeight = renderHeightPixels / getConsoleFont().getHeight() / getConsoleWindow().getMinimumHeight();
         
@@ -161,12 +155,20 @@ public class ConsoleRenderHandler extends RenderHandler implements ConsoleHandle
         
     }
 
-    public final Point getMouseConsolePosition(int mouseX, int mouseY) {
-        return new Point((mouseX - getXPad()) / getConsoleFont().getWidth() / getCustomScale(), 
-                         (mouseY - getYPad()) / getConsoleFont().getHeight() / getCustomScale());
+    public Point getConsolePosition(int xPixel, int yPixel) {
+        return new Point((xPixel - getXPad()) / getConsoleFont().getWidth() / getCustomScale(), 
+                         (yPixel - getYPad()) / getConsoleFont().getHeight() / getCustomScale());
+    }
+    
+    public Point getPixelPosition(int xConsole, int yConsole) {
+        return new Point(xConsole * getCustomScale() * getConsoleFont().getWidth() + getXPad(), 
+                         yConsole * getCustomScale() * getConsoleFont().getHeight() + getYPad());
     }
     
     public boolean paintPos(final Graphics2D g2, final int x, final int y) {
+        if (getConsoleWindow() == null) {
+            return false;
+        }
         final Collection<ConsoleComponent> panels = getConsoleWindow().getComponents();
         
         List<Character> characterList = new ArrayList<>();
@@ -214,6 +216,9 @@ public class ConsoleRenderHandler extends RenderHandler implements ConsoleHandle
     }
     
     public BufferedImage getImage() {
+        if (getConsoleWindow() == null) {
+            return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        }
         final int consoleWidth = getConsoleWindow().getWidth();
         final int consoleHeight = getConsoleWindow().getHeight();
         if (consoleWidth <= 0 || consoleHeight <= 0) {

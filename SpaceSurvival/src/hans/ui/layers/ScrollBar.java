@@ -7,13 +7,13 @@ package hans.ui.layers;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import hans.ui.HansGameLayer;
+import hans.ui.HansConsoleComponent;
 
 /**
  *
  * @author bowen
  */
-public abstract class ScrollBar extends HansGameLayer {
+public abstract class ScrollBar extends HansConsoleComponent {
     
     private Color mainColor;
     private int scroll, maxScroll;
