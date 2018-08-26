@@ -6,6 +6,7 @@
 package hans.ui.layers;
 
 import console.ConsoleHandler;
+import console.ConsoleWindow;
 import java.awt.Color;
 import hans.ui.HansGameWindow;
 import hans.ui.HansGameLayer;
@@ -21,11 +22,11 @@ public class Background extends HansGameLayer {
     public static final int BOTTOM_PADDING = 1;
     
     private Color mainColor;
-    private final ConsoleHandler consoleHandler;
+    private final ConsoleWindow consoleWindow;
     
-    public Background(Color mainColor, ConsoleHandler consoleHandler) {
+    public Background(Color mainColor, ConsoleWindow consoleWindow) {
         this.mainColor = mainColor;
-        this.consoleHandler = consoleHandler;
+        this.consoleWindow = consoleWindow;
     }
     
     @Override
@@ -36,7 +37,7 @@ public class Background extends HansGameLayer {
         
         final int heightPad = getHeight() - (TOP_PADDING + BOTTOM_PADDING);
         
-        final int xline = consoleHandler.getConsoleFont().getHeightWidthRatio() > 1 ? 38 : 19;
+        final int xline = consoleWindow.getConsoleRenderHandler().getConsoleFont().getHeightWidthRatio() > 1 ? 38 : 19;
         
         getCharacterImage().clear();
         
@@ -55,8 +56,7 @@ public class Background extends HansGameLayer {
         
     }
 
-    @Override
-    public void onTick() {
+    private void test() {
         for (int i=0; i<1000000; i++) {
             double a = Math.sin(i);
         }

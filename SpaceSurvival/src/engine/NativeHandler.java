@@ -9,7 +9,7 @@ package engine;
  *
  * @author bowen
  */
-public interface NativeWindowHandler {
+public interface NativeHandler {
     public NativeWindow getNativeWindow();
     public void setNativeWindow(NativeWindow nativeWindow);
 }

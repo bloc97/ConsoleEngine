@@ -154,8 +154,6 @@ public abstract class ConsoleComponent {
     public void onKeyTyped(KeyEvent e) {
     }
     
-    public void onTick() {
-    }
     public void onPrePaint() {
     }
     public void onPaint() {

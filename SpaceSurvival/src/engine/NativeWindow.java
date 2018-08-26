@@ -26,6 +26,7 @@ public interface NativeWindow  {
     
     public boolean isMinimized();
     public boolean isWindowed();
+    public boolean isMaximized();
     public boolean isFullscreen();
     public void setFullscreen();
     public void setWindowed();

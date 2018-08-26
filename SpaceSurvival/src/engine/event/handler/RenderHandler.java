@@ -9,16 +9,16 @@ import engine.event.EventGenerator;
 import engine.event.RenderEvent;
 import engine.Renderer;
 import engine.NativeWindow;
-import engine.NativeWindowHandler;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
+import engine.NativeHandler;
 
 /**
  *
  * @author bowen
  */
-public abstract class RenderHandler implements EventGenerator<RenderEvent>, NativeWindowHandler {
+public abstract class RenderHandler implements EventGenerator<RenderEvent>, NativeHandler {
 
     protected int renderWidthPixels = 1, renderHeightPixels = 1;
     protected float widthScale = 1f, heightScale = 1f;

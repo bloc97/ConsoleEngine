@@ -5,7 +5,6 @@
  */
 package hans.ui;
 
-import engine.abstractionlayer.Message;
 import engine.SwingWindow;
 import javax.swing.ImageIcon;
 
@@ -16,14 +15,9 @@ import javax.swing.ImageIcon;
 public class HansGameWindow extends SwingWindow {
 
     public HansGameWindow() {
-        super("The Unfortunate Story of Hans", 0, false);
+        super("The Unfortunate Story of Hans", false);
         setIconImages(new ImageIcon("resources/icon.png").getImage());
     }
-    
-    @Override
-    public void receiveImmediately(Message message) {
-    }
-    
     
     
     /*

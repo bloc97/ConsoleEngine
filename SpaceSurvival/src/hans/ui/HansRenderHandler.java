@@ -5,20 +5,13 @@
  */
 package hans.ui;
 
-import engine.abstractionlayer.AbstractMessage;
-import engine.event.handler.AudioHandler;
-import engine.abstractionlayer.Message;
-import engine.abstractionlayer.MessageBus;
-import java.awt.event.KeyEvent;
-import java.io.File;
 import console.ConsoleFont;
-import console.ConsoleHandler;
+import console.ConsoleRenderHandler;
 import console.utils.Graphics2DUtils;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.LinkedList;
+import java.io.File;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -26,72 +19,41 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  * @author bowen
  */
-public class HansGameHandler extends ConsoleHandler implements AudioHandler {
-    
-    public static final int DEFAULT_SIZE = 10;
-    
+public class HansRenderHandler extends ConsoleRenderHandler {
+
     private final File[] fonts;
     private int fontIndex;
     
-    private ConsoleFont selectedConsoleFont;
+    private boolean paintDebug = false;
+    private long lastFrameTimeMillis = -1;
+    private Queue<Integer> frameQueue = new ConcurrentLinkedQueue<>();
     
-    private final MessageBus messageBus;
-    private final HansGameWindow window;
     
-    public HansGameHandler(MessageBus messageBus, HansGameWindow window) {
-        super(60, 30, ConsoleFont.getDefaultCourier());
-        this.messageBus = messageBus;
-        this.window = window;
+    public HansRenderHandler() {
+        super(ConsoleFont.getDefaultCourier());
         
         this.fonts = new File("resources/fonts").listFiles((pathname) -> {
             return pathname.getName().toLowerCase().endsWith(".ttf");
         });
         this.fontIndex = 0;
-        this.selectedConsoleFont = ConsoleFont.fromFile(fonts[fontIndex]);
         if (fonts.length > 0) {
-            setConsoleFont(selectedConsoleFont);
+            setConsoleFont(ConsoleFont.fromFile(fonts[fontIndex]));
         }
-    }
-
-    @Override
-    public int getMinimumWidth() {
-        return super.getMinimumWidth() * getConsoleFont().getHeightWidthRatio();
     }
     
-    @Override
-    public void onKeyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_F) {
-            fontIndex++;
-            if (fontIndex >= fonts.length) {
-                fontIndex = 0;
-            }
-            setConsoleFont(ConsoleFont.fromFile(fonts[fontIndex]));
-            //selectedConsoleFont = ConsoleFont.fromFile(fonts[fontIndex]);
-        } else if (e.getKeyCode() == KeyEvent.VK_F11 || (e.getKeyCode() == KeyEvent.VK_ENTER && e.isAltDown())) {
-            if (window.isVisible()) {
-                if (window.isFullscreen()) {
-                    window.setWindowed();
-                } else if (window.isWindowed()) {
-                    window.setFullscreen();
-                }
-            }
-        } else if (e.getKeyCode() == KeyEvent.VK_F3) {
-            paintDebug = !paintDebug;
+    public void nextFont() {
+        fontIndex++;
+        if (fontIndex >= fonts.length) {
+            fontIndex = 0;
         }
+        setConsoleFont(ConsoleFont.fromFile(fonts[fontIndex]));
+    }
+    
+    public void toggleDebug() {
+        paintDebug = !paintDebug;
     }
 
-    @Override
-    public void receiveImmediately(Message message) {
-        
-    }
-
-    private boolean paintDebug = false;
-    private long lastFrameTimeMillis = -1;
-    private Queue<Integer> frameQueue = new ConcurrentLinkedQueue<>();
-
-
-    @Override
-    public void onPaint() {
+    private void getNextFrameTime() {
         
         if (lastFrameTimeMillis < 0) {
             lastFrameTimeMillis = System.currentTimeMillis();
@@ -116,6 +78,8 @@ public class HansGameHandler extends ConsoleHandler implements AudioHandler {
     @Override
     public BufferedImage getImage() {
         final BufferedImage image = super.getImage();
+        
+        getNextFrameTime();
         
         if (paintDebug) {
             Graphics2D g2 = image.createGraphics();
@@ -179,6 +143,4 @@ public class HansGameHandler extends ConsoleHandler implements AudioHandler {
             Graphics2DUtils.drawConsoleChar(g2, 1 + i, 3, error2.charAt(i), Color.WHITE, Color.BLACK, getConsoleFont());
         }
     }
-    
-    
 }

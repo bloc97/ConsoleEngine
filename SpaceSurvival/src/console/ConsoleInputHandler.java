@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package console.event.handler;
+package console;
 
 import console.ConsoleComponent;
 import engine.event.handler.InputHandler;
@@ -19,9 +19,11 @@ import java.awt.geom.AffineTransform;
  *
  * @author bowen
  */
-public class ConsoleInputHandler extends InputHandler implements ConsoleWindowHandler {
+public class ConsoleInputHandler extends InputHandler implements ConsoleHandler {
 
-    private ConsoleWindow consoleWindow;
+    private ConsoleWindow emptyConsoleWindow;
+    
+    private volatile ConsoleWindow consoleWindow;
     
     private MouseEvent lastMouseEvent;
     private boolean isMousePressed = false;
@@ -30,6 +32,12 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleWindowHa
     
     @Override
     public ConsoleWindow getConsoleWindow() {
+        if (consoleWindow == null) {
+            if (emptyConsoleWindow == null) {
+                emptyConsoleWindow = new ConsoleWindow(0, 0, ConsoleFont.getDefaultCourier());
+            }
+            return emptyConsoleWindow;
+        }
         return consoleWindow;
     }
 
@@ -346,7 +354,7 @@ public class ConsoleInputHandler extends InputHandler implements ConsoleWindowHa
         super.componentResized(e);
         final AffineTransform defaultTransform = e.getComponent().getGraphicsConfiguration().getDefaultTransform();
         //System.out.println((int)(e.getComponent().getWidth() * defaultTransform.getScaleX()) + " " + (int)(e.getComponent().getHeight() * defaultTransform.getScaleY()));
-        getConsoleWindow().getConsoleRenderHandler().setDimensionPixels((int)(e.getComponent().getWidth() * defaultTransform.getScaleX()), (int)(e.getComponent().getHeight() * defaultTransform.getScaleY()));
+        getConsoleWindow().getConsoleRenderHandler().setRequestedRenderDimensionPixels((int)(e.getComponent().getWidth() * defaultTransform.getScaleX()), (int)(e.getComponent().getHeight() * defaultTransform.getScaleY()));
     }
 
     @Override

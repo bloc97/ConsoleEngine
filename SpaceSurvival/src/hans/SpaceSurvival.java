@@ -5,19 +5,14 @@
  */
 package hans;
 
-import hans.ui.HansGameHandler;
-import engine.abstractionlayer.Message;
-import engine.abstractionlayer.MessageBus;
-import console.ConsoleFont;
+import hans.ui.HansConsoleWindow;
 import console.ConsoleHandler;
-import engine.SwingWindow;
-import javax.swing.ImageIcon;
+import engine.RunnerUtils;
 import hans.game.Event;
 import hans.ui.HansGameWindow;
 import hans.ui.layers.Background;
 import java.awt.Color;
-import java.awt.event.MouseEvent;
-import javax.swing.JFrame;
+import java.util.concurrent.Executors;
 /**
  *
  * @author bowen
@@ -30,18 +25,21 @@ public class SpaceSurvival {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        MessageBus messageBus = new MessageBus();
         HansGameWindow window = new HansGameWindow();
         
-        ConsoleHandler consoleHandler = new HansGameHandler(messageBus, window);
-        consoleHandler.addComponent(0, new Background(new Color(120, 146, 190), consoleHandler));
+        HansConsoleWindow hansConsoleWindow = new HansConsoleWindow();
+        hansConsoleWindow.addComponent(0, new Background(new Color(120, 146, 190), hansConsoleWindow));
         
-        messageBus.addReceiver(window);
         
-        window.attachRenderHandler(consoleHandler);
-        window.attachInputHandler(consoleHandler);
+        window.attachRenderHandler(hansConsoleWindow.getConsoleRenderHandler());
+        window.attachInputHandler(hansConsoleWindow.getConsoleInputHandler());
         window.show();
         
+        
+        
+        RunnerUtils.runAt(() -> {
+            window.requestPaint();
+        }, Executors.newSingleThreadExecutor(), 60);
         
         Event.initAllEvents();
         

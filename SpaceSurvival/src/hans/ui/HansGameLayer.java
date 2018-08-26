@@ -15,7 +15,7 @@ import console.BufferedConsoleComponent;
 public abstract class HansGameLayer extends BufferedConsoleComponent {
 
     public HansGameLayer() {
-        this(HansGameHandler.DEFAULT_SIZE, HansGameHandler.DEFAULT_SIZE);
+        this(HansConsoleWindow.DEFAULT_SIZE, HansConsoleWindow.DEFAULT_SIZE);
     }
     
     public HansGameLayer(int width, int height) {

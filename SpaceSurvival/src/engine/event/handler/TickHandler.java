@@ -6,13 +6,13 @@
 package engine.event.handler;
 
 import engine.NativeWindow;
-import engine.NativeWindowHandler;
+import engine.NativeHandler;
 
 /**
  *
  * @author bowen
  */
-public abstract class TickHandler implements NativeWindowHandler {
+public abstract class TickHandler implements NativeHandler {
     
     private NativeWindow nativeWindow = null;
     

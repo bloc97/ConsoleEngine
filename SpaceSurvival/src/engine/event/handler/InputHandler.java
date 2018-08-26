@@ -7,7 +7,6 @@ package engine.event.handler;
 
 import engine.event.EventGenerator;
 import engine.NativeWindow;
-import engine.NativeWindowHandler;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
@@ -22,12 +21,13 @@ import java.awt.event.MouseWheelListener;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
+import engine.NativeHandler;
 
 /**
  *
  * @author bowen
  */
-public abstract class InputHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener, FocusListener, ComponentListener, EventGenerator<KeyEvent>, NativeWindowHandler {
+public abstract class InputHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener, FocusListener, ComponentListener, EventGenerator<KeyEvent>, NativeHandler {
     
     private final ConcurrentMap<Object, Consumer<KeyEvent>> keyTyped = new ConcurrentHashMap<>();
     private final ConcurrentMap<Object, Consumer<KeyEvent>> keyPressed = new ConcurrentHashMap<>();

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package console.event.handler;
+package console;
 
 import console.CharacterImage;
 import console.ConsoleComponent;
@@ -24,9 +24,11 @@ import java.util.List;
  *
  * @author bowen
  */
-public class ConsoleRenderHandler extends RenderHandler implements ConsoleWindowHandler {
+public class ConsoleRenderHandler extends RenderHandler implements ConsoleHandler {
 
-    private ConsoleWindow consoleWindow;
+    private ConsoleWindow emptyConsoleWindow;
+    
+    private volatile ConsoleWindow consoleWindow;
     private ConsoleFont consoleFont;
     
     private int customScale = 1;
@@ -41,6 +43,12 @@ public class ConsoleRenderHandler extends RenderHandler implements ConsoleWindow
     
     @Override
     public ConsoleWindow getConsoleWindow() {
+        if (consoleWindow == null) {
+            if (emptyConsoleWindow == null) {
+                emptyConsoleWindow = new ConsoleWindow(0, 0, ConsoleFont.getDefaultCourier());
+            }
+            return emptyConsoleWindow;
+        }
         return consoleWindow;
     }
 
@@ -75,12 +83,11 @@ public class ConsoleRenderHandler extends RenderHandler implements ConsoleWindow
 
     public final void setConsoleFont(ConsoleFont consoleFont) {
         this.consoleFont = consoleFont;
-        setDimensionPixels(lastRenderWidthPixels, lastRenderHeightPixels);
+        setRequestedRenderDimensionPixels(lastRenderWidthPixels, lastRenderHeightPixels);
         getConsoleWindow().getConsoleInputHandler().fontChanged();
     }
     @Override
     protected void onPaint(Renderer renderer) {
-        
         getConsoleWindow().getComponents().forEach((t) -> {
             t.onPrePaint();
         });
@@ -88,6 +95,7 @@ public class ConsoleRenderHandler extends RenderHandler implements ConsoleWindow
         //Sets the RenderingHints
         renderer.setInterpolation(Renderer.Interpolation.NEAREST_NEIGHBOR);
         //Paints everything
+        //System.out.println(getConsoleWindow().getWidth() + " " + getConsoleWindow().getMinimumWidth()  + " " + getConsoleWindow().getHeight()  + " " + getConsoleWindow().getMinimumHeight());
         if (getConsoleWindow().getWidth() >= getConsoleWindow().getMinimumWidth() && getConsoleWindow().getHeight() >= getConsoleWindow().getMinimumHeight()) {
             
             getConsoleWindow().getComponents().forEach((t) -> {
@@ -130,7 +138,8 @@ public class ConsoleRenderHandler extends RenderHandler implements ConsoleWindow
         }
     }
     
-    public final void setDimensionPixels(int renderWidthPixels, int renderHeightPixels) {
+    @Override
+    public final void setRequestedRenderDimensionPixels(int renderWidthPixels, int renderHeightPixels) {
         this.lastRenderWidthPixels = renderWidthPixels;
         this.lastRenderHeightPixels = renderHeightPixels;
         final int customScaleWidth = renderWidthPixels / getConsoleFont().getWidth() / getConsoleWindow().getMinimumWidth();

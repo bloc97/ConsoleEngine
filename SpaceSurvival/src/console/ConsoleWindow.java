@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package console.event.handler;
+package console;
 
 import console.*;
 import engine.event.handler.InputHandler;
@@ -34,7 +34,8 @@ import java.util.TreeMap;
  *
  * @author bowen
  */
-public abstract class ConsoleWindow extends InputHandler {
+public class ConsoleWindow {
+    
     private final TreeMap<Integer, ConsoleComponent> componentMap;
     private final ConsoleRenderHandler consoleRenderHandler;
     private final ConsoleInputHandler consoleInputHandler;
@@ -132,11 +133,5 @@ public abstract class ConsoleWindow extends InputHandler {
     public ConsoleInputHandler getConsoleInputHandler() {
         return consoleInputHandler;
     }
-    
-    @Override
-    public NativeWindow getNativeWindow() {
-        return getConsoleRenderHandler().getNativeWindow();
-    }
-    
     
 }

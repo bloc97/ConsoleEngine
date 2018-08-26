@@ -296,12 +296,17 @@ public class SwingWindow implements NativeWindow {
     
     @Override
     public final boolean isWindowed() {
-        return frame.getExtendedState() == Frame.NORMAL;
+        return frame.getExtendedState() == Frame.NORMAL || !frame.isUndecorated();
+    }
+
+    @Override
+    public boolean isMaximized() {
+        return frame.getExtendedState() == Frame.MAXIMIZED_BOTH;
     }
     
     @Override
     public final boolean isFullscreen() {
-        return frame.getExtendedState() == Frame.MAXIMIZED_BOTH;
+        return frame.getExtendedState() == Frame.MAXIMIZED_BOTH && frame.isUndecorated();
     }
     
     @Override
@@ -311,6 +316,7 @@ public class SwingWindow implements NativeWindow {
             lastHeight = (frame.getHeight());
             lastX = frame.getX();
             lastY = frame.getY();
+            System.out.println(lastX + " " + lastY + " " + lastWidth + " " + lastHeight);
             SwingUtilities.invokeLater(() -> {
                 frame.dispose();
                 frame.setUndecorated(true);
@@ -330,11 +336,16 @@ public class SwingWindow implements NativeWindow {
             });
         } else if (isFullscreen()) {
             SwingUtilities.invokeLater(() -> {
+                final AffineTransform currentTransform = panel.getGraphicsConfiguration().getDefaultTransform();
+                final AffineTransform defaultTransform = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration().getDefaultTransform();
+                final double normScaleX = defaultTransform.getScaleX() / currentTransform.getScaleX();
+                final double normScaleY = defaultTransform.getScaleY() / currentTransform.getScaleY();
+                
                 frame.dispose();
                 frame.setUndecorated(false);
                 frame.setExtendedState(Frame.NORMAL);
-                frame.setSize((lastWidth), (lastHeight));
-                frame.setLocation(lastX, lastY);
+                frame.setSize((int)(lastWidth / normScaleX), (int)(lastHeight / normScaleY));
+                frame.setLocation((int)(lastX / normScaleX), (int)(lastY / normScaleY));
                 frame.setVisible(true);
             });
         }
@@ -356,7 +367,7 @@ public class SwingWindow implements NativeWindow {
 
     @Override
     public final void attachInputHandler(InputHandler inputHandler) {
-        if (this.renderHandler != null || inputHandler == null) {
+        if (this.inputHandler != null || inputHandler == null) {
             return;
         }
         this.inputHandler = inputHandler;
