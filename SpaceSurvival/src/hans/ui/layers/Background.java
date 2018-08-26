@@ -31,6 +31,7 @@ public class Background extends HansGameLayer {
     @Override
     public void onPaint() {
         
+        
         final Color colorPalette = mainColor;
         
         final int heightPad = getHeight() - (TOP_PADDING + BOTTOM_PADDING);
@@ -53,6 +54,16 @@ public class Background extends HansGameLayer {
         
         
     }
+
+    @Override
+    public void onTick() {
+        for (int i=0; i<1000000; i++) {
+            double a = Math.sin(i);
+        }
+        System.out.println("done");
+    }
+    
+    
 
     private int lastMouseX = 0, lastMouseY = 0;
     

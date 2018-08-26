@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package engine.abstractionlayer;
+package engine.abstractionlayer.handlers;
 
+import engine.abstractionlayer.Message;
+import engine.abstractionlayer.MessageReceiver;
+import engine.abstractionlayer.events.EventGenerator;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
@@ -21,7 +24,7 @@ import java.awt.event.MouseWheelListener;
  *
  * @author bowen
  */
-public interface InputHandler extends MessageReceiver, KeyListener, MouseListener, MouseMotionListener, MouseWheelListener, FocusListener, ComponentListener {
+public interface InputHandler extends MessageReceiver, KeyListener, MouseListener, MouseMotionListener, MouseWheelListener, FocusListener, ComponentListener, EventGenerator<Object> {
 
     @Override
     public default void receiveImmediately(Message message) {

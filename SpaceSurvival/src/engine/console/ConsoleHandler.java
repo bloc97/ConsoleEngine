@@ -5,9 +5,9 @@
  */
 package engine.console;
 
-import engine.abstractionlayer.InputHandler;
+import engine.abstractionlayer.handlers.InputHandler;
 import engine.abstractionlayer.Message;
-import engine.abstractionlayer.RenderHandler;
+import engine.abstractionlayer.handlers.RenderHandler;
 import engine.console.utils.Graphics2DUtils;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -202,7 +202,7 @@ public abstract class ConsoleHandler implements RenderHandler, InputHandler {
         return !characterList.isEmpty();
     }
     
-    public final BufferedImage getImage() {
+    public BufferedImage getImage() {
         if (getWidth() <= 0 || getHeight() <= 0) {
             return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         }

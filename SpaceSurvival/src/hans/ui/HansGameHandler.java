@@ -6,7 +6,7 @@
 package hans.ui;
 
 import engine.abstractionlayer.AbstractMessage;
-import engine.abstractionlayer.AudioHandler;
+import engine.abstractionlayer.handlers.AudioHandler;
 import engine.abstractionlayer.Message;
 import engine.abstractionlayer.MessageBus;
 import java.awt.event.KeyEvent;
@@ -17,6 +17,7 @@ import engine.console.utils.Graphics2DUtils;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -111,41 +112,41 @@ public class HansGameHandler extends ConsoleHandler implements AudioHandler {
             frameQueue.poll();
         }
     }
-    
-    
-    
+
     @Override
-    public void paint(Object graphics) {
-        super.paint(graphics);
+    public BufferedImage getImage() {
+        final BufferedImage image = super.getImage();
         
         if (paintDebug) {
-            if (graphics instanceof Graphics2D) {
-                Graphics2D g2 = (Graphics2D) graphics;
+            Graphics2D g2 = image.createGraphics();
 
-                int xPosPad = getLastRenderWidthPixels() - (frameQueue.size() * getCustomScale());
-                int yPosPad = getLastRenderHeightPixels();
+            int xPosPad = image.getWidth() - (frameQueue.size());
+            int yPosPad = image.getHeight();
 
-                int i = 0;
-                for (Integer frameTime : frameQueue) {
+            int i = 0;
+            for (Integer frameTime : frameQueue) {
 
-                    float normFrameTime = (frameTime - 20f) / 40f;
-                    if (normFrameTime < 0) {
-                        normFrameTime = 0;
-                    } else if (normFrameTime > 1) {
-                        normFrameTime = 1;
-                    }
-
-                    float hue = 1f/3f * (1f - normFrameTime);
-
-                    g2.setColor(Color.getHSBColor(hue, 1, 1));
-
-                    g2.fillRect(xPosPad + (i * getCustomScale()), yPosPad - (frameTime * getCustomScale()),  getCustomScale(), yPosPad * getCustomScale());
-                    i++;
+                if (frameTime > image.getHeight()) {
+                    frameTime = image.getHeight();
+                }
+                
+                float normFrameTime = (frameTime - 20f) / 40f;
+                if (normFrameTime < 0) {
+                    normFrameTime = 0;
+                } else if (normFrameTime > 1) {
+                    normFrameTime = 1;
                 }
 
+                float hue = 1f/3f * (1f - normFrameTime);
+
+                g2.setColor(Color.getHSBColor(hue, 1, 1));
+
+                g2.fillRect(xPosPad + i, yPosPad - (frameTime),  1, yPosPad);
+                i++;
             }
         }
         
+        return image;
     }
     
     @Override
@@ -155,7 +156,7 @@ public class HansGameHandler extends ConsoleHandler implements AudioHandler {
         final String error2 = "Press F to change font";
 
         int textWidth = Math.max(error.length(), error2.length()) + 2;
-        int textHeight = 3;
+        int textHeight = 5;
 
         final int customScaleWidth = getLastRenderWidthPixels() / getConsoleFont().getWidth() / textWidth;
         final int customScaleHeight = getLastRenderHeightPixels() / getConsoleFont().getHeight() / textHeight;
@@ -172,10 +173,10 @@ public class HansGameHandler extends ConsoleHandler implements AudioHandler {
         g2.scale(tempCustomScale, tempCustomScale);
 
         for (int i=0; i<error.length(); i++) {
-            Graphics2DUtils.drawConsoleChar(g2, 2 + i, 0, error.charAt(i), Color.WHITE, Color.BLACK, getConsoleFont());
+            Graphics2DUtils.drawConsoleChar(g2, 2 + i, 1, error.charAt(i), Color.WHITE, Color.BLACK, getConsoleFont());
         }
         for (int i=0; i<error2.length(); i++) {
-            Graphics2DUtils.drawConsoleChar(g2, 1 + i, 2, error2.charAt(i), Color.WHITE, Color.BLACK, getConsoleFont());
+            Graphics2DUtils.drawConsoleChar(g2, 1 + i, 3, error2.charAt(i), Color.WHITE, Color.BLACK, getConsoleFont());
         }
     }
     

@@ -5,8 +5,8 @@
  */
 package engine.framework;
 
-import engine.abstractionlayer.InputHandler;
-import engine.abstractionlayer.RenderHandler;
+import engine.abstractionlayer.handlers.InputHandler;
+import engine.abstractionlayer.handlers.RenderHandler;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -35,8 +35,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import javax.swing.SwingUtilities;
-import engine.abstractionlayer.AudioHandler;
+import engine.abstractionlayer.handlers.AudioHandler;
 import engine.abstractionlayer.Message;
+import java.util.concurrent.Future;
 
 /**
  *
@@ -45,6 +46,7 @@ import engine.abstractionlayer.Message;
 public abstract class SwingWindow implements NativeWindow {
     
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService executor2 = Executors.newSingleThreadScheduledExecutor();
     
     private final JFrame frame;
     private final JPanel panel;
@@ -234,31 +236,30 @@ public abstract class SwingWindow implements NativeWindow {
         panel.addMouseMotionListener(mouseAdapter);
         panel.addMouseWheelListener(mouseAdapter);
         
-        if (milisecondsPerFrame > 0) {
-            executor.scheduleWithFixedDelay(() -> {
+        executor.submit(() -> {
+            long lastTime = System.currentTimeMillis() - milisecondsPerFrame;
+            Future lastFuture = null;
+            while (true) {
                 try {
-                    if (renderHandler != null) {
-                        renderHandler.displayTick();
-                        panel.repaint();
+                    final long currentTime = System.currentTimeMillis();
+                    if (currentTime - lastTime >= milisecondsPerFrame) {
+                        lastTime = currentTime;
+                        
+                        if (renderHandler != null) {
+                            
+                            if (lastFuture == null || lastFuture.isDone()) {
+                                lastFuture = executor2.submit(() -> {
+                                    renderHandler.displayTick();
+                                });
+                            }
+                            panel.repaint();
+                        }
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
-            }, 0, milisecondsPerFrame, TimeUnit.MILLISECONDS);
-        } else {
-            executor.submit(() -> {
-                while (true) {
-                    try {
-                        if (renderHandler != null) {
-                            renderHandler.displayTick();
-                            panel.repaint();
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
-        }
+            }
+        });
         
     }
 
@@ -375,7 +376,7 @@ public abstract class SwingWindow implements NativeWindow {
     }
 
     @Override
-    public final void attachSoundHandler(AudioHandler soundHandler) {
+    public final void attachAudioHandler(AudioHandler soundHandler) {
         this.soundHandler = soundHandler;
     }
 
@@ -390,7 +391,7 @@ public abstract class SwingWindow implements NativeWindow {
     }
 
     @Override
-    public final AudioHandler getSoundHandler() {
+    public final AudioHandler getAudioHandler() {
         return soundHandler;
     }
     

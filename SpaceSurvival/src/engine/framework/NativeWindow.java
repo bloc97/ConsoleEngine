@@ -5,10 +5,10 @@
  */
 package engine.framework;
 
-import engine.abstractionlayer.InputHandler;
+import engine.abstractionlayer.handlers.InputHandler;
 import engine.abstractionlayer.MessageReceiver;
-import engine.abstractionlayer.RenderHandler;
-import engine.abstractionlayer.AudioHandler;
+import engine.abstractionlayer.handlers.RenderHandler;
+import engine.abstractionlayer.handlers.AudioHandler;
 
 /**
  *
@@ -31,9 +31,9 @@ public interface NativeWindow extends MessageReceiver {
     
     public RenderHandler getRenderHandler();
     public InputHandler getInputHandler();
-    public AudioHandler getSoundHandler();
+    public AudioHandler getAudioHandler();
     
     public void attachRenderHandler(RenderHandler renderHandler);
     public void attachInputHandler(InputHandler inputHandler);
-    public void attachSoundHandler(AudioHandler soundHandler);
+    public void attachAudioHandler(AudioHandler audioHandler);
 }
