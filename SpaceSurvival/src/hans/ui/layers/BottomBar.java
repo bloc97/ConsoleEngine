@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import hans.ui.HansGameWindow;
 import console.CharacterImage;
+import console.utils.ColorUtils;
 import hans.ui.HansConsoleComponent;
 import hans.game.Colony;
 import java.awt.event.MouseEvent;
@@ -59,7 +60,9 @@ public class BottomBar extends HansConsoleComponent {
         if (!isMouseOver) {
             getCharacterImage().fillBackgroundColor(mainColor.getRGB());
         } else {
-            getCharacterImage().fillBackgroundColor(new Color(mainColor.getRed() - 30, mainColor.getGreen() - 30, mainColor.getBlue() - 30).getRGB());
+            //getCharacterImage().fillBackgroundColor(ColorUtils.linearMult(mainColor, 0.8f).getRGB());
+            //getCharacterImage().fillBackgroundColor(ColorUtils.hsbMult(mainColor, 0.5f, 0.1f, 1f).getRGB());
+            getCharacterImage().fillBackgroundColor(ColorUtils.hsbMult(mainColor, 1f, 1f, 0.8f).getRGB());
         }
     }
     
