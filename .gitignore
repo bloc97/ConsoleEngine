@@ -24,3 +24,5 @@ hs_err_pid*
 *.pdn
 /SpaceSurvival/dist/
 /SpaceSurvival/release/
+/HansUnfortunateStory/nbproject/private/
+/nbproject/private/
