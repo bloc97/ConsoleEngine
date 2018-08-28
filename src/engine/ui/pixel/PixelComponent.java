@@ -292,7 +292,7 @@ public abstract class PixelComponent extends Bounds {
         final int lastScale = getScale();
         final boolean success = super.setScale(scale); //To change body of generated methods, choose Tools | Templates.
         if (lastScale != scale && success) {
-            onSizeChangeEvent();
+            onScaleChangeEvent();
         }
         return success;
     }
