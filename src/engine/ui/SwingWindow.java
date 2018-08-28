@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package engine;
+package engine.ui;
 
 import engine.event.handler.InputHandler;
 import engine.event.handler.RenderHandler;
@@ -20,7 +20,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import engine.NativeWindow;
+import engine.ui.NativeWindow;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Rectangle;

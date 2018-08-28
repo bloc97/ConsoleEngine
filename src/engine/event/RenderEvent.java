@@ -5,7 +5,7 @@
  */
 package engine.event;
 
-import engine.Renderer;
+import engine.ui.Renderer;
 import engine.event.handler.RenderHandler;
 
 /**

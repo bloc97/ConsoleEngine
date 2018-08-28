@@ -3,19 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package engine.pixel;
+package engine.ui.pixel;
 
-import console.ConsoleComponent;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeMap;
 
 /**
@@ -310,6 +307,25 @@ public abstract class PixelComponent extends Bounds {
         updateEnterMoved(e);
         if (lastEntered != null) {
             lastEntered.onMouseReleasedEvent(getTranslatedMouseEvent(e, lastEntered));
+        }
+    }
+    
+    public void onKeyPressedEvent(KeyEvent e) {
+        onKeyPressed(e);
+        if (lastFocused != null) {
+            lastFocused.onKeyPressedEvent(e);
+        }
+    }
+    public void onKeyReleasedEvent(KeyEvent e) {
+        onKeyReleased(e);
+        if (lastFocused != null) {
+            lastFocused.onKeyReleasedEvent(e);
+        }
+    }
+    public void onKeyTypedEvent(KeyEvent e) {
+        onKeyTyped(e);
+        if (lastFocused != null) {
+            lastFocused.onKeyTypedEvent(e);
         }
     }
     

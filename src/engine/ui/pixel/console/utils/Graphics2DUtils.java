@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package console.utils;
+package engine.ui.pixel.console.utils;
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import console.ConsoleFont;
+import engine.ui.pixel.console.ConsoleFont;
 
 /**
  *

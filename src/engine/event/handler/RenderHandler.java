@@ -7,12 +7,12 @@ package engine.event.handler;
 
 import engine.event.EventGenerator;
 import engine.event.RenderEvent;
-import engine.Renderer;
-import engine.NativeWindow;
+import engine.ui.Renderer;
+import engine.ui.NativeWindow;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
-import engine.NativeHandler;
+import engine.ui.NativeHandler;
 
 /**
  *

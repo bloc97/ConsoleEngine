@@ -5,8 +5,8 @@
  */
 package engine.event.handler;
 
-import engine.NativeWindow;
-import engine.NativeHandler;
+import engine.ui.NativeWindow;
+import engine.ui.NativeHandler;
 
 /**
  *

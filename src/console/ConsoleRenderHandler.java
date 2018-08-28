@@ -5,11 +5,11 @@
  */
 package console;
 
-import console.CharacterImage;
+import engine.ui.pixel.console.CharacterImage;
 import console.ConsoleComponent;
-import console.ConsoleFont;
-import console.utils.Graphics2DUtils;
-import engine.Renderer;
+import engine.ui.pixel.console.ConsoleFont;
+import engine.ui.pixel.console.utils.Graphics2DUtils;
+import engine.ui.Renderer;
 import engine.event.handler.RenderHandler;
 import java.awt.Color;
 import java.awt.Graphics2D;

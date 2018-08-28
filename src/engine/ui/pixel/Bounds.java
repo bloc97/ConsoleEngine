@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package engine.pixel;
+package engine.ui.pixel;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -69,6 +69,12 @@ public class Bounds {
         return rectangle.contains(bound.rectangle);
     }
     
+    public void setX(int x) {
+        rectangle.x = x;
+    }
+    public void setY(int y) {
+        rectangle.y = y;
+    }
     public void setLocation(Point p) {
         rectangle.setLocation(p);
     }
@@ -79,6 +85,12 @@ public class Bounds {
         rectangle.translate(x, y);
     }
     
+    public void setWidth(int width) {
+        rectangle.width = width;
+    }
+    public void setHeight(int height) {
+        rectangle.height = height;
+    }
     public void setSize(Dimension d) {
         rectangle.setSize(d);
     }
@@ -89,6 +101,9 @@ public class Bounds {
         rectangle.grow(width, height);
     }
     
+    public void setBounds(int x, int y, int width, int height) {
+        rectangle.setBounds(x, y, width, height);
+    }
     public void setBounds(Bounds bound) {
         rectangle.setBounds(bound.rectangle);
     }

@@ -5,6 +5,8 @@
  */
 package console;
 
+import engine.ui.pixel.console.CharacterImage;
+
 /**
  *
  * @author bowen

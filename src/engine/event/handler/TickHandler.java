@@ -5,8 +5,8 @@
  */
 package engine.event.handler;
 
-import engine.NativeWindow;
-import engine.NativeHandler;
+import engine.ui.NativeWindow;
+import engine.ui.NativeHandler;
 import engine.event.EventGenerator;
 import engine.event.TickEvent;
 import java.util.concurrent.ConcurrentHashMap;

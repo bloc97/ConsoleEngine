@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package console;
+package engine.ui.pixel.console;
 
-import console.utils.BoundingBoxUtils;
+import engine.ui.pixel.console.utils.BoundingBoxUtils;
+import engine.ui.pixel.console.utils.Graphics2DUtils;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 /**
@@ -14,16 +16,12 @@ import java.awt.image.BufferedImage;
  */
 public class CharacterImage {
     
-    //Make boundary boxes char layer
-    //Paint boundary boxes
-    //Paint each inner component, check if drawString goes out of bounds, and don't paint out of bound characters
-    //Each component has their own coordinates
-    
     private final int width, height, length;
     
     private final char[] chars;
     private final int[] foregroundColor;
     private final int[] backgroundColor;
+    
     
     public CharacterImage(int width, int height) {
         this.width = width;
@@ -432,5 +430,26 @@ public class CharacterImage {
     }
     
     
+    
+    public BufferedImage getBufferedImage(final ConsoleFont consoleFont) {
+        final int consoleWidth = getWidth();
+        final int consoleHeight = getHeight();
+        if (consoleWidth <= 0 || consoleHeight <= 0) {
+            return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        }
+        if (consoleFont == null) {
+            return getBufferedImage(ConsoleFont.getDefaultCourier());
+        }
+        final BufferedImage image = new BufferedImage(consoleWidth * consoleFont.getWidth(), consoleHeight * consoleFont.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        
+        final Graphics2D g2 = image.createGraphics();
+        for (int j=0; j<consoleHeight; j++) {
+            for (int i=0; i<consoleWidth; i++) {
+                Graphics2DUtils.drawConsoleChar(g2, i, j, getChar(i, j), getForegroundColor(i, j), getBackgroundColor(i, j), consoleFont);
+            }
+        }
+        
+        return image;
+    }
     
 }

@@ -6,7 +6,7 @@
 package engine.event.handler;
 
 import engine.event.EventGenerator;
-import engine.NativeWindow;
+import engine.ui.NativeWindow;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
@@ -21,7 +21,7 @@ import java.awt.event.MouseWheelListener;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
-import engine.NativeHandler;
+import engine.ui.NativeHandler;
 
 /**
  *

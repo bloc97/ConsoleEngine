@@ -5,6 +5,7 @@
  */
 package console;
 
+import engine.ui.pixel.console.ConsoleFont;
 import console.*;
 import java.util.ArrayList;
 import java.util.Collections;
