@@ -102,6 +102,35 @@ public class SwingWindow implements NativeWindow {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.add(panel);
         
+        frame.addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                if (inputHandler != null) {
+                    e.setSource(panel);
+                    inputHandler.componentMoved(e);
+                }
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+                if (inputHandler != null) {
+                    e.setSource(panel);
+                    inputHandler.componentShown(e);
+                }
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                if (inputHandler != null) {
+                    e.setSource(panel);
+                    inputHandler.componentHidden(e);
+                }
+            }
+        });
         panel.addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -112,23 +141,14 @@ public class SwingWindow implements NativeWindow {
 
             @Override
             public void componentMoved(ComponentEvent e) {
-                if (inputHandler != null) {
-                    inputHandler.componentMoved(e);
-                }
             }
 
             @Override
             public void componentShown(ComponentEvent e) {
-                if (inputHandler != null) {
-                    inputHandler.componentShown(e);
-                }
             }
 
             @Override
             public void componentHidden(ComponentEvent e) {
-                if (inputHandler != null) {
-                    inputHandler.componentHidden(e);
-                }
             }
         });
         

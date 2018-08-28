@@ -74,6 +74,15 @@ public class ConsoleFont {
     public int getTopPadding() {
         return topPadding;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj != null && obj instanceof ConsoleFont) {
+            final ConsoleFont otherObj = (ConsoleFont) obj;
+            return otherObj.getFont().equals(getFont());
+        }
+        return false;
+    }
     
     public static ConsoleFont fromFile(File bitmapFontFile) {
         

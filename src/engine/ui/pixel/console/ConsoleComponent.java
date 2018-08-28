@@ -7,6 +7,7 @@ package engine.ui.pixel.console;
 
 import engine.ui.pixel.PixelComponent;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.awt.Point;
 
 /**
@@ -15,24 +16,57 @@ import java.awt.Point;
  */
 public abstract class ConsoleComponent extends PixelComponent {
     
-    public int gridWidth, gridHeight;
+    private int gridWidth, gridHeight;
+    private ConsoleFont consoleFont;
     
     public ConsoleComponent() {
         this(0, 0);
     }
     public ConsoleComponent(int widthOnGrid, int heightOnGrid) {
-        this(1, 1, widthOnGrid, heightOnGrid);
+        this(widthOnGrid, heightOnGrid, ConsoleFont.getDefaultCourier());
     }
-    public ConsoleComponent(int gridWidth, int gridHeight, int widthOnGrid, int heightOnGrid) {
-        this(gridWidth, gridHeight, 0, 0, widthOnGrid, heightOnGrid);
+    public ConsoleComponent(int widthOnGrid, int heightOnGrid, ConsoleFont consoleFont) {
+        this(0, 0, widthOnGrid, heightOnGrid, consoleFont);
     }
-    public ConsoleComponent(int gridWidth, int gridHeight, int xOnGrid, int yOnGrid, int widthOnGrid, int heightOnGrid) {
-        this.gridWidth = gridWidth;
-        this.gridHeight = gridHeight;
-        setXOnGrid(xOnGrid);
-        setYOnGrid(yOnGrid);
-        setWidthOnGrid(widthOnGrid);
-        setHeightOnGrid(heightOnGrid);
+    public ConsoleComponent(int xOnGrid, int yOnGrid, int widthOnGrid, int heightOnGrid, ConsoleFont consoleFont) {
+        if (consoleFont == null) {
+            consoleFont = ConsoleFont.getDefaultCourier();
+        }
+        this.gridWidth = consoleFont.getWidth();
+        this.gridHeight = consoleFont.getHeight();
+        setConsoleFont(consoleFont);
+        setLocationOnGrid(xOnGrid, yOnGrid);
+        setSizeOnGrid(widthOnGrid, heightOnGrid);
+    }
+
+    public ConsoleFont getConsoleFont() {
+        return consoleFont;
+    }
+
+    public void setConsoleFont(ConsoleFont consoleFont) {
+        if (consoleFont == null) {
+            consoleFont = ConsoleFont.getDefaultCourier();
+        }
+        final ConsoleFont lastConsoleFont = this.consoleFont;
+        this.consoleFont = consoleFont;
+        setGridSize(consoleFont.getWidth(), consoleFont.getHeight());
+        if (lastConsoleFont == null || !lastConsoleFont.equals(consoleFont)) {
+            onFontChangeEvent();
+        }
+    }
+    
+    protected void onFontChangeEvent() {
+        onFontChange();
+        for (PixelComponent component : getComponents()) {
+            if (component instanceof ConsoleComponent) {
+                ((ConsoleComponent) component).onParentFontChange();
+            }
+        }
+    }
+    
+    public void onFontChange() {
+    }
+    public void onParentFontChange() {
     }
 
     public int getGridWidth() {
@@ -67,8 +101,14 @@ public abstract class ConsoleComponent extends PixelComponent {
         setGridSize(gridSize.width, gridSize.height);
     }
     public void setGridSize(int gridWidth, int gridHeight) {
-        setGridWidth(gridWidth);
-        setGridHeight(gridHeight);
+        int lastXOnGrid = getXOnGrid();
+        int lastWidthOnGrid = getWidthOnGrid();
+        this.gridWidth = gridWidth;
+        int lastYOnGrid = getYOnGrid();
+        int lastHeightOnGrid = getHeightOnGrid();
+        this.gridHeight = gridHeight;
+        setLocationOnGrid(lastXOnGrid, lastYOnGrid);
+        setSizeOnGrid(lastWidthOnGrid, lastHeightOnGrid);
     }
     
     public int getXOnGrid(int x) {
@@ -113,8 +153,7 @@ public abstract class ConsoleComponent extends PixelComponent {
         setLocationOnGrid(p.x, p.y);
     }
     public void setLocationOnGrid(int x, int y) {
-        setXOnGrid(x);
-        setYOnGrid(y);
+        setLocation(x* getGridWidth(), y * getGridHeight());
     }
     public void translateOnGrid(int x, int y) {
         setLocationOnGrid(getXOnGrid() + x, getYOnGrid() + y);
@@ -130,10 +169,18 @@ public abstract class ConsoleComponent extends PixelComponent {
         setSizeOnGrid(d.width, d.height);
     }
     public void setSizeOnGrid(int width, int height) {
-        setWidthOnGrid(width);
-        setHeightOnGrid(height);
+        setSize(width * getGridWidth(), height * getGridHeight());
     }
     public void growOnGrid(int width, int height) {
         setSizeOnGrid(getWidthOnGrid() + width, getHeightOnGrid() + height);
     }
+    
+    public abstract CharacterImage getCharacterImage();
+
+    @Override
+    protected void paint(Graphics2D g2) {
+        g2.drawImage(getCharacterImage().getBufferedImage(consoleFont), gridWidth, gridWidth, null);
+    }
+    
+    
 }

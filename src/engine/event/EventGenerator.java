@@ -5,13 +5,12 @@
  */
 package engine.event;
 
-import java.util.function.Consumer;
 
 /**
  *
  * @author bowen
  */
-public interface EventGenerator<T> {
-    public boolean attachListener(Object listener, Consumer<T> onEvent);
+public interface EventGenerator {
+    public boolean attachListener(Object listener, Runnable onEvent);
     public boolean removeListener(Object listener);
 }

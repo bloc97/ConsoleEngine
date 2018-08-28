@@ -48,6 +48,11 @@ public class SwingGraphics2DRenderer implements Renderer {
     }
 
     @Override
+    public void fillRectangle(int x, int y, int width, int height) {
+        g2.fillRect(x, y, width, height);
+    }
+
+    @Override
     public void drawImage(Image image, int x, int y, int width, int height) {
         g2.drawImage(image, x, y, width, height, null);
     }

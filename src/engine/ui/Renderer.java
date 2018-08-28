@@ -25,8 +25,13 @@ public interface Renderer {
     
     public void drawRectangle(int x, int y, int width, int height);
     
+    public void fillRectangle(int x, int y, int width, int height);
+    
     public void drawImage(Image image, int x, int y, int width, int height);
     
+    public default void drawBufferedImage(BufferedImage image) {
+        drawBufferedImage(image, 0, 0, 1);
+    }
     public default void drawBufferedImage(BufferedImage image, int x, int y, int scale) {
         drawImage(image, x, y, image.getWidth() * scale, image.getHeight() * scale);
     }

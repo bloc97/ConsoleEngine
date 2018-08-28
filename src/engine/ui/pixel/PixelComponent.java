@@ -5,15 +5,28 @@
  */
 package engine.ui.pixel;
 
+import engine.event.handler.AbstractInputHandler;
+import engine.event.handler.AbstractRenderHandler;
+import engine.event.handler.InputHandler;
+import engine.event.handler.RenderHandler;
+import engine.ui.Renderer;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -21,12 +34,27 @@ import java.util.TreeMap;
  */
 public abstract class PixelComponent extends Bounds {
     
-    private boolean isVisible = true;
+    private boolean isVisible = false;
     private boolean isChildrenVisible = true;
     
     private PixelComponent parentComponent;
     private final TreeMap<Integer, PixelComponent> componentMap = new TreeMap<>();
 
+    public PixelComponent() {
+    }
+
+    public PixelComponent(int width, int height) {
+        super(width, height);
+    }
+
+    public PixelComponent(int x, int y, int width, int height) {
+        super(x, y, width, height);
+    }
+
+    public PixelComponent(int x, int y, int width, int height, int scale) {
+        super(x, y, width, height, scale);
+    }
+    
     public PixelComponent getParentComponent() {
         return parentComponent;
     }
@@ -75,17 +103,17 @@ public abstract class PixelComponent extends Bounds {
         } else {
             componentMap.put(layer, component);
             component.setParentComponent(this);
-            component.onAttach();
+            component.onAttached();
             return true;
         }
     }
     
     public PixelComponent setComponent(int layer, PixelComponent component) {
         component.setParentComponent(this);
-        component.onAttach();
+        component.onAttached();
         final PixelComponent lastComponent = componentMap.put(layer, component);
         if (lastComponent != null) {
-            lastComponent.onDetach();
+            lastComponent.onDetached();
             lastComponent.setParentComponent(null);
         }
         return lastComponent;
@@ -98,20 +126,20 @@ public abstract class PixelComponent extends Bounds {
     public PixelComponent removeComponent(int layer) {
         final PixelComponent lastComponent = componentMap.remove(layer);
         if (lastComponent != null) {
-            lastComponent.onDetach();
+            lastComponent.onDetached();
             lastComponent.setParentComponent(null);
         }
         return lastComponent;
     }
     
-    public BufferedImage getFullBufferedImage() {
+    public BufferedImage getFullUnscaledBufferedImage() {
         onPrePaintEvent();
-        final BufferedImage image = getBufferedImage();
+        final BufferedImage image = getUnscaledBufferedImage();
         onPostPaint();
         return image;
     }
     
-    protected BufferedImage getBufferedImage() {
+    protected BufferedImage getUnscaledBufferedImage() {
         if (getScale() <= 0 || getWidth() <= 0 || getHeight() <= 0) {
             return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         }
@@ -126,11 +154,11 @@ public abstract class PixelComponent extends Bounds {
         if (isChildrenVisible()) {
             final Graphics2D g2 = finalImage.createGraphics();
             for (PixelComponent component : getComponents()) {
-                final BufferedImage image = component.getBufferedImage();
-                g2.drawImage(image, component.getX(), component.getY(), image.getWidth(), image.getHeight(), null);
+                final BufferedImage image = component.getUnscaledBufferedImage();
+                g2.drawImage(image, component.getX(), component.getY(), image.getWidth() * component.getScale(), image.getHeight() * component.getScale(), null);
             }
         }
-        
+        /*
         if (getScale() > 1) {
             final Bounds scaledBounds = getScaledBounds();
             final BufferedImage finalScaledImage = new BufferedImage(scaledBounds.getWidth(), scaledBounds.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -139,10 +167,30 @@ public abstract class PixelComponent extends Bounds {
             return finalScaledImage;
         } else {
             return finalImage;
-        }
+        }*/
+        return finalImage;
     }
     
     protected abstract void paint(Graphics2D g2);
+
+    
+    @Override
+    public void setWidth(int width) {
+        final Dimension lastSize = getSize();
+        super.setWidth(width); //To change body of generated methods, choose Tools | Templates.
+        if (!getSize().equals(lastSize)) {
+            onSizeChangeEvent();
+        }
+    }
+
+    @Override
+    public void setHeight(int height) {
+        final Dimension lastSize = getSize();
+        super.setHeight(height); //To change body of generated methods, choose Tools | Templates.
+        if (!getSize().equals(lastSize)) {
+            onSizeChangeEvent();
+        }
+    }
     
     @Override
     public void setSize(Dimension d) {
@@ -170,26 +218,110 @@ public abstract class PixelComponent extends Bounds {
             onSizeChangeEvent();
         }
     }
+    
+    @Override
+    public void setBounds(int x, int y, int width, int height) {
+        final Dimension lastSize = getSize();
+        final Point lastLocation = getLocation();
+        super.setBounds(x, y, width, height); //To change body of generated methods, choose Tools | Templates.
+        if (!getSize().equals(lastSize)) {
+            onSizeChangeEvent();
+        }
+        if (!getLocation().equals(lastLocation)) {
+            onLocationChangeEvent();
+        }
+    }
 
     @Override
     public void setBounds(Bounds bound) {
         final Dimension lastSize = getSize();
+        final Point lastLocation = getLocation();
         super.setBounds(bound); //To change body of generated methods, choose Tools | Templates.
         if (!getSize().equals(lastSize)) {
             onSizeChangeEvent();
         }
+        if (!getLocation().equals(lastLocation)) {
+            onLocationChangeEvent();
+        }
+    }
+
+    @Override
+    public void setLocation(int x, int y) {
+        final Point lastLocation = getLocation();
+        super.setLocation(x, y); //To change body of generated methods, choose Tools | Templates.
+        if (!getLocation().equals(lastLocation)) {
+            onLocationChangeEvent();
+        }
+    }
+
+    @Override
+    public void setX(int x) {
+        final Point lastLocation = getLocation();
+        super.setX(x); //To change body of generated methods, choose Tools | Templates.
+        if (!getLocation().equals(lastLocation)) {
+            onLocationChangeEvent();
+        }
+    }
+
+    @Override
+    public void setY(int y) {
+        final Point lastLocation = getLocation();
+        super.setY(y); //To change body of generated methods, choose Tools | Templates.
+        if (!getLocation().equals(lastLocation)) {
+            onLocationChangeEvent();
+        }
+    }
+
+    @Override
+    public void setLocation(Point p) {
+        final Point lastLocation = getLocation();
+        super.setLocation(p); //To change body of generated methods, choose Tools | Templates.
+        if (!getLocation().equals(lastLocation)) {
+            onLocationChangeEvent();
+        }
+    }
+
+    @Override
+    public boolean setScale(int scale) {
+        final int lastScale = getScale();
+        final boolean success = super.setScale(scale); //To change body of generated methods, choose Tools | Templates.
+        if (lastScale != scale && success) {
+            onSizeChangeEvent();
+        }
+        return success;
     }
     
     
-    public void onSizeChangeEvent() {
-        onSizeChange();
+    protected void onLocationChangeEvent() {
+        onMoved();
         for (PixelComponent component : getComponents()) {
-            component.onParentSizeChange();
+            component.onParentMoved();
+        }
+    }
+    
+    protected void onSizeChangeEvent() {
+        onResized();
+        for (PixelComponent component : getComponents()) {
+            component.onParentResized();
+        }
+    }
+    
+    protected void onScaleChangeEvent() {
+        onRescaled();
+        for (PixelComponent component : getComponents()) {
+            component.onParentRescaled();
         }
     }
     
     public MouseEvent getTranslatedMouseEvent(MouseEvent e, Bounds bounds) {
-        return new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX() + bounds.getX(), e.getY() + bounds.getY(), e.getX(), e.getY(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+        return new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX() - bounds.getX(), e.getY() - bounds.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+    }
+    public MouseWheelEvent getTranslatedMouseWheelEvent(MouseWheelEvent e, Bounds bounds) {
+        return new MouseWheelEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(),  e.getX() - bounds.getX(), e.getY() - bounds.getY(), e.getXOnScreen(), e.getYOnScreen(),
+                    e.getClickCount(), e.isPopupTrigger(), e.getScrollType(), e.getScrollAmount(), e.getWheelRotation(), e.getPreciseWheelRotation());
+    }
+    public MouseEvent getInverseTranslatedMouseEvent(MouseEvent e, Bounds bounds) {
+        return new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX() + bounds.getX(), e.getY() + bounds.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
     }
     
     public PixelComponent getComponentAt(MouseEvent e) {
@@ -251,22 +383,33 @@ public abstract class PixelComponent extends Bounds {
         updateEnterMoved(e);
     }
     
+    public void onFocusEvent() {
+        if (!isFocused) {
+            isFocused = true;
+            onFocusGained();
+        }
+        if (getParentComponent() != null) {
+            getParentComponent().onFocusEvent();
+        }
+    }
+    
     public void onUnfocusEvent() {
         if (isFocused) {
             isFocused = false;
-            onUnfocus();
+            onFocusLost();
         }
         if (lastFocused != null) {
             lastFocused.onUnfocusEvent();
         }
         lastFocused = null;
     }
+    
     public void onMousePressedEvent(MouseEvent e) {
         onMousePressed(e);
         updateEnterMoved(e);
         if (!isFocused) {
             isFocused = true;
-            onFocus();
+            onFocusGained();
         }
         //final PixelComponent newFocused = getComponentAt(e);
         final PixelComponent newFocused = lastEntered;
@@ -310,6 +453,14 @@ public abstract class PixelComponent extends Bounds {
         }
     }
     
+    public void onMouseWheelMovedEvent(MouseWheelEvent e) {
+        onMouseWheelMoved(e);
+        updateEnterMoved(e);
+        if (lastEntered != null) {
+            lastEntered.onMouseWheelMovedEvent(getTranslatedMouseWheelEvent(e, lastEntered));
+        }
+    }
+    
     public void onKeyPressedEvent(KeyEvent e) {
         onKeyPressed(e);
         if (lastFocused != null) {
@@ -342,19 +493,54 @@ public abstract class PixelComponent extends Bounds {
         }
     }
     
-    public void onSizeChange() {
+    protected void onShowEvent() {
+        onShown();
+        for (PixelComponent component : getComponents()) {
+            component.onParentShown();
+        }
     }
-    public void onParentSizeChange() {
+    protected void onHideEvent() {
+        onHidden();
+        for (PixelComponent component : getComponents()) {
+            component.onParentHidden();
+        }
+    }
+    protected void onShowChildrenEvent() {
+        onChildrenShown();
+        for (PixelComponent component : getComponents()) {
+            component.onParentChildrenShown();
+        }
+    }
+    protected void onHideChildrenEvent() {
+        onChildrenHidden();
+        for (PixelComponent component : getComponents()) {
+            component.onParentChildrenHidden();
+        }
     }
     
-    public void onAttach() {
+    public void onResized() {
     }
-    public void onDetach() {
+    public void onParentResized() {
     }
     
-    public void onFocus() {
+    public void onMoved() {
     }
-    public void onUnfocus() {
+    public void onParentMoved() {
+    }
+    
+    public void onRescaled() {
+    }
+    public void onParentRescaled() {
+    }
+    
+    public void onAttached() {
+    }
+    public void onDetached() {
+    }
+    
+    public void onFocusGained() {
+    }
+    public void onFocusLost() {
     }
     
     public void onMouseEntered(MouseEvent e) {
@@ -389,6 +575,22 @@ public abstract class PixelComponent extends Bounds {
     public void onPostPaint() {
     }
     
+    public void onShown() {
+    }
+    public void onHidden() {
+    }
+    public void onParentShown() {
+    }
+    public void onParentHidden() {
+    }
+    public void onChildrenShown() {
+    }
+    public void onChildrenHidden() {
+    }
+    public void onParentChildrenShown() {
+    }
+    public void onParentChildrenHidden() {
+    }
     
     public final boolean isVisible() {
         return isVisible;
@@ -399,12 +601,14 @@ public abstract class PixelComponent extends Bounds {
             return false;
         }
         isVisible = true;
+        onShowEvent();
         return true;
     }
     
     public final boolean hide() {
         if (isVisible) {
             isVisible = false;
+            onHideEvent();
             return true;
         }
         return false;
@@ -419,12 +623,14 @@ public abstract class PixelComponent extends Bounds {
             return false;
         }
         isChildrenVisible = true;
+        onShowChildrenEvent();
         return true;
     }
     
     public final boolean hideChildren() {
         if (isChildrenVisible) {
             isChildrenVisible = false;
+            onHideChildrenEvent();
             return true;
         }
         return false;
