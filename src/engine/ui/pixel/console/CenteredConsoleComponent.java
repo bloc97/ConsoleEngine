@@ -11,18 +11,18 @@ import java.awt.Graphics2D;
  *
  * @author bowen
  */
-public class CenteredConsoleRootComponent extends ConsoleComponent {
+public class CenteredConsoleComponent extends ConsoleComponent {
 
-    public CenteredConsoleRootComponent() {
+    public CenteredConsoleComponent() {
     }
-    public CenteredConsoleRootComponent(int scale) {
+    public CenteredConsoleComponent(int scale) {
         setScale(scale);
     }
 
-    public CenteredConsoleRootComponent(ConsoleFont consoleFont) {
+    public CenteredConsoleComponent(ConsoleFont consoleFont) {
         super(0, 0, consoleFont);
     }
-    public CenteredConsoleRootComponent(int scale, ConsoleFont consoleFont) {
+    public CenteredConsoleComponent(int scale, ConsoleFont consoleFont) {
         super(0, 0, consoleFont);
         setScale(scale);
     }

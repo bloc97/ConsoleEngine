@@ -151,7 +151,6 @@ public abstract class PixelComponent extends Bounds {
         }
         
         final BufferedImage finalImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-        
         if (isVisible()) {
             onPaint();
             paint(finalImage.createGraphics());
@@ -160,7 +159,7 @@ public abstract class PixelComponent extends Bounds {
         if (isChildrenVisible()) {
             final Graphics2D g2 = finalImage.createGraphics();
             for (PixelComponent component : getComponents()) {
-                final BufferedImage image = component.getUnscaledBufferedImage();
+                final BufferedImage image = component.getFullUnscaledBufferedImage();
                 g2.drawImage(image, component.getX(), component.getY(), image.getWidth() * component.getScale(), image.getHeight() * component.getScale(), null);
             }
         }
