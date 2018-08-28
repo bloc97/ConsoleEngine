@@ -90,10 +90,16 @@ public abstract class PixelComponent extends Bounds {
     }
     
     public boolean addComponent(PixelComponent component) {
+        if (componentMap.isEmpty()) {
+            return addComponent(0, component);
+        }
         return addComponent(componentMap.lastKey() + 1, component);
     }
     
     public boolean addComponentBottom(PixelComponent component) {
+        if (componentMap.isEmpty()) {
+            return addComponent(0, component);
+        }
         return addComponent(componentMap.firstKey() - 1, component);
     }
         
@@ -314,14 +320,14 @@ public abstract class PixelComponent extends Bounds {
     }
     
     public MouseEvent getTranslatedMouseEvent(MouseEvent e, Bounds bounds) {
-        return new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX() - bounds.getX(), e.getY() - bounds.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+        return new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), Math.floorDiv(e.getX() - bounds.getX(), bounds.getScale()), Math.floorDiv(e.getY() - bounds.getY(), bounds.getScale()), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
     }
     public MouseWheelEvent getTranslatedMouseWheelEvent(MouseWheelEvent e, Bounds bounds) {
-        return new MouseWheelEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(),  e.getX() - bounds.getX(), e.getY() - bounds.getY(), e.getXOnScreen(), e.getYOnScreen(),
+        return new MouseWheelEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), Math.floorDiv(e.getX() - bounds.getX(), bounds.getScale()), Math.floorDiv(e.getY() - bounds.getY(), bounds.getScale()), e.getXOnScreen(), e.getYOnScreen(),
                     e.getClickCount(), e.isPopupTrigger(), e.getScrollType(), e.getScrollAmount(), e.getWheelRotation(), e.getPreciseWheelRotation());
     }
     public MouseEvent getInverseTranslatedMouseEvent(MouseEvent e, Bounds bounds) {
-        return new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), e.getX() + bounds.getX(), e.getY() + bounds.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+        return new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), (e.getX() * bounds.getScale()) + bounds.getX(), (e.getY() * bounds.getScale()) + bounds.getY(), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
     }
     
     public PixelComponent getComponentAt(MouseEvent e) {
