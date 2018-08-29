@@ -45,16 +45,14 @@ public class PixelRootComponent extends PixelComponent {
             
             Graphics2D g2 = renderer.getGraphics2D();
             g2.translate(xPad, yPad);
-            g2.scale(component.getScale(), component.getScale());
+            g2.scale(getScale(), getScale());
             Graphics2DUtils.forceIntegerScaling(g2);
             
-            component.onPrePaint();
-            if (component.isVisible() && component.getScale() > 0 || component.getWidth() > 0 || component.getHeight() > 0) {
-                component.paintAll(g2);
+            onPrePaint();
+            if (isVisible() && getScale() > 0 || getWidth() > 0 || getHeight() > 0) {
+                paintAll(g2);
             }
-            component.onPostPaint();
-            
-            
+            onPostPaint();
             
             //renderer.drawBufferedImage(getFullUnscaledBufferedImage(), xPad, yPad, getScale());
         }

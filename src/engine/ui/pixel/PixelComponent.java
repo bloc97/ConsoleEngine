@@ -219,8 +219,6 @@ public abstract class PixelComponent extends Bounds {
             }
         }
         
-        
-        
     }
     
     protected abstract void paint(Graphics2D g2);

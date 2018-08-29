@@ -24,6 +24,9 @@ public class CharacterImage {
     private final int[] foregroundColor;
     private final int[] backgroundColor;
     
+    public CharacterImage() {
+        this(0, 0);
+    }
     
     public CharacterImage(int width, int height) {
         this.width = width;
