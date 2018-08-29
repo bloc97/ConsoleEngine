@@ -57,5 +57,10 @@ public class SwingGraphics2DRenderer implements Renderer {
         g2.drawImage(image, x, y, width, height, null);
     }
 
+    @Override
+    public Graphics2D getGraphics2D() {
+        return g2;
+    }
+
     
 }

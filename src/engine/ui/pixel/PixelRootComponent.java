@@ -10,6 +10,7 @@ import engine.event.handler.AbstractRenderHandler;
 import engine.event.handler.InputHandler;
 import engine.event.handler.RenderHandler;
 import engine.ui.Renderer;
+import engine.ui.pixel.console.utils.Graphics2DUtils;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -42,23 +43,16 @@ public class PixelRootComponent extends PixelComponent {
         @Override
         protected void onPaint(Renderer renderer) {
             
-            onPrePaintEvent();
+            Graphics2D g2 = renderer.getGraphics2D();
+            g2.translate(xPad, yPad);
+            g2.scale(component.getScale(), component.getScale());
+            Graphics2DUtils.forceIntegerScaling(g2);
             
-            if (getScale() <= 0 || getWidth() <= 0 || getHeight() <= 0) {
-                return;
+            component.onPrePaint();
+            if (component.isVisible() && component.getScale() > 0 || component.getWidth() > 0 || component.getHeight() > 0) {
+                component.paintAll(g2);
             }
-            
-            if (isChildrenVisible()) {
-                for (PixelComponent c : getComponents()) {
-                    final BufferedImage image = c.getFullUnscaledBufferedImage();
-                    renderer.drawBufferedImage(image, xPad + c.getX() * component.getScale(), yPad + c.getY() * component.getScale(), c.getScale() * component.getScale());
-                }
-            }
-            
-            
-            onPostPaint();
-            
-            
+            component.onPostPaint();
             
             
             

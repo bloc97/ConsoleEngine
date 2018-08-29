@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import engine.ui.pixel.console.ConsoleFont;
+import java.awt.geom.AffineTransform;
 
 /**
  *
@@ -47,5 +48,12 @@ public interface Graphics2DUtils {
                 g2.fillRect((x + 1) * consoleFont.getWidth() - 1, (y * consoleFont.getHeight()) + consoleFont.getUnderscoreYPos(), 1, 1);
             }
         }
+    }
+    
+    public static void forceIntegerScaling(Graphics2D g2) {
+        final AffineTransform t = g2.getTransform();
+        final int scale = (int)t.getScaleX();
+        t.setTransform(scale, 0, 0, scale, (int)t.getTranslateX(), (int)t.getTranslateY());
+        g2.setTransform(t);
     }
 }

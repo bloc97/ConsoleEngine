@@ -10,6 +10,7 @@ import engine.event.handler.AbstractRenderHandler;
 import engine.event.handler.InputHandler;
 import engine.event.handler.RenderHandler;
 import engine.ui.Renderer;
+import engine.ui.pixel.console.utils.Graphics2DUtils;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -21,6 +22,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.awt.image.VolatileImage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -144,7 +146,7 @@ public abstract class PixelComponent extends Bounds {
         }
         return lastComponent;
     }
-    
+    /*
     public BufferedImage getFullUnscaledBufferedImage() {
         onPrePaintEvent();
         final BufferedImage image = getUnscaledBufferedImage();
@@ -172,17 +174,53 @@ public abstract class PixelComponent extends Bounds {
                 }
             }
         }
-        /*
-        if (getScale() > 1) {
-            final Bounds scaledBounds = getScaledBounds();
-            final BufferedImage finalScaledImage = new BufferedImage(scaledBounds.getWidth(), scaledBounds.getHeight(), BufferedImage.TYPE_INT_ARGB);
-            finalScaledImage.createGraphics().drawImage(finalImage, 0, 0, scaledBounds.getWidth(), scaledBounds.getHeight(), null);
+        
+        //if (getScale() > 1) {
+            //final Bounds scaledBounds = getScaledBounds();
+            //final BufferedImage finalScaledImage = new BufferedImage(scaledBounds.getWidth(), scaledBounds.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            //finalScaledImage.createGraphics().drawImage(finalImage, 0, 0, scaledBounds.getWidth(), scaledBounds.getHeight(), null);
 
-            return finalScaledImage;
-        } else {
-            return finalImage;
-        }*/
+            //return finalScaledImage;
+        //} else {
+            //return finalImage;
+        //}
         return finalImage;
+    }*/
+    
+    public void paintAll(Graphics2D g2) {
+        
+        onPaint();
+        paint((Graphics2D)g2.create());
+        
+        if (isChildrenVisible()) {
+            for (PixelComponent component : getComponents()) {
+                component.onPrePaint();
+                if (component.isVisible() && component.getScale() > 0 || component.getWidth() > 0 || component.getHeight() > 0) {
+                    Graphics2D cg2 = (Graphics2D)g2.create();
+                    cg2.translate(component.getX(), component.getY());
+                    cg2.scale(component.getScale(), component.getScale());
+                    Graphics2DUtils.forceIntegerScaling(cg2);
+                    component.paintAll(cg2);
+                    /*if (component.getScale() <= 2) {
+                        Graphics2D cg2 = (Graphics2D)g2.create();
+                        cg2.translate(component.getX(), component.getY());
+                        cg2.scale(component.getScale(), component.getScale());
+                        Graphics2DUtils.forceIntegerScaling(cg2);
+                        component.paintAll(cg2);
+                    } else {
+                        final BufferedImage image = g2.getDeviceConfiguration().getDevice().getDefaultConfiguration().createCompatibleImage(component.getWidth(), component.getHeight());
+                        component.paintAll(image.createGraphics());
+                        g2.drawImage(image, component.getX(), component.getY(), component.getWidth() * component.getScale(), component.getHeight() * component.getScale(), null);
+                    }*/
+                    //cg2.translate(component.getX(), component.getY());
+                    //cg2.scale(component.getScale(), component.getScale());
+                }
+                component.onPostPaint();
+            }
+        }
+        
+        
+        
     }
     
     protected abstract void paint(Graphics2D g2);

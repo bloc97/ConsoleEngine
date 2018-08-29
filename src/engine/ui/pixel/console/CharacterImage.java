@@ -542,4 +542,55 @@ public class CharacterImage {
         return getBufferedImageFast(consoleFont);
     }
     
+    public void draw(Graphics2D g2, final ConsoleFont consoleFont) {
+        final int consoleWidth = getWidth();
+        final int consoleHeight = getHeight();
+        if (consoleWidth <= 0 || consoleHeight <= 0) {
+            return;
+        }
+        if (consoleFont == null) {
+            return;
+        }
+        //final BufferedImage image = new BufferedImage(consoleWidth * consoleFont.getWidth(), consoleHeight * consoleFont.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        
+        final BufferedImage backgroundColorImage = new BufferedImage(consoleWidth, consoleHeight, BufferedImage.TYPE_INT_ARGB);
+        backgroundColorImage.setRGB(0, 0, consoleWidth, consoleHeight, this.backgroundColor, 0, consoleWidth);
+        
+        g2.drawImage(backgroundColorImage, 0, 0, consoleWidth * consoleFont.getWidth(), consoleHeight * consoleFont.getHeight(), null);
+        
+        g2.setFont(consoleFont.getFont());
+                
+        for (int j=0; j<consoleHeight; j++) {
+            for (int i=0; i<consoleWidth; i++) {
+                
+                int index = j * consoleWidth + i;
+                
+                //if (backgroundColor[index] > 0) {
+                    //g2.setColor(new Color(backgroundColor[index], true));
+                    //g2.fillRect(i * consoleFont.getWidth(), j * consoleFont.getHeight(), consoleFont.getWidth(), consoleFont.getHeight());
+                //}
+                
+                if (chars[index] == 0) {
+                    continue;
+                }
+                
+                g2.setColor(new Color(foregroundColor[index], true));
+
+                //final FontMetrics fontMetric = g2.getFontMetrics();
+
+                g2.drawChars(chars, index, 1, i * consoleFont.getWidth(), ((j + 1) * consoleFont.getHeight()) - consoleFont.getTopPadding());
+
+                if (chars[index] == '_' && !consoleFont.isUnderscoreContinuous()) {
+                    if (consoleFont.isUnderscoreBreakOnLeft()) {
+                        g2.fillRect((i) * consoleFont.getWidth(), (j * consoleFont.getHeight()) + consoleFont.getUnderscoreYPos(), 1, 1);
+                    } else {
+                        g2.fillRect((i + 1) * consoleFont.getWidth() - 1, (j * consoleFont.getHeight()) + consoleFont.getUnderscoreYPos(), 1, 1);
+                    }
+                }
+                //Graphics2DUtils.drawConsoleChar(g2, i, j, getChar(i, j), getForegroundColor(i, j), getBackgroundColor(i, j), consoleFont);
+            }
+        }
+        
+        //return image;
+    }
 }

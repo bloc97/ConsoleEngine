@@ -185,7 +185,8 @@ public abstract class ConsoleComponent extends PixelComponent {
 
     @Override
     protected void paint(Graphics2D g2) {
-        g2.drawImage(getCharacterImage().getBufferedImage(consoleFont), 0, 0, null);
+        getCharacterImage().draw(g2, consoleFont);
+        //g2.drawImage(getCharacterImage().getBufferedImage(consoleFont), 0, 0, null);
     }
     
     

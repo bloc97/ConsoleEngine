@@ -6,6 +6,7 @@
 package engine.ui;
 
 import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
@@ -30,9 +31,11 @@ public interface Renderer {
     public void drawImage(Image image, int x, int y, int width, int height);
     
     public default void drawBufferedImage(BufferedImage image) {
-        drawBufferedImage(image, 0, 0, 1);
+        drawImage(image, 0, 0, image.getWidth(), image.getHeight());
     }
     public default void drawBufferedImage(BufferedImage image, int x, int y, int scale) {
         drawImage(image, x, y, image.getWidth() * scale, image.getHeight() * scale);
     }
+    
+    public Graphics2D getGraphics2D();
 }
