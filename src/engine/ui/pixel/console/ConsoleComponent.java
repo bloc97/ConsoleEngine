@@ -56,7 +56,7 @@ public abstract class ConsoleComponent extends PixelComponent {
     }
     
     protected void onFontChangeEvent() {
-        onFontChange();
+        onFontChanged();
         for (PixelComponent component : getComponents()) {
             if (component instanceof ConsoleComponent) {
                 ((ConsoleComponent) component).onParentFontChange();
@@ -64,7 +64,7 @@ public abstract class ConsoleComponent extends PixelComponent {
         }
     }
     
-    public void onFontChange() {
+    public void onFontChanged() {
     }
     public void onParentFontChange() {
     }
@@ -111,11 +111,17 @@ public abstract class ConsoleComponent extends PixelComponent {
         setSizeOnGrid(lastWidthOnGrid, lastHeightOnGrid);
     }
     
-    public int getXOnGrid(int x) {
+    public int getPixelFromGridX(int x) {
+        return x * gridWidth;
+    }
+    public int getPixelFromGridY(int y) {
+        return y * gridHeight;
+    }
+    public int getGridFromPixelX(int x) {
         return Math.floorDiv(x, gridWidth);
     }
-    public int getYOnGrid(int y) {
-        return Math.floorDiv(y, gridWidth);
+    public int getGridFromPixelY(int y) {
+        return Math.floorDiv(y, gridHeight);
     }
     
     public int getXOnGrid() {
@@ -179,7 +185,7 @@ public abstract class ConsoleComponent extends PixelComponent {
 
     @Override
     protected void paint(Graphics2D g2) {
-        g2.drawImage(getCharacterImage().getBufferedImage(consoleFont), gridWidth, gridWidth, null);
+        g2.drawImage(getCharacterImage().getBufferedImage(consoleFont), 0, 0, null);
     }
     
     

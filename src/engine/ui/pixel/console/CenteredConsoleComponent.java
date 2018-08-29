@@ -36,8 +36,23 @@ public class CenteredConsoleComponent extends ConsoleComponent {
     public void onParentResized() {
         updateBounds();
     }
+
+    @Override
+    public void onRescaled() {
+        updateBounds();
+    }
+
+    @Override
+    public void onFontChanged() {
+        updateBounds();
+    }
+    
+    
     
     private void updateBounds() {
+        if (getParentComponent() == null) {
+            return;
+        }
         final int newWidth = (getParentComponent().getWidth() - (getParentComponent().getWidth() % (getGridWidth() * getScale())));
         final int newHeight = (getParentComponent().getHeight() - (getParentComponent().getHeight() % (getGridHeight() * getScale())));
         

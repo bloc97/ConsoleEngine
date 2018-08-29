@@ -37,6 +37,9 @@ public abstract class PixelComponent extends Bounds {
     private boolean isVisible = false;
     private boolean isChildrenVisible = true;
     
+    private boolean isMouseEnabled = false;
+    private boolean isChildrenMouseEnabled = true;
+    
     private PixelComponent parentComponent;
     private final TreeMap<Integer, PixelComponent> componentMap = new TreeMap<>();
 
@@ -59,12 +62,16 @@ public abstract class PixelComponent extends Bounds {
         return parentComponent;
     }
     
-    public PixelComponent getRootComponent() {
+    public PixelRootComponent getRootComponent() {
         PixelComponent root = this;
         while (root.getParentComponent() != null) {
             root = root.getParentComponent();
         }
-        return root;
+        if (root instanceof PixelRootComponent) {
+            return (PixelRootComponent) root;
+        } else {
+            return null;
+        }
     }
 
     public void setParentComponent(PixelComponent parentComponent) {
@@ -151,16 +158,18 @@ public abstract class PixelComponent extends Bounds {
         }
         
         final BufferedImage finalImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
-        if (isVisible()) {
-            onPaint();
-            paint(finalImage.createGraphics());
-        }
+        //if (isVisible()) {
+        onPaint();
+        paint(finalImage.createGraphics());
+        //}
         
         if (isChildrenVisible()) {
             final Graphics2D g2 = finalImage.createGraphics();
             for (PixelComponent component : getComponents()) {
-                final BufferedImage image = component.getFullUnscaledBufferedImage();
-                g2.drawImage(image, component.getX(), component.getY(), image.getWidth() * component.getScale(), image.getHeight() * component.getScale(), null);
+                if (component.isVisible()) {
+                    final BufferedImage image = component.getFullUnscaledBufferedImage();
+                    g2.drawImage(image, component.getX(), component.getY(), image.getWidth() * component.getScale(), image.getHeight() * component.getScale(), null);
+                }
             }
         }
         /*
@@ -330,8 +339,11 @@ public abstract class PixelComponent extends Bounds {
     }
     
     public PixelComponent getComponentAt(MouseEvent e) {
+        if (!isChildrenMouseEnabled()) {
+            return null;
+        }
         for (PixelComponent component : getDescendingComponents()) {
-            if (component.contains(e.getX(), e.getY())) {
+            if (component.getScaledBounds().contains(e.getX(), e.getY()) && component.isMouseEnabled()) {
                 return component;
             }
         }
@@ -498,25 +510,39 @@ public abstract class PixelComponent extends Bounds {
         }
     }
     
-    protected void onShowEvent() {
+    protected void onMouseEnabledEvent() {
+        onMouseEnabled();
+        for (PixelComponent component : getComponents()) {
+            component.onParentMouseEnabled();
+        }
+    }
+    
+    protected void onMouseDisabledEvent() {
+        onMouseDisabled();
+        for (PixelComponent component : getComponents()) {
+            component.onParentMouseDisabled();
+        }
+    }
+    
+    protected void onShownEvent() {
         onShown();
         for (PixelComponent component : getComponents()) {
             component.onParentShown();
         }
     }
-    protected void onHideEvent() {
+    protected void onHiddenEvent() {
         onHidden();
         for (PixelComponent component : getComponents()) {
             component.onParentHidden();
         }
     }
-    protected void onShowChildrenEvent() {
+    protected void onChildrenShownEvent() {
         onChildrenShown();
         for (PixelComponent component : getComponents()) {
             component.onParentChildrenShown();
         }
     }
-    protected void onHideChildrenEvent() {
+    protected void onChildrenHiddenEvent() {
         onChildrenHidden();
         for (PixelComponent component : getComponents()) {
             component.onParentChildrenHidden();
@@ -580,6 +606,16 @@ public abstract class PixelComponent extends Bounds {
     public void onPostPaint() {
     }
     
+    
+    public void onMouseEnabled() {
+    }
+    public void onMouseDisabled() {
+    }
+    public void onParentMouseEnabled() {
+    }
+    public void onParentMouseDisabled() {
+    }
+    
     public void onShown() {
     }
     public void onHidden() {
@@ -596,6 +632,50 @@ public abstract class PixelComponent extends Bounds {
     }
     public void onParentChildrenHidden() {
     }
+
+    public boolean isMouseEnabled() {
+        return isMouseEnabled;
+    }
+    
+    public final boolean enableMouse() {
+        if (isMouseEnabled) {
+            return false;
+        }
+        isMouseEnabled = true;
+        onMouseEnabledEvent();
+        return true;
+    }
+    
+    public final boolean disableMouse() {
+        if (isMouseEnabled) {
+            isMouseEnabled = false;
+            onMouseDisabledEvent();
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean isChildrenMouseEnabled() {
+        return isChildrenMouseEnabled;
+    }
+    
+    public final boolean enableChildrenMouse() {
+        if (isChildrenMouseEnabled) {
+            return false;
+        }
+        isChildrenMouseEnabled = true;
+        onMouseEnabledEvent();
+        return true;
+    }
+    
+    public final boolean disableChildrenMouse() {
+        if (isChildrenMouseEnabled) {
+            isChildrenMouseEnabled = false;
+            onMouseDisabledEvent();
+            return true;
+        }
+        return false;
+    }
     
     public final boolean isVisible() {
         return isVisible;
@@ -606,14 +686,14 @@ public abstract class PixelComponent extends Bounds {
             return false;
         }
         isVisible = true;
-        onShowEvent();
+        onShownEvent();
         return true;
     }
     
     public final boolean hide() {
         if (isVisible) {
             isVisible = false;
-            onHideEvent();
+            onHiddenEvent();
             return true;
         }
         return false;
@@ -628,14 +708,14 @@ public abstract class PixelComponent extends Bounds {
             return false;
         }
         isChildrenVisible = true;
-        onShowChildrenEvent();
+        onChildrenShownEvent();
         return true;
     }
     
     public final boolean hideChildren() {
         if (isChildrenVisible) {
             isChildrenVisible = false;
-            onHideChildrenEvent();
+            onChildrenHiddenEvent();
             return true;
         }
         return false;

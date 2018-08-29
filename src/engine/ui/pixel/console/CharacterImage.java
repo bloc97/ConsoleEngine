@@ -7,6 +7,8 @@ package engine.ui.pixel.console;
 
 import engine.ui.pixel.console.utils.BoundingBoxUtils;
 import engine.ui.pixel.console.utils.Graphics2DUtils;
+import java.awt.AlphaComposite;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -431,14 +433,14 @@ public class CharacterImage {
     
     
     
-    public BufferedImage getBufferedImage(final ConsoleFont consoleFont) {
+    public BufferedImage getBufferedImageSlow(final ConsoleFont consoleFont) {
         final int consoleWidth = getWidth();
         final int consoleHeight = getHeight();
         if (consoleWidth <= 0 || consoleHeight <= 0) {
             return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         }
         if (consoleFont == null) {
-            return getBufferedImage(ConsoleFont.getDefaultCourier());
+            return getBufferedImageSlow(ConsoleFont.getDefaultCourier());
         }
         final BufferedImage image = new BufferedImage(consoleWidth * consoleFont.getWidth(), consoleHeight * consoleFont.getHeight(), BufferedImage.TYPE_INT_ARGB);
         
@@ -450,6 +452,94 @@ public class CharacterImage {
         }
         
         return image;
+    }
+    
+    public BufferedImage getBufferedImageFast(final ConsoleFont consoleFont) {
+        final int consoleWidth = getWidth();
+        final int consoleHeight = getHeight();
+        if (consoleWidth <= 0 || consoleHeight <= 0) {
+            return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        }
+        if (consoleFont == null) {
+            return getBufferedImageSlow(ConsoleFont.getDefaultCourier());
+        }
+        final BufferedImage image = new BufferedImage(consoleWidth * consoleFont.getWidth(), consoleHeight * consoleFont.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        
+        final BufferedImage backgroundColorImage = new BufferedImage(consoleWidth, consoleHeight, BufferedImage.TYPE_INT_ARGB);
+        backgroundColorImage.setRGB(0, 0, consoleWidth, consoleHeight, this.backgroundColor, 0, consoleWidth);
+        
+        final Graphics2D g2 = image.createGraphics();
+        g2.drawImage(backgroundColorImage, 0, 0, image.getWidth(), image.getHeight(), null);
+        
+        g2.setFont(consoleFont.getFont());
+                
+        for (int j=0; j<consoleHeight; j++) {
+            for (int i=0; i<consoleWidth; i++) {
+                
+                int index = j * consoleWidth + i;
+                
+                if (chars[index] == 0) {
+                    continue;
+                }
+                
+                g2.setColor(new Color(foregroundColor[index], true));
+
+                //final FontMetrics fontMetric = g2.getFontMetrics();
+
+                g2.drawChars(chars, index, 1, i * consoleFont.getWidth(), ((j + 1) * consoleFont.getHeight()) - consoleFont.getTopPadding());
+
+                if (chars[index] == '_' && !consoleFont.isUnderscoreContinuous()) {
+                    if (consoleFont.isUnderscoreBreakOnLeft()) {
+                        g2.fillRect((i) * consoleFont.getWidth(), (j * consoleFont.getHeight()) + consoleFont.getUnderscoreYPos(), 1, 1);
+                    } else {
+                        g2.fillRect((i + 1) * consoleFont.getWidth() - 1, (j * consoleFont.getHeight()) + consoleFont.getUnderscoreYPos(), 1, 1);
+                    }
+                }
+                //Graphics2DUtils.drawConsoleChar(g2, i, j, getChar(i, j), getForegroundColor(i, j), getBackgroundColor(i, j), consoleFont);
+            }
+        }
+        
+        return image;
+    }
+    
+    public BufferedImage getBufferedImageAlphaAlt(final ConsoleFont consoleFont) {
+        
+        final int consoleWidth = getWidth();
+        final int consoleHeight = getHeight();
+        if (consoleWidth <= 0 || consoleHeight <= 0) {
+            return new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        }
+        if (consoleFont == null) {
+            return getBufferedImage(ConsoleFont.getDefaultCourier());
+        }
+        
+        final BufferedImage backgroundColor = new BufferedImage(consoleWidth, consoleHeight, BufferedImage.TYPE_INT_ARGB);
+        backgroundColor.setRGB(0, 0, consoleWidth, consoleHeight, this.backgroundColor, 0, consoleWidth);
+        
+        final BufferedImage foregroundColor = new BufferedImage(consoleWidth, consoleHeight, BufferedImage.TYPE_INT_ARGB);
+        foregroundColor.setRGB(0, 0, consoleWidth, consoleHeight, this.foregroundColor, 0, consoleWidth);
+        
+        
+        final BufferedImage image = new BufferedImage(consoleWidth * consoleFont.getWidth(), consoleHeight * consoleFont.getHeight(), BufferedImage.TYPE_INT_ARGB);
+        
+        final Graphics2D g2 = image.createGraphics();
+        g2.setColor(Color.WHITE);
+        g2.setFont(consoleFont.getFont());
+        for (int j=0; j<consoleHeight; j++) {
+            g2.drawChars(chars, j * consoleWidth, consoleWidth, 0, ((j + 1) * consoleFont.getHeight()) - consoleFont.getTopPadding());
+        }
+        
+        g2.setComposite(AlphaComposite.SrcIn);
+        g2.drawImage(foregroundColor, 0, 0, image.getWidth(), image.getHeight(), null);
+        
+        g2.setComposite(AlphaComposite.DstOver);
+        g2.drawImage(backgroundColor, 0, 0, image.getWidth(), image.getHeight(), null);
+        
+        return image;
+    }
+    
+    public BufferedImage getBufferedImage(final ConsoleFont consoleFont) {
+        return getBufferedImageFast(consoleFont);
     }
     
 }

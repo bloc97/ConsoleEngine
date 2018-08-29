@@ -41,7 +41,28 @@ public class PixelRootComponent extends PixelComponent {
         private final PixelRootComponent component = PixelRootComponent.this;
         @Override
         protected void onPaint(Renderer renderer) {
-            renderer.drawBufferedImage(getFullUnscaledBufferedImage(), xPad, yPad, getScale());
+            
+            onPrePaintEvent();
+            
+            if (getScale() <= 0 || getWidth() <= 0 || getHeight() <= 0) {
+                return;
+            }
+            
+            if (isChildrenVisible()) {
+                for (PixelComponent c : getComponents()) {
+                    final BufferedImage image = c.getFullUnscaledBufferedImage();
+                    renderer.drawBufferedImage(image, xPad + c.getX() * component.getScale(), yPad + c.getY() * component.getScale(), c.getScale() * component.getScale());
+                }
+            }
+            
+            
+            onPostPaint();
+            
+            
+            
+            
+            
+            //renderer.drawBufferedImage(getFullUnscaledBufferedImage(), xPad, yPad, getScale());
         }
 
         @Override
@@ -59,6 +80,7 @@ public class PixelRootComponent extends PixelComponent {
 
 
     };
+    
     
     private final InputHandler inputHandler = new AbstractInputHandler() {
         private final PixelRootComponent component = PixelRootComponent.this;
