@@ -9,6 +9,7 @@ import engine.event.handler.AbstractInputHandler;
 import engine.event.handler.AbstractRenderHandler;
 import engine.event.handler.InputHandler;
 import engine.event.handler.RenderHandler;
+import engine.ui.NativeWindow;
 import engine.ui.Renderer;
 import engine.ui.pixel.console.utils.Graphics2DUtils;
 import java.awt.Dimension;
@@ -37,6 +38,8 @@ public class PixelRootComponent extends PixelComponent {
 
     private int xPad = 0;
     private int yPad = 0;
+    
+    private final NativeWindow window;
     
     private final RenderHandler renderHandler = new AbstractRenderHandler() {
         private final PixelRootComponent component = PixelRootComponent.this;
@@ -190,23 +193,20 @@ public class PixelRootComponent extends PixelComponent {
 
     };
     
-    public PixelRootComponent() {
+    public PixelRootComponent(NativeWindow window) {
+        this(window, 1);
     }
 
-    public PixelRootComponent(int width, int height, int scale) {
-        this(0, 0, width, height, scale);
-    }
-    
-    public PixelRootComponent(int width, int height) {
-        super(width, height);
-    }
-
-    public PixelRootComponent(int x, int y, int width, int height) {
-        super(x, y, width, height);
+    public PixelRootComponent(NativeWindow window, int scale) {
+        super(0, 0, 1, 1, scale);
+        this.window = window;
+        window.attachRenderHandler(renderHandler);
+        window.attachInputHandler(inputHandler);
+        show();
     }
 
-    public PixelRootComponent(int x, int y, int width, int height, int scale) {
-        super(x, y, width, height, scale);
+    public NativeWindow getNativeWindow() {
+        return window;
     }
     
     public RenderHandler getRenderHandler() {
