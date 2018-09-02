@@ -359,6 +359,8 @@ public class SwingWindow implements NativeWindow {
                 frame.setExtendedState(Frame.MAXIMIZED_BOTH);
                 frame.setVisible(true);
                 frame.toFront();
+                panel.requestFocus();
+                panel.requestFocusInWindow();
             });
         }
     }
@@ -369,6 +371,8 @@ public class SwingWindow implements NativeWindow {
             SwingUtilities.invokeLater(() -> {
                 frame.setExtendedState(Frame.NORMAL);
                 frame.setVisible(true);
+                frame.requestFocus();
+                frame.requestFocusInWindow();
             });
         } else if (isFullscreen()) {
             SwingUtilities.invokeLater(() -> {
@@ -383,6 +387,8 @@ public class SwingWindow implements NativeWindow {
                 frame.setSize((int)(lastWidth / normScaleX), (int)(lastHeight / normScaleY));
                 frame.setLocation((int)(lastX / normScaleX), (int)(lastY / normScaleY));
                 frame.setVisible(true);
+                panel.requestFocus();
+                panel.requestFocusInWindow();
             });
         }
     }

@@ -91,7 +91,7 @@ public interface RunnerUtils {
                         Thread.sleep((int)(control.getMilisecondsPerTick() * control.getAllowedError()));
                     }
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    //ex.printStackTrace();
                 }
             }
         });
