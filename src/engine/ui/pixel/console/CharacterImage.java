@@ -21,8 +21,8 @@ public class CharacterImage {
     private final int width, height, length;
     
     private final char[] chars;
-    private final int[] foregroundColor;
-    private final int[] backgroundColor;
+    private final int[] foregroundColors;
+    private final int[] backgroundColors;
     
     public CharacterImage() {
         this(0, 0);
@@ -33,8 +33,20 @@ public class CharacterImage {
         this.height = height;
         this.length = width * height;
         this.chars = new char[length];
-        this.foregroundColor = new int[length];
-        this.backgroundColor = new int[length];
+        this.foregroundColors = new int[length];
+        this.backgroundColors = new int[length];
+    }
+
+    public char[] getChars() {
+        return chars;
+    }
+
+    public int[] getForegroundColors() {
+        return foregroundColors;
+    }
+
+    public int[] getBackgroundColors() {
+        return backgroundColors;
     }
 
     public int getHeight() {
@@ -44,7 +56,14 @@ public class CharacterImage {
     public int getWidth() {
         return width;
     }
+
+    public int getLength() {
+        return length;
+    }
     
+    public boolean isWithinBounds(int i) {
+        return (i >= 0 && i < length);
+    }
     public boolean isWithinBounds(int x, int y) {
         return (x >= 0 && x < width && y >= 0 && y < height);
     }
@@ -52,9 +71,93 @@ public class CharacterImage {
     public void clear() {
         for (int i=0; i<chars.length; i++) {
             chars[i] = 0;
-            foregroundColor[i] = 0;
-            backgroundColor[i] = 0;
+            foregroundColors[i] = 0;
+            backgroundColors[i] = 0;
         }
+    }
+    public char get(int i) {
+        return getChar(i);
+    }
+    
+    public boolean set(int i, char c) {
+        if (isWithinBounds(i)) {
+            this.chars[i] = c;
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean set(int i, char c, int foregroundColor) {
+        if (isWithinBounds(i)) {
+            this.chars[i] = c;
+            this.foregroundColors[i] = foregroundColor;
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean set(int i, char c, int foregroundColor, int backgroundColor) {
+        if (isWithinBounds(i)) {
+            this.chars[i] = c;
+            this.foregroundColors[i] = foregroundColor;
+            this.backgroundColors[i] = backgroundColor;
+            return true;
+        }
+        return false;
+    }
+    
+    public char getChar(int i) {
+        if (!isWithinBounds(i)) {
+            return 0;
+        }
+        return chars[i];
+    }
+    
+    public boolean setChar(int i, char c) {
+        if (isWithinBounds(i)) {
+            chars[i] = c;
+            return true;
+        }
+        return false;
+    }
+    
+    public int getForegroundColor(int i) {
+        if (!isWithinBounds(i)) {
+            return 0;
+        }
+        return foregroundColors[i];
+    }
+    
+    public int getBackgroundColor(int i) {
+        if (!isWithinBounds(i)) {
+            return 0;
+        }
+        return backgroundColors[i];
+    }
+    
+    public boolean setColor(int i, int foregroundColor, int backgroundColor) {
+        if (isWithinBounds(i)) {
+            this.foregroundColors[i] = foregroundColor;
+            this.backgroundColors[i] = backgroundColor;
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean setForegroundColor(int i, int c) {
+        if (isWithinBounds(i)) {
+            foregroundColors[i] = c;
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean setBackgroundColor(int i, int c) {
+        if (isWithinBounds(i)) {
+            backgroundColors[i] = c;
+            return true;
+        }
+        return false;
     }
     
     public char get(int x, int y) {
@@ -73,7 +176,7 @@ public class CharacterImage {
         if (isWithinBounds(x, y)) {
             final int index = y * width + x;
             this.chars[index] = c;
-            this.foregroundColor[index] = foregroundColor;
+            this.foregroundColors[index] = foregroundColor;
             return true;
         }
         return false;
@@ -83,8 +186,8 @@ public class CharacterImage {
         if (isWithinBounds(x, y)) {
             final int index = y * width + x;
             this.chars[index] = c;
-            this.foregroundColor[index] = foregroundColor;
-            this.backgroundColor[index] = backgroundColor;
+            this.foregroundColors[index] = foregroundColor;
+            this.backgroundColors[index] = backgroundColor;
             return true;
         }
         return false;
@@ -108,8 +211,8 @@ public class CharacterImage {
     public boolean setColor(int x, int y, int foregroundColor, int backgroundColor) {
         if (isWithinBounds(x, y)) {
             final int index = y * width + x;
-            this.foregroundColor[index] = foregroundColor;
-            this.backgroundColor[index] = backgroundColor;
+            this.foregroundColors[index] = foregroundColor;
+            this.backgroundColors[index] = backgroundColor;
             return true;
         }
         return false;
@@ -119,12 +222,12 @@ public class CharacterImage {
         if (!isWithinBounds(x, y)) {
             return 0;
         }
-        return foregroundColor[y * width + x];
+        return foregroundColors[y * width + x];
     }
     
     public boolean setForegroundColor(int x, int y, int c) {
         if (isWithinBounds(x, y)) {
-            foregroundColor[y * width + x] = c;
+            foregroundColors[y * width + x] = c;
             return true;
         }
         return false;
@@ -134,12 +237,12 @@ public class CharacterImage {
         if (!isWithinBounds(x, y)) {
             return 0;
         }
-        return backgroundColor[y * width + x];
+        return backgroundColors[y * width + x];
     }
     
     public boolean setBackgroundColor(int x, int y, int c) {
         if (isWithinBounds(x, y)) {
-            backgroundColor[y * width + x] = c;
+            backgroundColors[y * width + x] = c;
             return true;
         }
         return false;
@@ -154,15 +257,15 @@ public class CharacterImage {
     public void fill(char c, int foregroundColor) {
         for (int i=0; i<chars.length; i++) {
             this.chars[i] = c;
-            this.foregroundColor[i] = foregroundColor;
+            this.foregroundColors[i] = foregroundColor;
         }
     }
     
     public void fill(char c, int foregroundColor, int backgroundColor) {
         for (int i=0; i<chars.length; i++) {
             this.chars[i] = c;
-            this.foregroundColor[i] = foregroundColor;
-            this.backgroundColor[i] = backgroundColor;
+            this.foregroundColors[i] = foregroundColor;
+            this.backgroundColors[i] = backgroundColor;
         }
     }
     
@@ -172,20 +275,92 @@ public class CharacterImage {
     
     public void fillColor(int foregroundColor, int backgroundColor) {
         for (int i=0; i<length; i++) {
-            this.foregroundColor[i] = foregroundColor;
-            this.backgroundColor[i] = backgroundColor;
+            this.foregroundColors[i] = foregroundColor;
+            this.backgroundColors[i] = backgroundColor;
         }
     }
     
     public void fillForegroundColor(int c) {
         for (int i=0; i<length; i++) {
-            this.foregroundColor[i] = c;
+            this.foregroundColors[i] = c;
         }
     }
     
     public void fillBackgroundColor(int c) {
         for (int i=0; i<length; i++) {
-            this.backgroundColor[i] = c;
+            this.backgroundColors[i] = c;
+        }
+    }
+    
+    public void fill(int index, int length, char c) {
+        for (int i=index; i<index + length; i++) {
+            if (isWithinBounds(i)) {
+                this.chars[i] = c;
+            } else {
+                return;
+            }
+        }
+    }
+    
+    public void fill(int index, int length, char c, int foregroundColor) {
+        for (int i=index; i<index + length; i++) {
+            if (isWithinBounds(i)) {
+                this.chars[i] = c;
+                this.foregroundColors[i] = foregroundColor;
+            }
+        }
+    }
+    
+    public void fill(int index, int length, char c, int foregroundColor, int backgroundColor) {
+        for (int i=index; i<index + length; i++) {
+            if (isWithinBounds(i)) {
+                this.chars[i] = c;
+                this.foregroundColors[i] = foregroundColor;
+                this.backgroundColors[i] = backgroundColor;
+            } else {
+                return;
+            }
+        }
+    }
+    
+    public void fillChar(int index, int length, char c) {
+        for (int i=index; i<index + length; i++) {
+            if (isWithinBounds(i)) {
+                this.chars[i] = c;
+            } else {
+                return;
+            }
+        }
+    }
+    
+    public void fillColor(int index, int length, int foregroundColor, int backgroundColor) {
+        for (int i=index; i<index + length; i++) {
+            if (isWithinBounds(i)) {
+                this.foregroundColors[i] = foregroundColor;
+                this.backgroundColors[i] = backgroundColor;
+            } else {
+                return;
+            }
+        }
+    }
+    
+    public void fillForegroundColor(int index, int length, int foregroundColor) {
+        for (int i=index; i<index + length; i++) {
+            if (isWithinBounds(i)) {
+                this.foregroundColors[i] = foregroundColor;
+            } else {
+                return;
+            }
+        }
+    }
+    
+    public void fillBackgroundColor(int index, int length, int backgroundColor) {
+        for (int i=index; i<index + length; i++) {
+            if (isWithinBounds(i)) {
+                this.backgroundColors[i] = backgroundColor;
+            } else {
+                return;
+            }
         }
     }
     
@@ -469,7 +644,7 @@ public class CharacterImage {
         final BufferedImage image = new BufferedImage(consoleWidth * consoleFont.getWidth(), consoleHeight * consoleFont.getHeight(), BufferedImage.TYPE_INT_ARGB);
         
         final BufferedImage backgroundColorImage = new BufferedImage(consoleWidth, consoleHeight, BufferedImage.TYPE_INT_ARGB);
-        backgroundColorImage.setRGB(0, 0, consoleWidth, consoleHeight, this.backgroundColor, 0, consoleWidth);
+        backgroundColorImage.setRGB(0, 0, consoleWidth, consoleHeight, this.backgroundColors, 0, consoleWidth);
         
         final Graphics2D g2 = image.createGraphics();
         g2.drawImage(backgroundColorImage, 0, 0, image.getWidth(), image.getHeight(), null);
@@ -485,7 +660,7 @@ public class CharacterImage {
                     continue;
                 }
                 
-                g2.setColor(new Color(foregroundColor[index], true));
+                g2.setColor(new Color(foregroundColors[index], true));
 
                 //final FontMetrics fontMetric = g2.getFontMetrics();
 
@@ -517,10 +692,10 @@ public class CharacterImage {
         }
         
         final BufferedImage backgroundColor = new BufferedImage(consoleWidth, consoleHeight, BufferedImage.TYPE_INT_ARGB);
-        backgroundColor.setRGB(0, 0, consoleWidth, consoleHeight, this.backgroundColor, 0, consoleWidth);
+        backgroundColor.setRGB(0, 0, consoleWidth, consoleHeight, this.backgroundColors, 0, consoleWidth);
         
         final BufferedImage foregroundColor = new BufferedImage(consoleWidth, consoleHeight, BufferedImage.TYPE_INT_ARGB);
-        foregroundColor.setRGB(0, 0, consoleWidth, consoleHeight, this.foregroundColor, 0, consoleWidth);
+        foregroundColor.setRGB(0, 0, consoleWidth, consoleHeight, this.foregroundColors, 0, consoleWidth);
         
         
         final BufferedImage image = new BufferedImage(consoleWidth * consoleFont.getWidth(), consoleHeight * consoleFont.getHeight(), BufferedImage.TYPE_INT_ARGB);
@@ -557,7 +732,7 @@ public class CharacterImage {
         //final BufferedImage image = new BufferedImage(consoleWidth * consoleFont.getWidth(), consoleHeight * consoleFont.getHeight(), BufferedImage.TYPE_INT_ARGB);
         
         final BufferedImage backgroundColorImage = new BufferedImage(consoleWidth, consoleHeight, BufferedImage.TYPE_INT_ARGB);
-        backgroundColorImage.setRGB(0, 0, consoleWidth, consoleHeight, this.backgroundColor, 0, consoleWidth);
+        backgroundColorImage.setRGB(0, 0, consoleWidth, consoleHeight, this.backgroundColors, 0, consoleWidth);
         
         g2.drawImage(backgroundColorImage, 0, 0, consoleWidth * consoleFont.getWidth(), consoleHeight * consoleFont.getHeight(), null);
         
@@ -577,16 +752,16 @@ public class CharacterImage {
                     continue;
                 }
                 
-                g2.setColor(new Color(foregroundColor[index], true));
+                g2.setColor(new Color(foregroundColors[index], true));
 
                 //final FontMetrics fontMetric = g2.getFontMetrics();
 
                 g2.drawChars(chars, index, 1, i * consoleFont.getWidth(), ((j + 1) * consoleFont.getHeight()) - consoleFont.getTopPadding());
 
                 if (chars[index] == '_' && !consoleFont.isUnderscoreContinuous()) {
-                    if (consoleFont.isUnderscoreBreakOnLeft()) {
+                    if (consoleFont.isUnderscoreBreakOnLeft() && getChar(i - 1, j) == '_') {
                         g2.fillRect((i) * consoleFont.getWidth(), (j * consoleFont.getHeight()) + consoleFont.getUnderscoreYPos(), 1, 1);
-                    } else {
+                    } else if (getChar(i + 1, j) == '_') {
                         g2.fillRect((i + 1) * consoleFont.getWidth() - 1, (j * consoleFont.getHeight()) + consoleFont.getUnderscoreYPos(), 1, 1);
                     }
                 }

@@ -11,7 +11,7 @@ import java.awt.Color;
  *
  * @author bowen
  */
-public class ColorUtils {
+public abstract class ColorUtils {
     private final static double GAMMA = 2.4d;
     private final static double INVGAMMA = 1d/GAMMA;
     private final static boolean isInit = false;

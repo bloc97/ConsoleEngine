@@ -5,7 +5,6 @@
  */
 package engine.ui.pixel.console;
 
-import engine.ui.pixel.console.CharacterImage;
 import java.awt.Rectangle;
 
 /**
@@ -16,9 +15,6 @@ public class StringWriter {
     
     public enum WrapType {
         NONE, CHARACTER, WORD;
-    }
-    public enum CenterType {
-        LEFT, CENTER, RIGHT;
     }
     
     private final CharacterImage characterImage;

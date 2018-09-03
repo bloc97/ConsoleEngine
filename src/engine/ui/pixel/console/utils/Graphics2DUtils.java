@@ -29,6 +29,7 @@ public interface Graphics2DUtils {
         drawConsoleChar(g2, x, y, c, new Color(foregroundColor, true), new Color(backgroundColor, true), consoleFont);
     }
     
+    @Deprecated
     public static void drawConsoleChar(Graphics2D g2, int x, int y, char c, Color foregroundColor, Color backgroundColor, ConsoleFont consoleFont) {
         
         g2.setColor(backgroundColor);

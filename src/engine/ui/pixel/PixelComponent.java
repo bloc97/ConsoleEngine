@@ -356,6 +356,17 @@ public abstract class PixelComponent extends Bounds {
         for (PixelComponent component : getComponents()) {
             component.onParentMoved();
         }
+        if (lastRawMouseEvent != null) {
+            final MouseEvent backupMouseEvent = lastMouseEvent;
+            final MouseEvent backupRawMouseEvent = lastRawMouseEvent;
+            if (isMousePressed) {
+                onMouseDraggedEvent(getTranslatedMouseEvent(lastRawMouseEvent, this));
+            } else {
+                onMouseMovedEvent(getTranslatedMouseEvent(lastRawMouseEvent, this));
+            }
+            lastMouseEvent = backupMouseEvent;
+            lastRawMouseEvent = backupRawMouseEvent;
+        }
     }
     
     protected void onSizeChangeEvent() {
@@ -363,12 +374,34 @@ public abstract class PixelComponent extends Bounds {
         for (PixelComponent component : getComponents()) {
             component.onParentResized();
         }
+        if (lastRawMouseEvent != null) {
+            final MouseEvent backupMouseEvent = lastMouseEvent;
+            final MouseEvent backupRawMouseEvent = lastRawMouseEvent;
+            if (isMousePressed) {
+                onMouseDraggedEvent(getTranslatedMouseEvent(lastRawMouseEvent, this));
+            } else {
+                onMouseMovedEvent(getTranslatedMouseEvent(lastRawMouseEvent, this));
+            }
+            lastMouseEvent = backupMouseEvent;
+            lastRawMouseEvent = backupRawMouseEvent;
+        }
     }
     
     protected void onScaleChangeEvent() {
         onRescaled();
         for (PixelComponent component : getComponents()) {
             component.onParentRescaled();
+        }
+        if (lastRawMouseEvent != null) {
+            final MouseEvent backupMouseEvent = lastMouseEvent;
+            final MouseEvent backupRawMouseEvent = lastRawMouseEvent;
+            if (isMousePressed) {
+                onMouseDraggedEvent(getTranslatedMouseEvent(lastRawMouseEvent, this));
+            } else {
+                onMouseMovedEvent(getTranslatedMouseEvent(lastRawMouseEvent, this));
+            }
+            lastMouseEvent = backupMouseEvent;
+            lastRawMouseEvent = backupRawMouseEvent;
         }
     }
     
@@ -396,14 +429,20 @@ public abstract class PixelComponent extends Bounds {
     }
     
     private volatile MouseEvent lastMouseEvent = null;
+    private volatile MouseEvent lastRawMouseEvent = null;
     
     private volatile PixelComponent lastEntered = null;
     private volatile PixelComponent lastFocused = null;
     
     private volatile boolean isFocused = false;
+    
+    private volatile boolean isMousePressed = false;
 
     public MouseEvent getLastMouseEvent() {
         return lastMouseEvent;
+    }
+    public MouseEvent getLastRawMouseEvent() {
+        return lastRawMouseEvent;
     }
     
     private void updateEnterMoved(MouseEvent e) {
@@ -428,6 +467,7 @@ public abstract class PixelComponent extends Bounds {
     
     public void onMouseEnteredEvent(MouseEvent e) {
         lastMouseEvent = e;
+        lastRawMouseEvent = getInverseTranslatedMouseEvent(e, this);
         //MouseEvent is in local coordinates
         onMouseEntered(e);
         final PixelComponent newEntered = getComponentAt(e);
@@ -441,6 +481,7 @@ public abstract class PixelComponent extends Bounds {
     }
     public void onMouseExitedEvent(MouseEvent e) {
         lastMouseEvent = e;
+        lastRawMouseEvent = getInverseTranslatedMouseEvent(e, this);
         onMouseExited(e);
         if (lastEntered != null) {
             lastEntered.onMouseExitedEvent(getTranslatedMouseEvent(e, lastEntered));
@@ -450,6 +491,7 @@ public abstract class PixelComponent extends Bounds {
     
     public void onMouseMovedEvent(MouseEvent e) {
         lastMouseEvent = e;
+        lastRawMouseEvent = getInverseTranslatedMouseEvent(e, this);
         onMouseMoved(e);
         updateEnterMoved(e);
     }
@@ -477,6 +519,8 @@ public abstract class PixelComponent extends Bounds {
     
     public void onMousePressedEvent(MouseEvent e) {
         lastMouseEvent = e;
+        lastRawMouseEvent = getInverseTranslatedMouseEvent(e, this);
+        isMousePressed = true;
         onMousePressed(e);
         updateEnterMoved(e);
         if (!isFocused) {
@@ -506,6 +550,7 @@ public abstract class PixelComponent extends Bounds {
     
     public void onMouseDraggedEvent(MouseEvent e) {
         lastMouseEvent = e;
+        lastRawMouseEvent = getInverseTranslatedMouseEvent(e, this);
         onMouseDragged(e);
         if (lastEntered != null) {
             lastEntered.onMouseDraggedEvent(getTranslatedMouseEvent(e, lastEntered));
@@ -514,6 +559,7 @@ public abstract class PixelComponent extends Bounds {
     
     public void onMouseClickedEvent(MouseEvent e) {
         lastMouseEvent = e;
+        lastRawMouseEvent = getInverseTranslatedMouseEvent(e, this);
         onMouseClicked(e);
         if (lastEntered != null) {
             lastEntered.onMouseClickedEvent(getTranslatedMouseEvent(e, lastEntered));
@@ -521,6 +567,8 @@ public abstract class PixelComponent extends Bounds {
     }
     public void onMouseReleasedEvent(MouseEvent e) {
         lastMouseEvent = e;
+        lastRawMouseEvent = getInverseTranslatedMouseEvent(e, this);
+        isMousePressed = false;
         onMouseReleased(e);
         updateEnterMoved(e);
         if (lastEntered != null) {
@@ -530,6 +578,7 @@ public abstract class PixelComponent extends Bounds {
     
     public void onMouseWheelMovedEvent(MouseWheelEvent e) {
         lastMouseEvent = e;
+        lastRawMouseEvent = getInverseTranslatedMouseEvent(e, this);
         onMouseWheelMoved(e);
         updateEnterMoved(e);
         if (lastEntered != null) {
