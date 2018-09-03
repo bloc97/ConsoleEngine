@@ -215,7 +215,7 @@ public interface TextUtils {
         return drawString(image, new CharacterImage(), string, x, y, defaultColor, wrapType, alignType, leftPadding, lineWidth);
     }
     public static int drawString(CharacterImage image, CharacterImage altImage, String string, int x, int y, final int defaultColor, WrapType wrapType, AlignType alignType, int leftPadding, int lineWidth) {
-        String formattedString = wrapString(string, wrapType, (x > leftPadding) ? lineWidth - (x - leftPadding) : lineWidth);
+        String formattedString = wrapString(string, wrapType, (x > leftPadding) ? lineWidth - (x - leftPadding) : lineWidth, lineWidth);
         
         int currentARGB = defaultColor;
         int currentUnderlineARGB = defaultColor;
@@ -272,7 +272,7 @@ public interface TextUtils {
                                     currentARGB = Integer.parseUnsignedInt(modifier.substring(1), 16);
                                 }
                                 
-                            } else { //Reset
+                            } else if (modifier.isEmpty()) { //Reset
                                 currentARGB = defaultColor;
                                 currentUnderlineARGB = defaultColor;
                                 underline = false;

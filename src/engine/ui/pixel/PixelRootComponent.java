@@ -45,7 +45,6 @@ public class PixelRootComponent extends PixelComponent {
         private final PixelRootComponent component = PixelRootComponent.this;
         @Override
         protected void onPaint(Renderer renderer) {
-            
             Graphics2D g2 = renderer.getGraphics2D();
             g2.translate(xPad, yPad);
             g2.scale(getScale(), getScale());
@@ -76,6 +75,13 @@ public class PixelRootComponent extends PixelComponent {
 
     };
     
+    private MouseEvent getScaledMouseEvent(MouseEvent e, Bounds bounds) {
+        return new MouseEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), Math.floorDiv(e.getX(), bounds.getScale()), Math.floorDiv(e.getY(), bounds.getScale()), e.getXOnScreen(), e.getYOnScreen(), e.getClickCount(), e.isPopupTrigger(), e.getButton());
+    }
+    private MouseWheelEvent getScaledMouseWheelEvent(MouseWheelEvent e, Bounds bounds) {
+        return new MouseWheelEvent(e.getComponent(), e.getID(), e.getWhen(), e.getModifiersEx(), Math.floorDiv(e.getX(), bounds.getScale()), Math.floorDiv(e.getY(), bounds.getScale()), e.getXOnScreen(), e.getYOnScreen(),
+                    e.getClickCount(), e.isPopupTrigger(), e.getScrollType(), e.getScrollAmount(), e.getWheelRotation(), e.getPreciseWheelRotation());
+    }
     
     private final InputHandler inputHandler = new AbstractInputHandler() {
         private final PixelRootComponent component = PixelRootComponent.this;
@@ -124,52 +130,106 @@ public class PixelRootComponent extends PixelComponent {
             onFocusGained();
             super.focusGained(e); //To change body of generated methods, choose Tools | Templates.
         }
-
+        
+        private volatile boolean isEntered = false;
+        
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
-            onMouseWheelMovedEvent(e);
+            e = getScaledMouseWheelEvent(e, component);
+            if (isEntered) {
+                onMouseWheelMovedEvent(e);
+            }
             super.mouseWheelMoved(e); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public void mouseMoved(MouseEvent e) {
+            e = getScaledMouseEvent(e, component);
             onMouseMovedEvent(e);
+            if (!component.contains(e.getX(), e.getY()) && isEntered) {
+                onMouseExitedEvent(e);
+                isEntered = false;
+            } else if (component.contains(e.getX(), e.getY()) && !isEntered) {
+                onMouseEnteredEvent(e);
+                isEntered = true;
+            }
             super.mouseMoved(e); //To change body of generated methods, choose Tools | Templates.
+            if (!component.contains(e.getX(), e.getY())) {
+                lastRawMouseEvent = null;
+                lastMouseEvent = null;
+            }
         }
 
         @Override
         public void mouseDragged(MouseEvent e) {
+            e = getScaledMouseEvent(e, component);
             onMouseDraggedEvent(e);
+            isMousePressed = true;
             super.mouseDragged(e); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
+            e = getScaledMouseEvent(e, component);
             onMouseReleasedEvent(e);
+            if (!component.contains(e.getX(), e.getY()) && isEntered) {
+                onMouseExitedEvent(e);
+                isEntered = false;
+            } else if (component.contains(e.getX(), e.getY()) && !isEntered) {
+                onMouseEnteredEvent(e);
+                isEntered = true;
+            }
             super.mouseReleased(e); //To change body of generated methods, choose Tools | Templates.
+            if (!component.contains(e.getX(), e.getY())) {
+                lastRawMouseEvent = null;
+                lastMouseEvent = null;
+            }
         }
 
         @Override
         public void mousePressed(MouseEvent e) {
+            e = getScaledMouseEvent(e, component);
             onMousePressedEvent(e);
+            if (!component.contains(e.getX(), e.getY()) && isEntered) {
+                onMouseExitedEvent(e);
+                isEntered = false;
+            } else if (component.contains(e.getX(), e.getY()) && !isEntered) {
+                onMouseEnteredEvent(e);
+                isEntered = true;
+            }
             super.mousePressed(e); //To change body of generated methods, choose Tools | Templates.
+            if (!component.contains(e.getX(), e.getY())) {
+                lastRawMouseEvent = null;
+                lastMouseEvent = null;
+            }
         }
 
         @Override
         public void mouseClicked(MouseEvent e) {
+            e = getScaledMouseEvent(e, component);
             onMouseClickedEvent(e);
             super.mouseClicked(e); //To change body of generated methods, choose Tools | Templates.
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-            onMouseExitedEvent(e);
+            e = getScaledMouseEvent(e, component);
+            if (!component.isMousePressed()) {
+                onMouseExitedEvent(e);
+                isEntered = false;
+            }
             super.mouseExited(e); //To change body of generated methods, choose Tools | Templates.
+            lastRawMouseEvent = null;
+            lastMouseEvent = null;
         }
 
         @Override
         public void mouseEntered(MouseEvent e) {
-            onMouseEnteredEvent(e);
+            e = getScaledMouseEvent(e, component);
+            if (!component.isMousePressed()) {
+                onMouseEnteredEvent(e);
+                isEntered = true;
+            }
             super.mouseEntered(e);
         }
 

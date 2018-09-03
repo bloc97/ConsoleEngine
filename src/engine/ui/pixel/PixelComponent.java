@@ -428,21 +428,30 @@ public abstract class PixelComponent extends Bounds {
         return null;
     }
     
-    private volatile MouseEvent lastMouseEvent = null;
-    private volatile MouseEvent lastRawMouseEvent = null;
+    protected volatile MouseEvent lastMouseEvent = null;
+    protected volatile MouseEvent lastRawMouseEvent = null;
     
-    private volatile PixelComponent lastEntered = null;
-    private volatile PixelComponent lastFocused = null;
+    protected volatile PixelComponent lastEntered = null;
+    protected volatile PixelComponent lastFocused = null;
     
-    private volatile boolean isFocused = false;
+    protected volatile boolean isFocused = false;
     
-    private volatile boolean isMousePressed = false;
+    protected volatile boolean isMousePressed = false;
 
     public MouseEvent getLastMouseEvent() {
         return lastMouseEvent;
     }
     public MouseEvent getLastRawMouseEvent() {
         return lastRawMouseEvent;
+    }
+
+    public boolean isMousePressed() {
+        return isMousePressed;
+    }
+    
+
+    public PixelComponent(PixelComponent parentComponent) {
+        this.parentComponent = parentComponent;
     }
     
     private void updateEnterMoved(MouseEvent e) {
