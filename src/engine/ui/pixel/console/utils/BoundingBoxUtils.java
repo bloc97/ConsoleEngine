@@ -172,8 +172,6 @@ public interface BoundingBoxUtils {
                     return '╣';
                 case '╛':
                     return '╡';
-                case '╞':
-                    return '╪';
                 case '╟':
                     return '╫';
                 case '╔':
@@ -192,6 +190,7 @@ public interface BoundingBoxUtils {
                 case '║':
                 case '╜':
                     return '╢';
+                case '╞':
                 case '╧':
                 case '╘':
                     return '╪';
