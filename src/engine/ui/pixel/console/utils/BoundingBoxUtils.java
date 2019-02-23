@@ -104,84 +104,58 @@ public interface BoundingBoxUtils {
             return '┌';
         } else {
             switch (c) {
-                case '│':
-                    return '├';
-                case '┤':
-                    return '┼';
                 case '╡':
                     return '╪';
-                case '╢':
-                    return '╫';
                 case '╖':
                     return '╥';
-                case '╕':
-                    return '╤';
-                case '╣':
-                    return '╬';
-                case '║':
-                    return '╟';
                 case '╗':
                     return '╦';
+                case '╚':
+                    return '╠';
+                case '╘':
+                    return '╞';
+                case '═':
+                case '╕':
+                    return '╤';
                 case '╝':
+                case '╣':
+                case '╩':
                     return '╬';
+                case '╙':
+                case '║':
+                    return '╟';
+                case '─':
+                case '┐':
+                    return '┬';
+                case '╨':
+                case '╢':
                 case '╜':
                     return '╫';
                 case '╛':
+                case '╧':
                     return '╪';
-                case '┐':
-                    return '┬';
+                case '│':
                 case '└':
                     return '├';
+                case '┘':
+                case '┤':
                 case '┴':
                     return '┼';
                 case '┬':
-                    return c;
                 case '├':
-                    return c;
-                case '─':
-                    return '┬';
                 case '┼':
-                    return c;
                 case '╞':
-                    return c;
                 case '╟':
-                    return c;
-                case '╚':
-                    return '╠';
                 case '╔':
-                    return c;
-                case '╩':
-                    return '╬';
                 case '╦':
-                    return c;
                 case '╠':
-                    return c;
-                case '═':
-                    return '╤';
                 case '╬':
-                    return c;
-                case '╧':
-                    return '╪';
-                case '╨':
-                    return '╫';
                 case '╤':
-                    return c;
                 case '╥':
-                    return c;
-                case '╙':
-                    return '╟';
-                case '╘':
-                    return '╞';
                 case '╒':
-                    return c;
                 case '╓':
-                    return c;
                 case '╫':
-                    return c;
                 case '╪':
-                    return c;
-                case '┘':
-                    return '┼';
                 case '┌':
                     return c;
                 default :
@@ -194,86 +168,61 @@ public interface BoundingBoxUtils {
             return '┐';
         } else {
             switch (c) {
-                case '│':
-                    return '┤';
-                case '┤':
-                    return c;
-                case '╡':
-                    return c;
-                case '╢':
-                    return c;
-                case '╖':
-                    return '╢';
-                case '╕':
-                    return c;
-                case '╣':
-                    return c;
-                case '║':
-                    return '╢';
-                case '╗':
-                    return c;
                 case '╝':
                     return '╣';
-                case '╜':
-                    return '╢';
                 case '╛':
                     return '╡';
-                case '┐':
-                    return c;
-                case '└':
-                    return '┼';
-                case '┴':
-                    return '┼';
-                case '┬':
-                    return c;
-                case '├':
-                    return '┼';
-                case '─':
-                    return '┬';
-                case '┼':
-                    return c;
                 case '╞':
                     return '╪';
                 case '╟':
                     return '╫';
-                case '╚':
-                    return '╬';
                 case '╔':
                     return '╦';
-                case '╩':
-                    return '╬';
-                case '╦':
-                    return c;
-                case '╠':
-                    return '╬';
-                case '═':
-                    return '╤';
-                case '╬':
-                    return c;
-                case '╧':
-                    return '╪';
-                case '╨':
-                    return '╫';
-                case '╤':
-                    return c;
-                case '╥':
-                    return c;
-                case '╙':
-                    return '╫';
-                case '╘':
-                    return '╪';
-                case '╒':
-                    return '╤';
                 case '╓':
                     return '╥';
-                case '╫':
-                    return c;
-                case '╪':
-                    return c;
                 case '┘':
+                case '│':
                     return '┤';
                 case '┌':
+                case '─':
                     return '┬';
+                case '╨':
+                case '╙':
+                    return '╫';
+                case '║':
+                case '╜':
+                    return '╢';
+                case '╧':
+                case '╘':
+                    return '╪';
+                case '═':
+                case '╒':
+                    return '╤';
+                case '╩':
+                case '╠':
+                case '╚':
+                    return '╬';
+                case '└':
+                case '┴':
+                case '├':
+                    return '┼';
+                case '╕':
+                case '╖':
+                case '╣':
+                case '╗':
+                case '┐':
+                case '┬':
+                case '┼':
+                case '╦':
+                case '╬':
+                case '┤':
+                case '╡':
+                case '╢':
+                case '╫':
+                case '╪':
+                case '╤':
+                case '╥':
+                    return c;
                 default :
                     return c;
             }
